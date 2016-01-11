@@ -1,0 +1,5 @@
+SRCS=$(wildcard $(FOLDER)/*.md)
+
+doc: $(SRCS)
+	$(foreach SRC,$(SRCS), PATH="$PATH:/usr/local/bin" && /usr/local/bin/generate-md --layout github --input $(SRC) --output $(patsubst %.md,%,$(SRC));)
+

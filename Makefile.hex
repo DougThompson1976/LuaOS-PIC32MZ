@@ -1,0 +1,7 @@
+BINDIR := /usr/local/gnu-mips/bin
+
+hex:
+	$(BINDIR)/mips-elf-size LuaOS_V1.elf; \
+	$(BINDIR)/mips-elf-objcopy -O ihex --change-addresses=0x80000000 LuaOS_V1.elf LuaOS_V1.hex; \
+	$(BINDIR)/mips-elf-objdump -d -S LuaOS_V1.elf > LuaOS_V1.dis
+

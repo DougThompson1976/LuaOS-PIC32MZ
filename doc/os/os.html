@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+    <title>os module</title>
+    <link type="text/css" rel="stylesheet" href="assets/css/github-markdown.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/pilcrow.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/hljs-github.min.css"/>
+  </head>
+  <body>
+    <article class="markdown-body"><h1 id="os-module"><a class="header-link" href="#os-module"></a>os module</h1>
+<p>This module it&#39;s a standard Lua module that allows to access some operating
+system facilities. The whitecat adds new facilities to this module.</p>
+<p>Please, refer to (<a href="http://www.lua.org/manual/5.3/manual.html#6.9">http://www.lua.org/manual/5.3/manual.html#6.9</a>) to know more 
+about the standard features of this module.</p>
+<h2 id="os-ls-path-"><a class="header-link" href="#os-ls-path-"></a>os.ls([path])</h2>
+<p>List directory contents.</p>
+<p>Arguments:</p>
+<ul class="list">
+<li>path: directory path. This argument it&#39;s optional, and if is not provided is
+listed the contents of the current directory. Path can be absolute or relative
+to current working directory.</li>
+</ul>
+<p>Returns: nothing</p>
+<pre class="hljs"><code><span class="hljs-comment">-- List the root directory contents</span>
+
+<span class="hljs-built_in">os</span>.ls(<span class="hljs-string">"/"</span>)
+d              -        tmp
+d              -        www
+d              -        conf
+d              -        log
+d              -        lib
+f             <span class="hljs-number">27</span>        test1.lua
+f            <span class="hljs-number">956</span>        autorun.lua
+f           <span class="hljs-number">1871</span>        lcd.lua</code></pre><p>Directory contents is listed on the screen in columns (separated by tab):</p>
+<ul class="list">
+<li>first column: entry type (d = directory / f = file)</li>
+<li>second column: entry size in bytes</li>
+<li>third column: entry name</li>
+</ul>
+<h2 id="os-cd-path-"><a class="header-link" href="#os-cd-path-"></a>os.cd(path)</h2>
+<p>Change the current working directory.</p>
+<p>Arguments:</p>
+<ul class="list">
+<li>path: directory path. Path can be absolute or relative to current working 
+directory.</li>
+</ul>
+<p>Returns: true if success</p>
+<pre class="hljs"><code><span class="hljs-comment">-- Change the current directory to /lib</span>
+
+<span class="hljs-built_in">os</span>.cd(<span class="hljs-string">"/lib"</span>)
+<span class="hljs-keyword">true</span></code></pre><h2 id="os-pwd-"><a class="header-link" href="#os-pwd-"></a>os.pwd()</h2>
+<p>Get the current working directory.</p>
+<p>Arguments: nothing</p>
+<p>Returns: the current directory</p>
+<pre class="hljs"><code><span class="hljs-comment">-- Get the current working directory</span>
+
+<span class="hljs-built_in">os</span>.pwd()
+/lib</code></pre><h2 id="os-mkdir-path-"><a class="header-link" href="#os-mkdir-path-"></a>os.mkdir(path)</h2>
+<p>Make a directory.</p>
+<p>Arguments:</p>
+<ul class="list">
+<li>directory path. Path can be absolute or relative to current working 
+directory.</li>
+</ul>
+<p>Returns: true if success</p>
+<pre class="hljs"><code><span class="hljs-comment">-- Make a new directory named test into the current working directory</span>
+
+<span class="hljs-built_in">os</span>.mkdir(<span class="hljs-string">"test"</span>)
+<span class="hljs-keyword">true</span></code></pre><h2 id="os-edit-file-"><a class="header-link" href="#os-edit-file-"></a>os.edit(file)</h2>
+<p>Edits a file.</p>
+<p>Arguments:</p>
+<ul class="list">
+<li>file: file path. Can be absolute or relative to current working 
+directory.</li>
+</ul>
+<p>Returns: nothing</p>
+<pre class="hljs"><code><span class="hljs-comment">-- Edit utorun.lua</span>
+
+<span class="hljs-built_in">os</span>.edit(<span class="hljs-string">"autorun.lua"</span>)
+<span class="hljs-keyword">true</span></code></pre><h2 id="os-clear-"><a class="header-link" href="#os-clear-"></a>os.clear()</h2>
+<p>Clears the screen.</p>
+<p>Arguments: nothing</p>
+<p>Returns: nothing</p>
+    </article>
+  </body>
+</html>

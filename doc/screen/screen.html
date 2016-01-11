@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+    <title>screen module</title>
+    <link type="text/css" rel="stylesheet" href="assets/css/github-markdown.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/pilcrow.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/hljs-github.min.css"/>
+  </head>
+  <body>
+    <article class="markdown-body"><h1 id="screen-module"><a class="header-link" href="#screen-module"></a>screen module</h1>
+<p>This module provides functions to manage external displays connected to the
+whitecat.</p>
+<p>Actually this module supports displays with one of the following chipsets:</p>
+<ul class="list">
+<li>st7735</li>
+</ul>
+<h2 id="screen-init-chipset-orientation-"><a class="header-link" href="#screen-init-chipset-orientation-"></a>screen.init(chipset, orientation)</h2>
+<p>Init the screen, and sets:</p>
+<ul class="list">
+<li>cursor to (0,0) position</li>
+<li>foreground color to white</li>
+<li>background color to black</li>
+<li>stroke cole to white</li>
+</ul>
+<p>Arguments:</p>
+<ul class="list">
+<li><p>chipset: chipset name</p>
+</li>
+<li><p>orientation:  can be either screen.OrientationV0, screen.OrientationV1,
+screen.OrientationH0, screen.OrientationH1.</p>
+</li>
+</ul>
+<p>Returns: nothing.</p>
+<pre class="hljs"><code><span class="hljs-comment">-- Init the screen using a st7735 chipset, and orientation horizontal 1</span>
+screen.init(<span class="hljs-string">"st7735"</span>, screen.OrientationH1)</code></pre><h2 id="screen-width-"><a class="header-link" href="#screen-width-"></a>screen.width()</h2>
+<p>Get the screen width, in pixels.</p>
+<p>Arguments: nothing.
+Returns: screen width in pixels.</p>
+<h2 id="screen-height-"><a class="header-link" href="#screen-height-"></a>screen.height()</h2>
+<p>Get the screen height, in pixels.</p>
+<p>Arguments: nothing.
+Returns: screen height in pixels.</p>
+<h2 id="screen-rgb-red-green-blue-"><a class="header-link" href="#screen-rgb-red-green-blue-"></a>screen.rgb(red, green, blue)</h2>
+<p>Encodes a color expressed in rgb components into a 32 bit integer according to
+the display&#39;s capabilities.</p>
+<p>Arguments:</p>
+<ul class="list">
+<li>red: red component, from 0 to 255.</li>
+<li>green: green component, from 0 to 255.</li>
+<li>blue: blue component, from 0 to 255.</li>
+</ul>
+<p>Returns: the encoded color.</p>
+<pre class="hljs"><code><span class="hljs-comment">-- Red color</span>
+red = screen.rgb(<span class="hljs-number">255</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>)
+
+<span class="hljs-comment">-- White color</span>
+white = screen.rgb(<span class="hljs-number">255</span>, <span class="hljs-number">255</span>, <span class="hljs-number">255</span>)</code></pre><h2 id="screen-clear-color-"><a class="header-link" href="#screen-clear-color-"></a>screen.clear(color)</h2>
+<p>Clear the screen, fill it with color, and puts the cursor position to
+(x, y) = (0, 0)</p>
+<p>Arguments:</p>
+<ul class="list">
+<li>color: screen color, coded with the screen.rgb function.</li>
+</ul>
+<p>Returns: nothing.</p>
+<pre class="hljs"><code><span class="hljs-comment">-- Clear the screen, and fill it with black color</span>
+screen.clear(screen.rgb(<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>))</code></pre><h2 id="screen-pixel-x-y-color-"><a class="header-link" href="#screen-pixel-x-y-color-"></a>screen.pixel(x, y, color)</h2>
+<p>Draw a pixel at (x, y) position.</p>
+<p>Arguments:</p>
+<ul class="list">
+<li>x: pixel&#39;s screen x coordinate</li>
+<li>y: pixel&#39;s screen y coordinate</li>
+<li>color: pixel&#39;s color, coded with the screen.rgb function</li>
+</ul>
+<p>Returns: nothing.</p>
+<pre class="hljs"><code><span class="hljs-comment">-- Draw a red pixel at the center of the screen</span>
+screen.pixel(screen.width()/<span class="hljs-number">2</span>, screen.height() / <span class="hljs-number">2</span>, screen.rgb(<span class="hljs-number">255</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>))</code></pre><h1 id="screen-setxy-x-y-"><a class="header-link" href="#screen-setxy-x-y-"></a>screen.setxy(x, y)</h1>
+<p>Set the cursor at (x, y) position.</p>
+<p>Arguments:</p>
+<ul class="list">
+<li>x: cursor&#39;s screen x coordinate</li>
+<li>y: cursor&#39;s screen y coordinate</li>
+</ul>
+<p>Returns: nothing.</p>
+<pre class="hljs"><code><span class="hljs-comment">-- Set the cursor at (0,0)</span>
+screen.setxy(<span class="hljs-number">0</span>,<span class="hljs-number">0</span>)</code></pre><h1 id="screen-getxy-"><a class="header-link" href="#screen-getxy-"></a>screen.getxy()</h1>
+<p>Get the current (x,y) cursor position.</p>
+<p>Arguments: nothing</p>
+<p>Returns: current position</p>
+<pre class="hljs"><code><span class="hljs-comment">-- Get the cursor position</span>
+x, y = screen.getxy()</code></pre><h2 id="screen-setfont-font-name-"><a class="header-link" href="#screen-setfont-font-name-"></a>screen.setfont(font name)</h2>
+<p>Sets the current font.</p>
+<p>Arguments:</p>
+<ul class="list">
+<li>font name: font name, stored in /sys/font</li>
+</ul>
+<p>Returns: nothing.</p>
+<pre class="hljs"><code><span class="hljs-comment">-- Set the current font to gohu-11 (gohu, size 11 pixels)</span>
+screen.setfont(<span class="hljs-string">"gohu-11"</span>)</code></pre><h2 id="screen-setforeground-color-"><a class="header-link" href="#screen-setforeground-color-"></a>screen.setforeground(color)</h2>
+<p>Set the current foreground color used for drawing text.</p>
+<p>Arguments:</p>
+<ul class="list">
+<li>color: foreground color, coded with the screen.rgb function.</li>
+</ul>
+<p>Returns: nothing.</p>
+<pre class="hljs"><code><span class="hljs-comment">-- Set foreground color to red</span>
+screen.setforeground(screen.rgb(<span class="hljs-number">255</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>))</code></pre><h2 id="screen-setbackground-color-"><a class="header-link" href="#screen-setbackground-color-"></a>screen.setbackground(color)</h2>
+<p>Set the current foreground color used for drawing text.</p>
+<p>Arguments:</p>
+<ul class="list">
+<li>color: foreground color, coded with the screen.rgb function.</li>
+</ul>
+<p>Returns: nothing.</p>
+<pre class="hljs"><code><span class="hljs-comment">-- Set foreground color to black</span>
+screen.setbackground(screen.rgb(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>))</code></pre><h2 id="screen-text-x-y-text-"><a class="header-link" href="#screen-text-x-y-text-"></a>screen.text([x], [y], text)</h2>
+<p>Draw a text on the screet at (x,y) position, or current cursor position. Text is
+drawn with the current foregroud and background colors set with the 
+screen.setforeground and screen.setbackground functions.</p>
+<p>If text contains the \n character cursor is updated the initial position of a 
+new line.</p>
+<p>Arguments:</p>
+<ul class="list">
+<li>x: text&#39;s screen x coordinate. Optional, if not present draw text on current
+cursor position.</li>
+<li>y: text&#39;s screen y coordinate. Optional, if not present draw text on current
+cursor position.</li>
+</ul>
+<p>Returns: nothing</p>
+<pre class="hljs"><code><span class="hljs-comment">-- Draw text at (0,0) position</span>
+screen.text(<span class="hljs-number">0</span>,<span class="hljs-number">0</span>, <span class="hljs-string">"whitecat"</span>)
+
+<span class="hljs-comment">-- Draw text at current cursor.position</span>
+screen.text(<span class="hljs-number">0</span>,<span class="hljs-number">0</span>, <span class="hljs-string">".org"</span>)</code></pre><h2 id="screen-loadimage-x-y-filename-"><a class="header-link" href="#screen-loadimage-x-y-filename-"></a>screen.loadimage(x, y, filename)</h2>
+<p>Load an image in bmp format.</p>
+<p>Arguments:</p>
+<ul class="list">
+<li>x: images&#39;s screen x coordinate</li>
+<li>y: images&#39;s screen y coordinate</li>
+<li>filename: image filename path</li>
+</ul>
+<p>Returns: nothing.</p>
+<pre class="hljs"><code><span class="hljs-comment">-- Load the whitecat.bmp on the screen</span>
+screen.loadimage(<span class="hljs-number">0</span>,<span class="hljs-number">0</span>, <span class="hljs-string">"/sd/whitecat.bmp"</span>)</code></pre>    </article>
+  </body>
+</html>

@@ -1,0 +1,4 @@
+-- autorun.lua
+--
+-- This script is executed after system.lua is executed and contains the main
+-- application

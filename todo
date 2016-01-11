@@ -1,0 +1,14 @@
+
+Hardware Poner 2 Micromatch W/Latch tipo lru0000 (no hay espacio con el layout actual siguientes releases de la placa)
+Hardware Rehubicacion pines (ok rehubicados segun encapsulado)
+HArdware Numeracion de pines P01, P02, P03, etc.... (ok P01 - P50)
+SPI3 50Mhz es donde va la spi flash (OK trasladado a esos pines)
+RTC ????? pines de reloj ver errata (pines accesibles)
+
+* io.open("test.lua","w") dona una excepció
+
+* bootloader
+
+    - firmware.hex si está presente se actualiza lua
+    - bootloader.hex si está presente se actualiza bootloader
+

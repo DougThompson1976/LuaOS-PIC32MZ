@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+    <title>ADC module</title>
+    <link type="text/css" rel="stylesheet" href="assets/css/github-markdown.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/pilcrow.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/hljs-github.min.css"/>
+  </head>
+  <body>
+    <article class="markdown-body"><h1 id="adc-module"><a class="header-link" href="#adc-module"></a>ADC module</h1>
+<p>This module contains functions for accessing the analog to digital converter 
+(ADC) module.</p>
+<p>The whitecat has up to 6 on-board dedicated ADC circuits and 1 on-board shared 
+ADC circuit. The dedicated circuits uses a single input and is intended for 
+high-speed and precise sampling of time-sensitive or transient inputs, whereas 
+the shared circuit incorporates a multiplexer on the input to facilitate a 
+larger group of inputs, with slower sampling.</p>
+<p>The assignment to one of the dedicated or shared circuits is transparent to the 
+programmer and depends on the used ADC input.</p>
+<p>All on-board ADC circuits are identified with the adc.ADC1 module constant. More
+ ADC can be added to the whitecat through specific ADC shields, each of them
+identified by adc.ADC2, adc.ADC3 and so on.</p>
+<h2 id="adc-adc-setup-id-vref-vrefv-"><a class="header-link" href="#adc-adc-setup-id-vref-vrefv-"></a>adc = adc.setup(id, vref, vrefv)</h2>
+<p>Setup the ADC module.</p>
+<p>Arguments:</p>
+<ul class="list">
+<li>id: ADC module identifier. Use adc.ADC1 for on-board module</li>
+<li>vref: voltage reference. Only adc.AVDD is allowed in this version</li>
+<li>vrefv: voltage reference value, in millivolts</li>
+</ul>
+<p>Returns: an ADC instance. You must store this instance into a variable for
+further operations with it.</p>
+<pre class="hljs"><code><span class="hljs-comment">-- Setup on-board ADC module, using AVDD as voltage reference. Voltage reference</span>
+<span class="hljs-comment">-- value is 3.3 V (3300 millivolts)</span>
+
+adc1 = adc.setup(adc.ADC1, adc.AVDD, <span class="hljs-number">3300</span>)</code></pre><h2 id="channel-instance-setupchan-resolution-input-"><a class="header-link" href="#channel-instance-setupchan-resolution-input-"></a>channel = instance:setupchan(resolution, input)</h2>
+<p>Setup an ADC input channel.</p>
+<p>Arguments:</p>
+<ul class="list">
+<li>resolution: resolution to use, can be either 12, 10, 8 or 6 bits </li>
+<li>input: ADC input channel</li>
+</ul>
+<p>Returns: an ADC channel instance. You must store this instance into a variable 
+for further operations with it.</p>
+<pre class="hljs"><code><span class="hljs-comment">-- Setup ADC input channel 0 to 12-bit resolution</span>
+
+channel = adc1:setupchan(<span class="hljs-number">12</span>, <span class="hljs-number">0</span>)</code></pre><h2 id="raw-millivolts-instance-read-"><a class="header-link" href="#raw-millivolts-instance-read-"></a>raw, millivolts = instance:read()</h2>
+<p>Read the channel instance ADC value.</p>
+<p>Returns:</p>
+<ul class="list">
+<li>raw: raw value</li>
+<li>millivolts: raw value converted to millivolts </li>
+</ul>
+<h2 id="example-read-temperature-from-a-tmp36-sensor"><a class="header-link" href="#example-read-temperature-from-a-tmp36-sensor"></a>Example: read temperature from a TMP36 sensor</h2>
+<pre class="hljs"><code><span class="hljs-comment">-- Read adc value from a TMP36 temperature sensor and shows current temperature</span>
+<span class="hljs-comment">-- value on the screen.</span>
+
+tmp36_adc = adc.ADC1   <span class="hljs-comment">-- Sensor is connected to ADC1 module</span>
+tmp36_vref = adc.AVDD  <span class="hljs-comment">-- ADC1 voltage reference to AVDD</span>
+tmp36_vrefv = <span class="hljs-number">3300</span>     <span class="hljs-comment">-- ADC1 voltage reference to 3.3 volts</span>
+tmp36_chan = <span class="hljs-number">0</span>         <span class="hljs-comment">-- Sensor is connected to ADC1 chan 0</span>
+tmp36_chan_res = <span class="hljs-number">12</span>    <span class="hljs-comment">-- Channel resolution</span>
+
+<span class="hljs-comment">-- Setup ADC module</span>
+adc1 = adc.setup(tmp36_adc, tmp36_vref, tmp36_vrefv)
+
+<span class="hljs-comment">-- Setup ADC channel</span>
+tmp36 = adc1:setupchan(tmp36_chan_res, tmp36_chan)
+
+<span class="hljs-comment">-- Sample</span>
+<span class="hljs-keyword">while</span> <span class="hljs-keyword">true</span> <span class="hljs-keyword">do</span>
+    <span class="hljs-comment">-- Read from adc</span>
+    val, mval = tmp36:read()
+
+    <span class="hljs-comment">-- Computes temperature</span>
+    temp = (mval - <span class="hljs-number">500</span>) / <span class="hljs-number">10</span>
+
+    <span class="hljs-comment">-- Show temperature</span>
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"raw: "</span>..val..<span class="hljs-string">"\t mvolts: "</span>..mval..<span class="hljs-string">"\t temp: "</span>..<span class="hljs-built_in">string</span>.format(<span class="hljs-string">"%.2f"</span>, temp))
+
+    <span class="hljs-comment">-- Wait</span>
+    tmr.delay(tmr.SYS_TIMER, <span class="hljs-number">1</span> * tmr.SEC)
+<span class="hljs-keyword">end</span></code></pre>    </article>
+  </body>
+</html>

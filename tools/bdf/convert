@@ -1,0 +1,4 @@
+rm -f -r ./out/*
+
+./bdf -n font -b < ./gohufont-11.bdf > ./out/gohu-11
+./bdf -n font -b < ./gohufont-14.bdf > ./out/gohu-14

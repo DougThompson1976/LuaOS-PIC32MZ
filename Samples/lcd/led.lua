@@ -1,0 +1,52 @@
+screen.init("st7735", screen.OrientationH1)
+screen.clear(screen.rgb(0,0,0))
+screen.setfont("gohu-11")
+screen.setfontsize(1)
+screen.text("A")
+tmr.delayms(3000)
+screen.loadimage(0, 0, "/sd/dave_256.bmp")
+tmr.delayms(3000)
+screen.fill(screen.rgb(0,0,0))
+screen.text(0,0,"IT WORKS!!!!")
+
+
+screen.init("st7735", screen.OrientationH0)
+screen.clear(screen.rgb(0,0,0))
+screen.loadimage(0, 0, "/sd/white.bmp")
+
+while true do
+    screen.loadimage(0, 0, "/sd/f1.bmp")
+    screen.loadimage(0, 0, "/sd/f2.bmp")
+    screen.loadimage(0, 0, "/sd/f3.bmp")
+    screen.loadimage(0, 0, "/sd/f4.bmp")
+    screen.loadimage(0, 0, "/sd/f5.bmp")
+    screen.loadimage(0, 0, "/sd/f6.bmp")
+    screen.loadimage(0, 0, "/sd/f7.bmp")
+    screen.loadimage(0, 0, "/sd/f8.bmp")
+    screen.loadimage(0, 0, "/sd/f9.bmp")
+    screen.loadimage(0, 0, "/sd/f10.bmp")
+    screen.loadimage(0, 0, "/sd/f11.bmp")
+    screen.loadimage(0, 0, "/sd/f12.bmp")
+    screen.loadimage(0, 0, "/sd/f13.bmp")
+    screen.loadimage(0, 0, "/sd/f14.bmp")
+    screen.loadimage(0, 0, "/sd/f15.bmp")
+    screen.loadimage(0, 0, "/sd/f16.bmp")
+    screen.loadimage(0, 0, "/sd/f17.bmp")
+    screen.loadimage(0, 0, "/sd/f18.bmp")
+    screen.loadimage(0, 0, "/sd/f19.bmp")
+    screen.loadimage(0, 0, "/sd/f20.bmp")
+    screen.loadimage(0, 0, "/sd/f21.bmp")
+    screen.loadimage(0, 0, "/sd/f22.bmp")
+    screen.loadimage(0, 0, "/sd/f23.bmp")
+    screen.loadimage(0, 0, "/sd/f24.bmp")
+    screen.loadimage(0, 0, "/sd/f25.bmp")
+    screen.loadimage(0, 0, "/sd/f26.bmp")
+    screen.loadimage(0, 0, "/sd/f27.bmp")
+    screen.loadimage(0, 0, "/sd/f28.bmp")
+end
+
+screen.setfont("gohu-14")
+
+for i = 32,227 do
+    screen.text(string.char(i))
+end

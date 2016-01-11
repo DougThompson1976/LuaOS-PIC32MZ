@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+    <title>mqtt module</title>
+    <link type="text/css" rel="stylesheet" href="assets/css/github-markdown.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/pilcrow.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/hljs-github.min.css"/>
+  </head>
+  <body>
+    <article class="markdown-body"><h1 id="mqtt-module"><a class="header-link" href="#mqtt-module"></a>mqtt module</h1>
+<h2 id="client-mqtt-client-clientid-host-port-secure-"><a class="header-link" href="#client-mqtt-client-clientid-host-port-secure-"></a>client = mqtt.client(clientid, host, port, secure)</h2>
+<p>Creates a new mqtt client instance.</p>
+<p>Arguments:</p>
+<ul class="list">
+<li>clientid: client identifier</li>
+<li>host: broker domain name or ip</li>
+<li>port: broker port (tipically 1883)</li>
+<li>secure: true for secure communicacition, false for non-secure comunication</li>
+</ul>
+<p>Returns: a client instance. You must store this instance into a variable for
+further operations with it.</p>
+<pre class="hljs"><code>client = mqtt.client(<span class="hljs-string">"100"</span>, <span class="hljs-string">"mqtt.isatpoint.com"</span>, <span class="hljs-number">1883</span>, <span class="hljs-keyword">false</span>)</code></pre><h2 id="instance-connect-username-password-"><a class="header-link" href="#instance-connect-username-password-"></a>instance:connect(username,password)</h2>
+<p>Connects the client instance to the broker.</p>
+<p>Arguments:</p>
+<ul class="list">
+<li>username: user name</li>
+<li>password: password </li>
+</ul>
+<p>Returns: nothing</p>
+<pre class="hljs"><code>client:connect(<span class="hljs-string">""</span>,<span class="hljs-string">""</span>)</code></pre>    </article>
+  </body>
+</html>

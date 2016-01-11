@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+    <title>CAN module</title>
+    <link type="text/css" rel="stylesheet" href="assets/css/github-markdown.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/pilcrow.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/hljs-github.min.css"/>
+  </head>
+  <body>
+    <article class="markdown-body"><h1 id="can-module"><a class="header-link" href="#can-module"></a>CAN module</h1>
+<p>This module contains functions for accessing the Controller Area Network<br>(CAN) module. Although the PIC32MZ has 2 CAN modules, the whitecat has 1 
+on-board CAN transceiver, so only 1 CAN module can be used. For applications 
+that need more CAN modules there are specific shields for the whitecat.</p>
+<p>CAN modules are identified by the constants can.CAN1 and can.CAN2.</p>
+<h2 id="real-speed-can-setup-id-speed-"><a class="header-link" href="#real-speed-can-setup-id-speed-"></a>real speed = can.setup(id, speed)</h2>
+<p>Setup the CAN module.</p>
+<p>Arguments:</p>
+<ul class="list">
+<li>id: CAN module identifier. Use can.CAN1 for use the on-board can module.</li>
+<li>speed: speed for the CAN bus expressed in kilohertz.</li>
+</ul>
+<p>Returns: the real CAN bus speed.</p>
+<pre class="hljs"><code><span class="hljs-comment">-- Setup the on-board CAN at 250 kilohertz</span>
+can.setup(can.CAN1, <span class="hljs-number">250</span>)</code></pre><h2 id="can-send-id-canid-id-type-len-data-"><a class="header-link" href="#can-send-id-canid-id-type-len-data-"></a>can.send(id, canid, id type, len, data)</h2>
+<p>Send a CAN data frame over the CAN bus.</p>
+<p>Arguments:</p>
+<ul class="list">
+<li>id: CAN module identifier.</li>
+<li>canid: CAN identifier.</li>
+<li>id type: CAN identifier type, can be either can.STD for a 11-bit identifier. 
+and can.EXT for a 29-bit identifier.</li>
+<li>len: length of the data frame (maximum of 8 byte according to CAN specs).</li>
+<li>data: data to send.</li>
+</ul>
+<p>Regturns: nothing.</p>
+<pre class="hljs"><code><span class="hljs-comment">-- Setup the on-board CAN at 250 kilohertz</span>
+can.setup(can.CAN1, <span class="hljs-number">250</span>)
+
+<span class="hljs-comment">-- Send a data frame with standard identifier 100 and contents 1234</span>
+can.send(can.CAN1, <span class="hljs-number">100</span>, can.STD, <span class="hljs-number">4</span>, <span class="hljs-string">"1234"</span>)</code></pre><h2 id="canid-id-type-len-data-can-receive-id-"><a class="header-link" href="#canid-id-type-len-data-can-receive-id-"></a>canid, id type, len, data = can.receive(id)</h2>
+<p>Receive a CAN data frame from the CAN bus. It&#39;s the programmer&#39;s responsibility 
+to filter the received can messages, so filter capabilities are not support for 
+in current release.</p>
+<p>Arguments:</p>
+<ul class="list">
+<li>id: CAN module identifier.</li>
+</ul>
+<p>Returns:</p>
+<ul class="list">
+<li>canid: received CAN identifier.</li>
+<li>id type: received CAN identifier type.</li>
+<li>len: length of the received data.</li>
+<li>data: received data.</li>
+</ul>
+<pre class="hljs"><code><span class="hljs-comment">-- Setup the on-board CAN at 250 kilohertz</span>
+can.setup(can.CAN1, <span class="hljs-number">250</span>)
+
+<span class="hljs-comment">-- Receive data frame</span>
+canid, <span class="hljs-built_in">type</span>, len, data = can.recv(can.CAN1)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"canid: "</span>..canid..<span class="hljs-string">", type: "</span>..<span class="hljs-built_in">type</span>..<span class="hljs-string">", len: "</span>..len..<span class="hljs-string">", data : "</span>..data)</code></pre>    </article>
+  </body>
+</html>
