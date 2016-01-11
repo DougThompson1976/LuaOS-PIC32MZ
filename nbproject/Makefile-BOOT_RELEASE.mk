@@ -15,8 +15,8 @@ NM=nm
 CCADMIN=CCadmin
 RANLIB=ranlib
 CC=mips-elf-gcc
-CCC=g++
-CXX=g++
+CCC=mips-elf-g++
+CXX=mips-elf-g++
 FC=gfortran
 AS=mips-elf-as
 
