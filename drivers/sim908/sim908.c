@@ -507,6 +507,9 @@ static void pppTask(void *pvParameters) {
     int fd;
     int connected = 0;
 
+    // Disable debug on SIM908_UART
+    uart_debug(SIM908_UART, 0);
+    
     syslog(LOG_INFO, "sim908 ppp task started");
     
     // Allocate space for packet
@@ -597,6 +600,9 @@ static void pppTask(void *pvParameters) {
     syslog(LOG_INFO, "sim908 ppp task stopped");
     
     xEventGroupSetBits(sim908Event, sim908_ppp_stopped);    
+
+    // Enable debug on SIM908_UART
+    uart_debug(SIM908_UART, SIM908_DEBUG);
 
     vTaskDelete(NULL);
 }
