@@ -34,6 +34,30 @@
                 <sourceRootElem>mqtt</sourceRootElem>
                 <sourceRootElem>Lua</sourceRootElem>
                 <sourceRootElem>xmodem</sourceRootElem>
+                <sourceRootElem>FreeRTOS</sourceRootElem>
+                <sourceRootElem>include</sourceRootElem>
+                <sourceRootElem>machine</sourceRootElem>
+                <sourceRootElem>sys</sourceRootElem>
+                <sourceRootElem>main</sourceRootElem>
+                <sourceRootElem>drivers</sourceRootElem>
+                <sourceRootElem>utils</sourceRootElem>
+                <sourceRootElem>lib</sourceRootElem>
+                <sourceRootElem>vm</sourceRootElem>
+                <sourceRootElem>mqtt</sourceRootElem>
+                <sourceRootElem>Lua</sourceRootElem>
+                <sourceRootElem>xmodem</sourceRootElem>
+                <sourceRootElem>FreeRTOS</sourceRootElem>
+                <sourceRootElem>include</sourceRootElem>
+                <sourceRootElem>machine</sourceRootElem>
+                <sourceRootElem>sys</sourceRootElem>
+                <sourceRootElem>main</sourceRootElem>
+                <sourceRootElem>drivers</sourceRootElem>
+                <sourceRootElem>utils</sourceRootElem>
+                <sourceRootElem>lib</sourceRootElem>
+                <sourceRootElem>vm</sourceRootElem>
+                <sourceRootElem>mqtt</sourceRootElem>
+                <sourceRootElem>Lua</sourceRootElem>
+                <sourceRootElem>xmodem</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>
