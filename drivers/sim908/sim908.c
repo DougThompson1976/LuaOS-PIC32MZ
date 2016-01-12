@@ -54,7 +54,7 @@
 #include <syslog.h>
 #include <sys/mutex.h>
 
-#define SIM908_DEBUG 0
+#define SIM908_DEBUG 1
 
 u32_t sio_write(sio_fd_t fd, u8_t *data, u32_t len) {
     UNUSED_ARG(fd);
@@ -202,60 +202,52 @@ static void sim908_watchdog() {
     }    
 }
 
+// Once sim908 is reset module does a reboot, until GPS ready us received module
+// informs us of some events necessary for the module setup, such as: need for
+// pin, presence of SIM, etc ... We detect this needed things in this function.
 static sim908_err sim908_wait_for_initial_events() {
     int start, twait, timeout;
     char temp_buffer[20];
-    int events = 0;
 
     timeout = 10000;
     twait = (CPU_HZ / 2000) * timeout;
     start = ReadCoreTimer();
 
+    need_func = 0;
+    need_pin = 0;
+    need_puk = 0;
+    need_sim = 0;
     need_call_ready = 1;
 
-    while ((events != 2) && (ReadCoreTimer() - start <= twait)) {
+    while ((ReadCoreTimer() - start <= twait)) {
         if (uart_reads(SIM908_UART, temp_buffer, 1, 1000)) {
             if (strlen(temp_buffer) > 0) {
-                if (strcmp(temp_buffer, "+CFUN: 0") == 0) {
-                    // Minimum functionallity
-                    need_func = 1;events++;
-                    syslog(LOG_INFO,"sim908 need functionallity");
-                } else if (strcmp(temp_buffer, "+CFUN: 1") == 0) {
-                    // Full functionallity
-                    need_func = 0;events++;
-                } else if (strcmp(temp_buffer, "+CFUN: 4") == 0) {
-                    // Disable phone both transmit and receive RF circuits
-                    need_func = 1;events++;
-                    syslog(LOG_INFO,"sim908 need functionallity");
-                } else if (strcmp(temp_buffer, "+CPIN: READY") == 0) {
-                    // MT is not pending for any password
-                    need_pin = 0;events++;
+                if (strcmp(temp_buffer, "GPS Ready") == 0) {
+                    return ERR_OK;
+                } else if ((strcmp(temp_buffer, "+CFUN: 0") == 0) ||
+                            (strcmp(temp_buffer, "+CFUN: 4") == 0)) {
+                    // Minimum functionallity / transmit receive circuits 
+                    // disabled
+                    need_func = 1;
+                    syslog(LOG_INFO,"sim908 need functionallity");                 
                 } else if (strcmp(temp_buffer, "+CPIN: SIM PIN") == 0) {
                     // MT is waiting SIM PIN to be given
-                    need_pin = 1;events++;
+                    need_pin = 1;
                     syslog(LOG_INFO,"sim908 need pin");
                 } else if (strcmp(temp_buffer, "+CPIN: SIM PUK") == 0) {
                     // MT is waiting SIM PUK to be given
-                    need_puk = 1;events++;
+                    need_puk = 1;
                     syslog(LOG_INFO,"sim908 need puk");
                 } else if (strcmp(temp_buffer, "+CPIN: PH_SIM PIN") == 0) {
                     // ME is waiting for phone to SIM card
-                    need_sim = 1;events++;
+                    need_sim = 1;
                     syslog(LOG_INFO,"sim908 need sim");
                 }
             }
         }
     }
 
-    if (events != 2) {
-        return ERR_INIT;
-    }
-
-    if (uart_wait_response(SIM908_UART, NULL, NULL, NULL, 10000, 1, "GPS Ready")) {
-        return ERR_OK;
-    } else {
-        return ERR_INIT;
-    }
+    return ERR_INIT;
 }
 
 // SIM908 power on sequence
