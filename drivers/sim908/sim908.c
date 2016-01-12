@@ -572,12 +572,7 @@ static void pppTask(void *pvParameters) {
             }
             
             // Test for flush
-            if (((pppflags > 0) || (bytes == PPPOS_RX_BUFSIZE))) {
-                for (i=0;i<bytes;i++) {
-                    printf("%x ", *(packet + i));
-                }
-                printf("\r\n");
-                
+            if (((pppflags > 0) || (bytes == PPPOS_RX_BUFSIZE))) {                
                 // A packet is received, pass to TCP/IP stack
                 activity = 1;
                 gpio_pin_set(LED_NET);
