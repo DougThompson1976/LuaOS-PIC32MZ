@@ -1,5 +1,33 @@
+/*
+ * Whitecat, mutex api implementation over FreeRTOS
+ *
+ * Copyright (C) 2015
+ * IBEROXARXA SERVICIOS INTEGRALES, S.L. & CSS IBÉRICA, S.L.
+ * 
+ * Author: Jaume Olivé (jolive@iberoxarxa.com / jolive@whitecatboard.com)
+ * 
+ * All rights reserved.  
+ *
+ * Permission to use, copy, modify, and distribute this software
+ * and its documentation for any purpose and without fee is hereby
+ * granted, provided that the above copyright notice appear in all
+ * copies and that both that the copyright notice and this
+ * permission notice and warranty disclaimer appear in supporting
+ * documentation, and that the name of the author not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ *
+ * The author disclaim all warranties with regard to this
+ * software, including all implied warranties of merchantability
+ * and fitness.  In no event shall the author be liable for any
+ * special, indirect or consequential damages or any damages
+ * whatsoever resulting from loss of use, data or profits, whether
+ * in an action of contract, negligence or other tortious action,
+ * arising out of or in connection with the use or performance of
+ * this software.
+ */
+
 #include "FreeRTOS.h"
-#include "event_groups.h"
 
 #include "semphr.h"
 #include <sys/mutex.h>
@@ -14,58 +42,6 @@
 #define MTX_LOCK_TIMEOUT portMAX_DELAY
 #define MTX_DEBUG_LOCK() 
 #endif
-
-static EventGroupHandle_t groups[NMUTEX];
-static int free_mtx[NMUTEX];
-static SemaphoreHandle_t sem;
-
-void _mtx_init() {
-    int i;
-    
-    sem = xSemaphoreCreateBinary();
-    xSemaphoreGive(sem);
-    
-    for(i=0;i < NMUTEX; i++) {
-        free_mtx[i] = 0b111111111111111111111111;
-        groups[i] = xEventGroupCreate();
-        xEventGroupClearBits(groups[i], 0b111111111111111111111111);
-    }
-}
-
-int _mtx_init_mtx() {
-    int i, bit = 0;
-    
-    if (xSemaphoreTake(sem, MTX_LOCK_TIMEOUT) != pdTRUE) {
-        for(i=0;i < NMUTEX; i++) {
-            printf("%x\n", free_mtx[i]);
-            
-            bit = ffs(free_mtx[i]);
-            
-            printf("bit %d\n",bit);
-            if (bit) {
-                free_mtx[i] &= ~(1 << (bit - 1));
-                bit = bit + i * 24;
-                break;
-            }
-        }
-    }
-
-    xSemaphoreGive(sem);   
-    
-    return bit;
-}
-
-void _mtx_free_mtx(int bit) {    
-    if (xSemaphoreTake(sem, MTX_LOCK_TIMEOUT) != pdTRUE) {
-        int group = bit / 24;
-
-        bit = bit % 24;
-        xEventGroupClearBits(groups[group], (1 << (bit - 1)));
-        free_mtx[group] |= (1 << (bit - 1));
-    }
-    
-    xSemaphoreGive(sem);
-}
 
 void mtx_init(struct mtx *mutex, const char *name, const char *type, int opts) {    
     mutex->sem = xSemaphoreCreateBinary();

@@ -65,10 +65,6 @@ static int create_folder(char *path) {
 }
 
 void mach_dev() {
-    char *npath;
-    
-    _mtx_init();
-    
     clock_init();
     console_init();
     console_clear();

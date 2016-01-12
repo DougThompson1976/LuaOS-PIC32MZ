@@ -138,15 +138,6 @@ void initTask(void *pvParameters) {
     gpio_pin_output(LED_ACT);
     gpio_pin_clr(LED_ACT);
     
-/*
-    printf("init %d\n", _mtx_init_mtx());
-    printf("init %d\n", _mtx_init_mtx());
-    printf("init %d\n", _mtx_init_mtx());
-    printf("init %d\n", _mtx_init_mtx());
-
-    for(;;);
-*/
-    
     #if USE_ETHERNET | USE_GPRS
         // Create network task
         xTaskCreate(netTask, "net", netTaskStack, NULL, tskIDLE_PRIORITY, NULL);
