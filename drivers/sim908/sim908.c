@@ -719,6 +719,14 @@ void sim908_stop(int gprs, int gps) {
         syslog(LOG_INFO, "sim908 %s", sim908_error(ok));
     }
     
+    if (gprs) {
+        flags &= ~SIM908_FLAG_GPRS_STARTED;
+    }
+
+    if (gps) {
+        flags &= ~SIM908_FLAG_GPS_STARTED;
+    }
+
     syslog(LOG_INFO, "sim908 stopped");
 }
 #endif
