@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="95">
+<configurationDescriptor version="97">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
@@ -702,9 +702,6 @@
                 <itemPath>Lua/elua/src/platform/pic32mz/platform.c</itemPath>
               </logicalFolder>
             </logicalFolder>
-            <itemPath>Lua/elua/src/common_tmr.c</itemPath>
-            <itemPath>Lua/elua/src/common_uart.c</itemPath>
-            <itemPath>Lua/elua/src/elua_int.c</itemPath>
             <itemPath>Lua/elua/src/linenoise.c</itemPath>
           </logicalFolder>
         </logicalFolder>
@@ -1658,8 +1655,6 @@
       <item path="Lua/elua/inc/version.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/elua/inc/xmodem.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/src/common_tmr.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/elua/src/linenoise.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -3777,8 +3772,6 @@
       <item path="Lua/elua/inc/version.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/elua/inc/xmodem.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/src/common_tmr.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/elua/src/linenoise.c" ex="false" tool="0" flavor2="0">
       </item>
