@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="97">
+<configurationDescriptor version="95">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
@@ -52,9 +52,6 @@
         <logicalFolder name="dma" displayName="dma" projectFiles="true">
           <itemPath>drivers/dma/dma.c</itemPath>
           <itemPath>drivers/dma/dma.h</itemPath>
-        </logicalFolder>
-        <logicalFolder name="flash" displayName="flash" projectFiles="true">
-          <itemPath>drivers/flash/flash.c</itemPath>
         </logicalFolder>
         <logicalFolder name="gpio" displayName="gpio" projectFiles="true">
           <itemPath>drivers/gpio/gpio.c</itemPath>

@@ -1,4 +1,9 @@
 /*
+ * UART driver for pic32.
+ *
+ * Copyright (C) 2014 Serge Vakulenko, <serge@vak.ru>
+ * 
+ * 
  * Whitecat, UART driver
  *
  * Copyright (C) 2015

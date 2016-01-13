@@ -1,4 +1,9 @@
 /*
+ * GPIO driver for pic32.
+ *
+ * Copyright (C) 2014 Serge Vakulenko, <serge@vak.ru>
+ * Copyright (C) 2015 Jaume Olivé, <jolive@iberoxarxa.com>
+ * 
  * Whitecat, gpio driver
  *
  * Copyright (C) 2015
