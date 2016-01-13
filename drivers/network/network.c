@@ -165,9 +165,7 @@ void netTask(void *pvParameters) {
         );
         
         if (uxBits & (evEthernet_start)) {
-            if (!ethernet_init()) {
-                xEventGroupSetBits(netTaskEvent, evNetTask_started);
-            } else {
+            if (ethernet_init()) {
                 xEventGroupSetBits(netTaskEvent, evNetTask_failed);                
             }
         }
@@ -191,7 +189,7 @@ void netTask(void *pvParameters) {
         if (uxBits & (evEthernet_link_up | evGprs_link_up)) {
             set_default_interface();
 
-            if (uxBits & (evGprs_started)) {
+            if (uxBits & (evGprs_started | evEthernet_started)) {
                 xEventGroupSetBits(netTaskEvent, evNetTask_started);
             }
         }

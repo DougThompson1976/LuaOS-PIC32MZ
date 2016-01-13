@@ -100,7 +100,7 @@ static void statusCallback(struct netif *netif) {
     if (ip_changed || lk_changed) {
         if (netif->flags & NETIF_FLAG_LINK_UP) {
             if (netif->ip_addr.addr != 0) {
-                xEventGroupSetBits(networkEvent, evEthernet_link_up);
+                xEventGroupSetBits(networkEvent, evEthernet_link_up | evEthernet_started);
             } else {
                 #if !ETH_USE_FIXED_IP
                     syslog(LOG_INFO, "netif: starting dhcp client");
