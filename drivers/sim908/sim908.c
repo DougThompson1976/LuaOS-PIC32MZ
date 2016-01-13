@@ -54,7 +54,7 @@
 #include <syslog.h>
 #include <sys/mutex.h>
 
-#define SIM908_DEBUG 1
+#define SIM908_DEBUG 0
 
 u32_t sio_write(sio_fd_t fd, u8_t *data, u32_t len) {
     UNUSED_ARG(fd);
