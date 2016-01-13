@@ -1,10 +1,10 @@
 /*
  * Whitecat, gps Lua module
  *
- * Copyright (C) 2015
+ * Copyright (C) 2015 - 2016
  * IBEROXARXA SERVICIOS INTEGRALES, S.L. & CSS IBÉRICA, S.L.
  * 
- * Author: Jaume Olivé (jolive@iberoxarxa.com / jolive@whitecatboard.com)
+ * Author: Jaume Olivé (jolive@iberoxarxa.com / jolive@whitecatboard.org)
  * 
  * All rights reserved.  
  *
@@ -37,7 +37,9 @@ static int lgps_start(lua_State* L) {
 }
 
 static int lgps_stop(lua_State* L) {
+    platform_gps_stop();
     
+    return 0;    
 }
 
 static const luaL_Reg gps[] = {

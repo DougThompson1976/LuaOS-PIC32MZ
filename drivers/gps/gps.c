@@ -1,10 +1,10 @@
 /*
  * Whitecat, GPS driver
  *
- * Copyright (C) 2015
+ * Copyright (C) 2015 - 2016
  * IBEROXARXA SERVICIOS INTEGRALES, S.L. & CSS IBÉRICA, S.L.
  * 
- * Author: Jaume Olivé (jolive@iberoxarxa.com / jolive@whitecatboard.com)
+ * Author: Jaume Olivé (jolive@iberoxarxa.com / jolive@whitecatboard.org)
  * 
  * All rights reserved.  
  *
@@ -28,7 +28,13 @@
  */
 
 #include "whitecat.h"
+
+#if USE_GPS
+#include "gps.h"
+
 #include "FreeRTOS.h"
+#include "task.h"
+#include "event_groups.h"
 
 #include <stdlib.h>
 
@@ -36,14 +42,27 @@
 #include "drivers/gps/nmea0183.h"
 #include "drivers/uart/uart.h"
 
-#if USE_GPS
+#include <drivers/sim908/sim908.h>
+#include <syslog.h>
 
-void gpsTask(void *pvParameters) {
+static TaskHandle_t gpsTask_h = NULL;
+static EventGroupHandle_t gpsEvent;
+static int inited = 0;
+
+static void gps_init() {
+    if (inited) return;
+    
+    gpsEvent = xEventGroupCreate();
+    xEventGroupClearBits(gpsEvent, evGps_started | evGps_stopped | evGps_stop);
+}
+
+static void gpsTask(void *pvParameters) {
     QueueHandle_t *q;        // GPS queue
     u8_t          *sentence; // Received packet
     u8_t          *buffer;   // Current buffer position of received packet
     u8_t           byte;     // Received byte
     u32_t          bytes;    // Received bytes
+    EventBits_t    uxBits;
 
     // Allocate space for sentence
     sentence = malloc(MAX_NMA_SIZE);
@@ -52,7 +71,14 @@ void gpsTask(void *pvParameters) {
     // Get UART queue
     q = uart_get_queue(SIM908_UART_DBG);
     
+    xEventGroupSetBits(gpsEvent, evGps_started); 
+    
     for(;;) {
+        uxBits = xEventGroupWaitBits(gpsEvent, evGps_stop, pdTRUE, pdFALSE, 0);
+        if (uxBits & (evGps_stop)) {
+            break;
+        }
+        
         if (xQueueReceive(q, &byte, (TickType_t)portTICK_PERIOD_MS) == pdTRUE) {
             // Byte is received, store in buffer
             *buffer++ = byte;
@@ -68,7 +94,43 @@ void gpsTask(void *pvParameters) {
         }
     }
 
+    free(sentence);
+    
+    xEventGroupSetBits(gpsEvent, evGps_stopped);    
+    
     vTaskDelete(NULL);
+}
+
+int gps_start() {
+    sim908_err err;
+
+    gps_init();
+    
+    err = sim908_init(0, 1);
+    if (err == ERR_OK) {
+        // Create task for gps process
+        xTaskCreate(gpsTask, "gps", configMINIMAL_STACK_SIZE * 10, NULL, tskIDLE_PRIORITY, &gpsTask_h);
+        xEventGroupWaitBits(gpsEvent, evGps_started, pdTRUE, pdFALSE, portMAX_DELAY);
+
+        syslog(LOG_INFO, "gps startted");
+    } else {
+        syslog(LOG_INFO, "sim908 %s", sim908_error(err));        
+    }
+
+    return (err != ERR_OK);    
+}
+
+int gps_stop() {
+    syslog(LOG_INFO, "gps stopping ...");
+    
+    xEventGroupSetBits(gpsEvent, evGps_stop);
+    xEventGroupWaitBits(gpsEvent, evGps_stopped, pdTRUE, pdFALSE, portMAX_DELAY);
+
+    sim908_stop(0, 1);
+    
+    syslog(LOG_INFO, "gps stopped");
+    
+    return 0;
 }
 
 #endif

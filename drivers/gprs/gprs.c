@@ -1,10 +1,10 @@
 /*
  * Whitecat, GPRS driver
  *
- * Copyright (C) 2015
+ * Copyright (C) 2015 - 2016
  * IBEROXARXA SERVICIOS INTEGRALES, S.L. & CSS IBÉRICA, S.L.
  * 
- * Author: Jaume Olivé (jolive@iberoxarxa.com / jolive@whitecatboard.com)
+ * Author: Jaume Olivé (jolive@iberoxarxa.com / jolive@whitecatboard.org)
  * 
  * All rights reserved.  
  *
@@ -49,7 +49,7 @@ int gprs_start() {
 }
 
 void gprs_stop() {
-    sim908_stop();
+    sim908_stop(1, 0);
 }
 
 void gprs_set_apn(const char *aapn) {

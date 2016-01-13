@@ -2,7 +2,7 @@
  * GPIO driver for pic32.
  *
  * Copyright (C) 2014 Serge Vakulenko, <serge@vak.ru>
- * Copyright (C) 2015 Jaume Olivé, <jolive@iberoxarxa.com>
+ * Copyright (C) 2015 - 2016 Jaume Olivé, <jolive@iberoxarxa.com>
  *
  * Permission to use, copy, modify, and distribute this software
  * and its documentation for any purpose and without fee is hereby

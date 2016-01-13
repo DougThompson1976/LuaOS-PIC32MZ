@@ -2,10 +2,10 @@
  * Whitecat, minimal mount capabilities. Mount are only allowed in
  * the default root's directory.
  *
- * Copyright (C) 2015
+ * Copyright (C) 2015 - 2016
  * IBEROXARXA SERVICIOS INTEGRALES, S.L. & CSS IBÉRICA, S.L.
  * 
- * Author: Jaume Olivé (jolive@iberoxarxa.com / jolive@whitecatboard.com)
+ * Author: Jaume Olivé (jolive@iberoxarxa.com / jolive@whitecatboard.org)
  * 
  * All rights reserved.  
  *

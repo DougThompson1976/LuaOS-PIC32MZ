@@ -1,10 +1,10 @@
 /*
  * Whitecat, GPS driver
  *
- * Copyright (C) 2015
+ * Copyright (C) 2015 - 2016
  * IBEROXARXA SERVICIOS INTEGRALES, S.L. & CSS IBÉRICA, S.L.
  * 
- * Author: Jaume Olivé (jolive@iberoxarxa.com / jolive@whitecatboard.com)
+ * Author: Jaume Olivé (jolive@iberoxarxa.com / jolive@whitecatboard.org)
  * 
  * All rights reserved.  
  *
@@ -30,7 +30,12 @@
 #ifndef GPS_H
 #define	GPS_H
 
-void gpsTask(void *pvParameters);
+#define evGps_started (1 << 1)
+#define evGps_stopped (1 << 2)
+#define evGps_stop    (1 << 3)
+
+int gps_start();
+int gps_stop();
 
 #endif	/* GPS_H */
 

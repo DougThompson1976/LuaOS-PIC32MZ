@@ -1,10 +1,10 @@
 /*
  * Whitecat, GPRS serial driver for PPP
  *
- * Copyright (C) 2015
+ * Copyright (C) 2015 - 2016
  * IBEROXARXA SERVICIOS INTEGRALES, S.L. & CSS IBÉRICA, S.L.
  * 
- * Author: Jaume Olivé (jolive@iberoxarxa.com / jolive@whitecatboard.com)
+ * Author: Jaume Olivé (jolive@iberoxarxa.com / jolive@whitecatboard.org)
  * 
  * All rights reserved.  
  *
@@ -29,6 +29,10 @@
 
 #ifndef SIM908_H
 #define	SIM908_H
+
+#define sim908_ppp_started (1 << 1)
+#define sim908_ppp_stopped (1 << 2)
+#define sim908_ppp_stop    (1 << 3)
 
 typedef enum {
     ERR_OK = 0,

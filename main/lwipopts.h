@@ -129,6 +129,6 @@
 #define SLIP_DEBUG                  LWIP_DBG_OFF
 #define DHCP_DEBUG                  LWIP_DBG_OFF
 #define SNTP_DEBUG                  LWIP_DBG_OFF
-#define PING_DEBUG                  LWIP_DBG_OFF
+#define PING_DEBUG                  LWIP_DBG_ON
  
 #endif /* __LWIPOPTS_H__ */

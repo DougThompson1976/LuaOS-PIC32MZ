@@ -1,10 +1,10 @@
 /*
  * Whitecat, GPRS serial driver for PPP
  *
- * Copyright (C) 2015
+ * Copyright (C) 2015 - 2016
  * IBEROXARXA SERVICIOS INTEGRALES, S.L. & CSS IBÉRICA, S.L.
  * 
- * Author: Jaume Olivé (jolive@iberoxarxa.com / jolive@whitecatboard.com)
+ * Author: Jaume Olivé (jolive@iberoxarxa.com / jolive@whitecatboard.org)
  * 
  * All rights reserved.  
  *
@@ -56,6 +56,17 @@
 
 #define SIM908_DEBUG 0
 
+// Driver flags
+#define SIM908_FLAG_INITED       (1 << 0)
+#define SIM908_FLAG_NEED_FUNC    (1 << 1)
+#define SIM908_FLAG_NEED_PIN     (1 << 2)
+#define SIM908_FLAG_NEED_PUK     (1 << 3)
+#define SIM908_FLAG_NEED_SIM     (1 << 4)
+#define SIM908_FLAG_GPRS_STARTED (1 << 5)
+#define SIM908_FLAG_GPS_STARTED  (1 << 6)
+    
+static unsigned int flags = 0;
+
 u32_t sio_write(sio_fd_t fd, u8_t *data, u32_t len) {
     UNUSED_ARG(fd);
 
@@ -71,22 +82,11 @@ u32_t sio_write(sio_fd_t fd, u8_t *data, u32_t len) {
     return sended;
 }
 
-#define sim908_ppp_started (1 << 1)
-#define sim908_ppp_stopped (1 << 2)
-#define sim908_ppp_stop    (1 << 3)
-
 #if USE_GPRS | USE_GPS
 
-static int inited = 0;
-static int gprs_inited = 0;
-static int gps_inited = 0;
 static EventGroupHandle_t sim908Event;
 static EventBits_t uxBits;
 static int ping;
-
-#if USE_GPS
-static TaskHandle_t gpsTask_h = NULL;
-#endif
 
 #if USE_GPRS
 static TaskHandle_t pppTask_h = NULL;
@@ -97,16 +97,13 @@ static TaskHandle_t pppTask_h = NULL;
 extern struct netif gprs_netif;
 static ppp_pcb *ppp;               // PPP connection
 
-static u8_t need_func = 0;
-static u8_t need_pin = 0;
-static u8_t need_puk = 0;
-static u8_t need_sim = 0;
-static u8_t need_call_ready = 0;
 static time_t no_ip_start = 0;
 static time_t last_ping = 0;
 
 extern unsigned int activity;
 
+// PPP link status call back, invoked by lwip when something related to PPP
+// changes
 static void linkStatusCB(ppp_pcb *ppp, int err_code, void *ctx) {
     UNUSED_ARG(ppp);
     UNUSED_ARG(ctx);
@@ -213,11 +210,10 @@ static sim908_err sim908_wait_for_initial_events() {
     twait = (CPU_HZ / 2000) * timeout;
     start = ReadCoreTimer();
 
-    need_func = 0;
-    need_pin = 0;
-    need_puk = 0;
-    need_sim = 0;
-    need_call_ready = 1;
+    flags &= ~SIM908_FLAG_NEED_FUNC;
+    flags &= ~SIM908_FLAG_NEED_PIN;
+    flags &= ~SIM908_FLAG_NEED_PUK;
+    flags &= ~SIM908_FLAG_NEED_SIM;
 
     while ((ReadCoreTimer() - start <= twait)) {
         if (uart_reads(SIM908_UART, temp_buffer, 1, 1000)) {
@@ -228,19 +224,19 @@ static sim908_err sim908_wait_for_initial_events() {
                             (strcmp(temp_buffer, "+CFUN: 4") == 0)) {
                     // Minimum functionallity / transmit receive circuits 
                     // disabled
-                    need_func = 1;
+                    flags |= SIM908_FLAG_NEED_FUNC;
                     syslog(LOG_INFO,"sim908 need functionallity");                 
                 } else if (strcmp(temp_buffer, "+CPIN: SIM PIN") == 0) {
                     // MT is waiting SIM PIN to be given
-                    need_pin = 1;
+                    flags |= SIM908_FLAG_NEED_PIN;
                     syslog(LOG_INFO,"sim908 need pin");
                 } else if (strcmp(temp_buffer, "+CPIN: SIM PUK") == 0) {
                     // MT is waiting SIM PUK to be given
-                    need_puk = 1;
+                    flags |= SIM908_FLAG_NEED_PUK;
                     syslog(LOG_INFO,"sim908 need puk");
                 } else if (strcmp(temp_buffer, "+CPIN: PH_SIM PIN") == 0) {
                     // ME is waiting for phone to SIM card
-                    need_sim = 1;
+                    flags |= SIM908_FLAG_NEED_SIM;
                     syslog(LOG_INFO,"sim908 need sim");
                 }
             }
@@ -327,30 +323,27 @@ sim908_err sim908_init(int gprs, int gps) {
     uint8_t ok = 0;
     int retries = 0;
 
-    if (!inited) {
+    if (!(flags & SIM908_FLAG_INITED)) {
         sim908Event = xEventGroupCreate();
-        inited = 1;
+
+        xEventGroupClearBits(sim908Event, sim908_ppp_started | sim908_ppp_stopped | sim908_ppp_stop);
+
+        // Configure POWER and status pins
+        gpio_disable_analog(GPRS_STATUS_PIN);
+
+        gpio_pin_output(GPRS_PWR_PIN);
+        gpio_pin_set(GPRS_PWR_PIN);
+        gpio_pin_input(GPRS_STATUS_PIN);
+
+        flags |= SIM908_FLAG_INITED;
     }
    
-    xEventGroupClearBits(sim908Event, sim908_ppp_started | sim908_ppp_stopped | sim908_ppp_stop);
-    
-    // Configure POWER and status pins
-    gpio_disable_analog(GPRS_STATUS_PIN);
-
-    gpio_pin_output(GPRS_PWR_PIN);
-    gpio_pin_set(GPRS_PWR_PIN);
-    gpio_pin_input(GPRS_STATUS_PIN);
-
-    need_func = 0;
-    need_pin = 0;
-    need_puk = 0;
-    need_sim = 0;
-    need_call_ready = 0;
-
     // Init UART's
     #if USE_GPRS
-        if (gprs) {
+        if (gprs && !(flags & SIM908_FLAG_GPRS_STARTED)) {
             syslog(LOG_INFO, "sim908 gprs is on %s\n", uart_name(SIM908_UART));
+
+            flags &= ~(SIM908_FLAG_NEED_FUNC | SIM908_FLAG_NEED_PIN | SIM908_FLAG_NEED_PUK | SIM908_FLAG_NEED_SIM);
 
             uart_init(SIM908_UART, SIM908_BR, PIC32_UMODE_PDSEL_8NPAR, PPPOS_RX_BUFSIZE * 2);
             uart_debug(SIM908_UART, SIM908_DEBUG);
@@ -359,53 +352,59 @@ sim908_err sim908_init(int gprs, int gps) {
     #endif
 
     #if USE_GPS
-        if (gps) {
+        if (gps && !(flags & SIM908_FLAG_GPS_STARTED)) {
             syslog(LOG_INFO, "sim908 gps is on %s and %s\n", 
                    uart_name(SIM908_UART), uart_name(SIM908_UART_DBG));            
 
-            uart_init(SIM908_UART, SIM908_BR, PIC32_UMODE_PDSEL_8NPAR, 256);                
-            uart_init_interrupts(SIM908_UART);
+            if (!(flags & SIM908_FLAG_GPRS_STARTED)) {
+                uart_init(SIM908_UART, SIM908_BR, PIC32_UMODE_PDSEL_8NPAR, 256);                
+                uart_debug(SIM908_UART, SIM908_DEBUG);
+                uart_init_interrupts(SIM908_UART);
+            }
             
             // GPS data are received from SIM908 debug UART
             uart_init(SIM908_UART_DBG, SIM908_BR, PIC32_UMODE_PDSEL_8NPAR, MAX_NMA_SIZE);
+            uart_init_interrupts(SIM908_UART_DBG);
             uart_debug(SIM908_UART_DBG, SIM908_DEBUG);
         }
     #endif
 
     // Power on SIM908
-    if (gpio_pin_get(GPRS_STATUS_PIN) == 1) {
-        syslog(LOG_INFO, "sim908 is powered-on");
+    if (!(flags & (SIM908_FLAG_GPRS_STARTED | SIM908_FLAG_GPS_STARTED))) {
+        if (gpio_pin_get(GPRS_STATUS_PIN) == 1) {
+            syslog(LOG_INFO, "sim908 is powered-on");
 
-        // SIM908 is power off. Do a power on sequence
-        ok = sim908_power_off();
-        if (ok == ERR_OK) {
+            // SIM908 is power off. Do a power on sequence
+            ok = sim908_power_off();
+            if (ok == ERR_OK) {
+                syslog(LOG_INFO, "sim908 is powered-off");
+            } else {
+                syslog(LOG_INFO, "sim908 %s", sim908_error(ok));
+                return ok;
+            }
+
+            // Power on
+            ok = sim908_power_on();
+            if (ok == ERR_OK) {
+                syslog(LOG_INFO, "sim908 is powered-on");
+            } else {
+                syslog(LOG_INFO, "sim908 %s", sim908_error(ok));
+                return ok;
+            }
+        } else {
             syslog(LOG_INFO, "sim908 is powered-off");
-        } else {
-            syslog(LOG_INFO, "sim908 %s", sim908_error(ok));
-            return ok;
-        }
 
-        // Power on
-        ok = sim908_power_on();
-        if (ok == ERR_OK) {
-            syslog(LOG_INFO, "sim908 is powered-on");
-        } else {
-            syslog(LOG_INFO, "sim908 %s", sim908_error(ok));
-            return ok;
-        }
-    } else {
-        syslog(LOG_INFO, "sim908 is powered-off");
-
-        // SIM908 is power on, do a power off sequence for reset
-        ok = sim908_power_on();
-        if (ok == ERR_OK) {
-            syslog(LOG_INFO, "sim908 is powered-on");
-        } else {
-            syslog(LOG_INFO, "sim908 %s", sim908_error(ok));
-            return ok;
+            // SIM908 is power on, do a power off sequence for reset
+            ok = sim908_power_on();
+            if (ok == ERR_OK) {
+                syslog(LOG_INFO, "sim908 is powered-on");
+            } else {
+                syslog(LOG_INFO, "sim908 %s", sim908_error(ok));
+                return ok;
+            }
         }
     }
-
+    
     // Send AT command, and wair for an OK, so once received SIM908 is inited
     retries = 0;
     for(;;)  {
@@ -423,8 +422,8 @@ sim908_err sim908_init(int gprs, int gps) {
         }
     }
 
-    if (gprs) {
-        if (need_func) {
+    if (gprs && !(flags & SIM908_FLAG_GPRS_STARTED)) {
+        if (flags & SIM908_FLAG_NEED_FUNC) {
             syslog(LOG_INFO, "sim908 set full functionality");
 
             // Set full functionallity
@@ -437,7 +436,7 @@ sim908_err sim908_init(int gprs, int gps) {
             syslog(LOG_INFO, "sim908 full functionality");
         }
 
-        if (need_pin) {
+        if (flags & SIM908_FLAG_NEED_PIN) {
             syslog(LOG_INFO, "sim908 setting PIN");
 
             // Set PIN
@@ -450,22 +449,20 @@ sim908_err sim908_init(int gprs, int gps) {
             syslog(LOG_INFO, "sim908 PIN accepted");
         }
 
-        if (need_call_ready) {
-           syslog(LOG_INFO, "sim908 waiting for call ready");
-            
-           // Wait for Call Ready
-           ok = uart_wait_response(SIM908_UART, NULL, NULL, 0, 30000, 1, "Call Ready");
-           if (!ok) {
-               syslog(LOG_INFO, "sim908 %s", sim908_error(ERR_INIT));
-               return ERR_INIT;
-           }
+        syslog(LOG_INFO, "sim908 waiting for call ready");
+
+        // Wait for Call Ready
+        ok = uart_wait_response(SIM908_UART, NULL, NULL, 0, 30000, 1, "Call Ready");
+        if (!ok) {
+            syslog(LOG_INFO, "sim908 %s", sim908_error(ERR_INIT));
+            return ERR_INIT;
         }
 
         syslog(LOG_INFO, "sim908 ready for making calls");
     }
     
     #if USE_GPS
-        if (gps) {
+        if (gps && !(flags & SIM908_FLAG_GPS_STARTED)) {
             // Init GPS
             ok = uart_send_command(GPS_CTRL_UART, "AT+CGPSPWR=1", 1, NULL, 0, 2000, 1, "OK");
             if (!ok) {
@@ -486,6 +483,14 @@ sim908_err sim908_init(int gprs, int gps) {
             }
         }
     #endif
+
+    if (gprs) {
+        flags |= SIM908_FLAG_GPRS_STARTED;
+    }
+
+    if (gps) {
+        flags |= SIM908_FLAG_GPS_STARTED;
+    }
 
     return ERR_OK;
 }
@@ -518,7 +523,7 @@ static void pppTask(void *pvParameters) {
         syslog(LOG_INFO, "sim908 memory error"); 
         vTaskDelete(NULL);
     }
-    
+
     buffer = packet;
 
     // Get UART queue
@@ -531,7 +536,7 @@ static void pppTask(void *pvParameters) {
     ppp_connect(ppp, 0);
     
     syslog(LOG_INFO, "sim908 ppp started");
-    
+
     xEventGroupSetBits(sim908Event, sim908_ppp_started);    
 
     no_ip_start = 0;
@@ -692,7 +697,6 @@ sim908_err sim908_connect() {
 
     syslog(LOG_INFO, "sim908 gprs connected");
 
-    
     // Create task for process input packets
     xTaskCreate(pppTask, "pppin", ppinTaskStack, NULL, tskIDLE_PRIORITY, &pppTask_h);
     xEventGroupWaitBits(sim908Event, sim908_ppp_started, pdTRUE, pdFALSE, portMAX_DELAY);
@@ -700,28 +704,13 @@ sim908_err sim908_connect() {
     return ERR_OK;
 }
 
-
-
-/*
-int gps_init() {
-    sim908_err err;
-
-    err = sim908_init(0, 1);
-    if (err == ERR_OK) {
-        // Create task for gps process
-        xTaskCreate( gpsTask, "gps", configMINIMAL_STACK_SIZE * 10, NULL, tskIDLE_PRIORITY, &gpsTask_h );
-
-        syslog(LOG_INFO, "sim908 gps ready");
-    }
-
-    return 1;    
-}
-*/
-
-void sim908_stop() {    
+void sim908_stop(int gprs, int gps) {    
     syslog(LOG_INFO, "sim908 stopping ...");
     
-    xEventGroupSetBits(sim908Event, sim908_ppp_stop);
+    if (gprs && !(flags & SIM908_FLAG_GPRS_STARTED)) {
+        xEventGroupSetBits(sim908Event, sim908_ppp_stop);        
+        xEventGroupWaitBits(sim908Event, sim908_ppp_stopped, pdTRUE, pdFALSE, portMAX_DELAY);
+    }
 
     sim908_err ok = sim908_power_off();
     if (ok == ERR_OK) {
@@ -729,8 +718,6 @@ void sim908_stop() {
     } else {
         syslog(LOG_INFO, "sim908 %s", sim908_error(ok));
     }
-
-    xEventGroupWaitBits(sim908Event, sim908_ppp_stopped, pdTRUE, pdFALSE, portMAX_DELAY);
     
     syslog(LOG_INFO, "sim908 stopped");
 }

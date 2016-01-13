@@ -1,10 +1,10 @@
 /*
  * Whitecat, network manager
  *
- * Copyright (C) 2015
+ * Copyright (C) 2015 - 2016
  * IBEROXARXA SERVICIOS INTEGRALES, S.L. & CSS IBÉRICA, S.L.
  * 
- * Author: Jaume Olivé (jolive@iberoxarxa.com / jolive@whitecatboard.com)
+ * Author: Jaume Olivé (jolive@iberoxarxa.com / jolive@whitecatboard.org)
  * 
  * All rights reserved.  
  *
@@ -47,8 +47,8 @@ EventGroupHandle_t netTaskEvent;
 #define evGprs_link_down      ( 1 << 8 )
 #define evGprs_started        ( 1 << 9 )
 #define evGprs_stopped        ( 1 << 10)
-#define evEthernet_started        ( 1 << 11 )
-#define evEthernet_stopped        ( 1 << 12)
+#define evEthernet_started    ( 1 << 11)
+#define evEthernet_stopped    ( 1 << 12)
 
 #define evNetTask_started     ( 1 << 0 )
 #define evNetTask_stopped     ( 1 << 1 )

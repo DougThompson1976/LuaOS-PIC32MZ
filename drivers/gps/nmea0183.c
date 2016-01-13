@@ -1,10 +1,10 @@
 /*
  * Whitecat, NMEA parser
  *
- * Copyright (C) 2015
+ * Copyright (C) 2015 - 2016
  * IBEROXARXA SERVICIOS INTEGRALES, S.L. & CSS IBÉRICA, S.L.
  * 
- * Author: Jaume Olivé (jolive@iberoxarxa.com / jolive@whitecatboard.com)
+ * Author: Jaume Olivé (jolive@iberoxarxa.com / jolive@whitecatboard.org)
  * 
  * All rights reserved.  
  *
@@ -32,6 +32,7 @@
 #include <unistd.h>
 
 #include "drivers/clock/clock.h"
+#include <syslog.h>
 
 #if USE_GPS
 
@@ -197,6 +198,7 @@ static void nmea_GPGGA(char *sentence) {
     if (checksum == computed_checksum) {
         if (valid) {
             //TO DO: put in a queue
+            printf("new pos\n");
         }
     }
 }
@@ -293,6 +295,7 @@ static void nmea_GPRMC(char *sentence) {
             if (start < 1420070400) {
                 time(&start);
 
+                syslog(LOG_INFO, "nmea01843 setting system time to %d-%d-%d %d:%d:%d",year,month,day,hours,minutes,seconds);
                 set_time_ymdhms(year,month,day,hours,minutes,seconds);
             }
         }
