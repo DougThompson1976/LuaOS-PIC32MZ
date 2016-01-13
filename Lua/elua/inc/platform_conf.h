@@ -11,8 +11,6 @@
 #include "timers.h"
 
 #include "auxmods.h"
-#include "type.h"
-#include "stacks.h"
 
 #define dlmalloc  malloc
 #define dlfree    free
@@ -38,9 +36,9 @@
 //#define LINENOISE_HISTORY_SIZE_LUA 10
 //#define LINENOISE_HISTORY_SIZE_SHELL 10
 
-#define VTMR_NUM_TIMERS 4
-#define SERMUX_SERVICE_ID_FIRST -1
-#define VTMR_FREQ_HZ configTICK_RATE_HZ
+//#define VTMR_NUM_TIMERS 4
+//#define SERMUX_SERVICE_ID_FIRST -1
+//#define VTMR_FREQ_HZ configTICK_RATE_HZ
 
 // *****************************************************************************
 // UART/Timer IDs configuration data (used in main.c)

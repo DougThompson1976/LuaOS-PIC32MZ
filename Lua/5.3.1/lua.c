@@ -86,7 +86,7 @@
 #else				/* }{ */
 
 //WHICAT BEGIN
-#include "linenoise.h"
+#include <Lua/common/linenoise.h>
 #include "lstate.h"
 #define lua_readline(L,b,p)     ((void)L, (linenoise(b, p)) != -1)
 #define lua_saveline(L,idx)     { (void)L; (void)idx; }

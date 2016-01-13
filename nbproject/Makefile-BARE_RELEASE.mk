@@ -79,11 +79,9 @@ OBJECTFILES= \
 	${OBJECTDIR}/Lua/5.3.1/lutf8lib.o \
 	${OBJECTDIR}/Lua/5.3.1/lvm.o \
 	${OBJECTDIR}/Lua/5.3.1/lzio.o \
-	${OBJECTDIR}/Lua/elua/src/linenoise.o \
-	${OBJECTDIR}/Lua/elua/src/platform/pic32mz/platform.o \
+	${OBJECTDIR}/Lua/common/linenoise.o \
 	${OBJECTDIR}/Lua/modules/adc.o \
 	${OBJECTDIR}/Lua/modules/can.o \
-	${OBJECTDIR}/Lua/modules/cpu.o \
 	${OBJECTDIR}/Lua/modules/gps.o \
 	${OBJECTDIR}/Lua/modules/mqtt.o \
 	${OBJECTDIR}/Lua/modules/net.o \
@@ -807,15 +805,10 @@ ${OBJECTDIR}/Lua/5.3.1/lzio.o: Lua/5.3.1/lzio.c
 	${RM} "$@.d"
 	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/5.3.1 -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/5.3.1/lzio.o Lua/5.3.1/lzio.c
 
-${OBJECTDIR}/Lua/elua/src/linenoise.o: Lua/elua/src/linenoise.c 
-	${MKDIR} -p ${OBJECTDIR}/Lua/elua/src
+${OBJECTDIR}/Lua/common/linenoise.o: Lua/common/linenoise.c 
+	${MKDIR} -p ${OBJECTDIR}/Lua/common
 	${RM} "$@.d"
-	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/5.3.1 -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/elua/src/linenoise.o Lua/elua/src/linenoise.c
-
-${OBJECTDIR}/Lua/elua/src/platform/pic32mz/platform.o: Lua/elua/src/platform/pic32mz/platform.c 
-	${MKDIR} -p ${OBJECTDIR}/Lua/elua/src/platform/pic32mz
-	${RM} "$@.d"
-	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/5.3.1 -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/elua/src/platform/pic32mz/platform.o Lua/elua/src/platform/pic32mz/platform.c
+	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/5.3.1 -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/common/linenoise.o Lua/common/linenoise.c
 
 ${OBJECTDIR}/Lua/modules/adc.o: Lua/modules/adc.c 
 	${MKDIR} -p ${OBJECTDIR}/Lua/modules
@@ -826,11 +819,6 @@ ${OBJECTDIR}/Lua/modules/can.o: Lua/modules/can.c
 	${MKDIR} -p ${OBJECTDIR}/Lua/modules
 	${RM} "$@.d"
 	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/5.3.1 -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/modules/can.o Lua/modules/can.c
-
-${OBJECTDIR}/Lua/modules/cpu.o: Lua/modules/cpu.c 
-	${MKDIR} -p ${OBJECTDIR}/Lua/modules
-	${RM} "$@.d"
-	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/5.3.1 -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/modules/cpu.o Lua/modules/cpu.c
 
 ${OBJECTDIR}/Lua/modules/gps.o: Lua/modules/gps.c 
 	${MKDIR} -p ${OBJECTDIR}/Lua/modules

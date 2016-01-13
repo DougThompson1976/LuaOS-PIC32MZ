@@ -5,7 +5,7 @@
 
 
 //#include "devman.h"
-#include "elua_int.h"
+//#include "elua_int.h"
 
 #include "drivers/can/can.h"
 
@@ -202,28 +202,22 @@ int platform_s_uart_set_flow_control( unsigned id, int type );
 // PWM subsection
 
 // There are 16 "virtual" PWM channels (PWM0...PWM15)
-#define PLATFORM_PWM_TOTAL                    16
+//#define PLATFORM_PWM_TOTAL                    16
 // TODO: PLATFORM_PWM_TOTAL is not used - figure out purpose, or remove?
 
 // *****************************************************************************
 // CPU specific functions
-
-#define PLATFORM_CPU_DISABLE            0
-#define PLATFORM_CPU_ENABLE             1
+//
+//#define PLATFORM_CPU_DISABLE            0
+//#define PLATFORM_CPU_ENABLE             1
 
 // Interrupt functions return status
-#define PLATFORM_INT_OK                 0
-#define PLATFORM_INT_GENERIC_ERROR      ( -1 )
-#define PLATFORM_INT_INVALID            ( -2 )
-#define PLATFORM_INT_NOT_HANDLED        ( -3 )
-#define PLATFORM_INT_BAD_RESNUM         ( -4 )
+//#define PLATFORM_INT_OK                 0
+//#define PLATFORM_INT_GENERIC_ERROR      ( -1 )
+//#define PLATFORM_INT_INVALID            ( -2 )
+//#define PLATFORM_INT_NOT_HANDLED        ( -3 )
+//#define PLATFORM_INT_BAD_RESNUM         ( -4 )
 
-int platform_cpu_set_global_interrupts( int status );
-int platform_cpu_get_global_interrupts(void);
-int platform_cpu_set_interrupt( elua_int_id id, elua_int_resnum resnum, int status );
-int platform_cpu_get_interrupt( elua_int_id id, elua_int_resnum resnum );
-int platform_cpu_get_interrupt_flag( elua_int_id id, elua_int_resnum resnum, int clear );
-u32 platform_cpu_get_frequency(void);
 
 // *****************************************************************************
 // The platform ADC functions
@@ -248,50 +242,50 @@ void platform_adc_set_timer( unsigned id, u32 timer );
 // I2C platform interface
 
 // I2C speed
-enum
-{
-  PLATFORM_I2C_SPEED_SLOW = 100000,
-  PLATFORM_I2C_SPEED_FAST = 400000
-};
+//enum
+//{
+//  PLATFORM_I2C_SPEED_SLOW = 100000,
+//  PLATFORM_I2C_SPEED_FAST = 400000
+//};
 
 // I2C direction
-enum
-{
-  PLATFORM_I2C_DIRECTION_TRANSMITTER,
-  PLATFORM_I2C_DIRECTION_RECEIVER
-};
-
-int platform_i2c_exists( unsigned id );
-u32 platform_i2c_setup( unsigned id, u32 speed );
-void platform_i2c_send_start( unsigned id );
-void platform_i2c_send_stop( unsigned id );
-int platform_i2c_send_address( unsigned id, u16 address, int direction );
-int platform_i2c_send_byte( unsigned id, u8 data );
-int platform_i2c_recv_byte( unsigned id, int ack );
+//enum
+//{
+//  PLATFORM_I2C_DIRECTION_TRANSMITTER,
+//  PLATFORM_I2C_DIRECTION_RECEIVER
+//};
+//
+//int platform_i2c_exists( unsigned id );
+//u32 platform_i2c_setup( unsigned id, u32 speed );
+//void platform_i2c_send_start( unsigned id );
+//void platform_i2c_send_stop( unsigned id );
+//int platform_i2c_send_address( unsigned id, u16 address, int direction );
+//int platform_i2c_send_byte( unsigned id, u8 data );
+//int platform_i2c_recv_byte( unsigned id, int ack );
 
 // *****************************************************************************
 // Ethernet specific functions
 
-void platform_eth_send_packet( const void* src, u32 size );
-u32 platform_eth_get_packet_nb( void* buf, u32 maxlen );
-void platform_eth_force_interrupt(void);
-u32 platform_eth_get_elapsed_time(void);
+//void platform_eth_send_packet( const void* src, u32 size );
+//u32 platform_eth_get_packet_nb( void* buf, u32 maxlen );
+//void platform_eth_force_interrupt(void);
+//u32 platform_eth_get_elapsed_time(void);
 
 // *****************************************************************************
 // Internal flash erase/write functions
 // Currently used by WOFS
 
-u32 platform_flash_get_first_free_block_address( u32 *psect );
-u32 platform_flash_get_sector_of_address( u32 addr );
-u32 platform_flash_write( const void *from, u32 toaddr, u32 size );
-u32 platform_s_flash_write( const void *from, u32 toaddr, u32 size );
-u32 platform_flash_get_num_sectors(void);
-int platform_flash_erase_sector( u32 sector_id );
+//u32 platform_flash_get_first_free_block_address( u32 *psect );
+//u32 platform_flash_get_sector_of_address( u32 addr );
+//u32 platform_flash_write( const void *from, u32 toaddr, u32 size );
+//u32 platform_s_flash_write( const void *from, u32 toaddr, u32 size );
+//u32 platform_flash_get_num_sectors(void);
+//int platform_flash_erase_sector( u32 sector_id );
 
 // *****************************************************************************
 // Allocator support
 
-void* platform_get_first_free_ram( unsigned id );
-void* platform_get_last_free_ram( unsigned id );
+//void* platform_get_first_free_ram( unsigned id );
+//void* platform_get_last_free_ram( unsigned id );
 
 #endif
