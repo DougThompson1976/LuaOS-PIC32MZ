@@ -434,7 +434,6 @@ LEAF(__main)
         nop
 END(__main)
 
-
 /*-----------------------------------
  * Exception handlers and data for bootloader.
  */

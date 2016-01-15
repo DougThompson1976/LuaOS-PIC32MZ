@@ -109,17 +109,15 @@
 // GPRS
 // ---------------------------------------------------------------------------
 #define USE_GPRS          1
-#define SIM908_UART         4
-#define SIM908_BR           115200  // Baud rate
-#define GPRS_PWR_PIN      0x50    // RE0
-#define GPRS_STATUS_PIN   0x51    // RE1
+#define SIM908_UART       4
+#define SIM908_BR         115200  // Baud rate
+#define SIM908_PWR_PIN      0x50    // RE0
+#define SIM908_STATUS_PIN   0x51    // RE1
 
 // GPS
 #define USE_GPS           1
-#define SIM908_UART_DBG          3         // GPS datata UART
-#define GPS_BR            115200    // Baud rate
-#define GPS_CTRL_UART     SIM908_UART // GPS control UART
-#define GPS_CTRL_BR       SIM908_BR   // Baud rate
+#define SIM908_UART_DBG   3       // GPS datata UART
+#define GPS_BR            115200  // Baud rate
 
 // Console configuration
 #define USE_CONSOLE   1

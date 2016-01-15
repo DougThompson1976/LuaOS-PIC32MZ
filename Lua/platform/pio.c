@@ -31,6 +31,12 @@
 #include "elua_platform.h"
 #include "drivers/gpio/gpio.h"
 
+extern const char pin_name[16];
+
+char platform_pio_port_name( unsigned port ) {
+    return (char)(65 + port - 1);
+}
+
 int platform_pio_has_port( unsigned port) {
     return (cpu_port_io_pin_mask(port) != 0);
 }

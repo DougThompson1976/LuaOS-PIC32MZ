@@ -943,7 +943,6 @@
         <itemPath>main/machdev.c</itemPath>
         <itemPath>main/main.c</itemPath>
         <itemPath>main/sys_arch.c</itemPath>
-        <itemPath>main/tests.c</itemPath>
         <itemPath>main/trap.c</itemPath>
         <itemPath>main/whitecat.h</itemPath>
       </logicalFolder>
@@ -1197,9 +1196,6 @@
       <itemPath>Makefile.doc</itemPath>
       <itemPath>Makefile.hex</itemPath>
     </logicalFolder>
-    <itemPath>doc/net</itemPath>
-    <itemPath>doc/pio.md</itemPath>
-    <itemPath>todo</itemPath>
   </logicalFolder>
   <sourceRootList>
     <Elem>FreeRTOS</Elem>
@@ -1284,7 +1280,7 @@
             <pElem>lib/pthread</pElem>
             <pElem>Lua/exec/include</pElem>
           </incDir>
-          <commandLine>-Dnational -mips32r2 -EL -mhard-float -fno-short-double -mfp64 -nostdinc -D__PIC32MZ__ -G 0 -Os -fno-builtin -DLUA_COMPAT_MODULE -DLUA_USE_CTYPE -DLUA_C89_NUMBERS -DCLOCKS_PER_SEC=1000 -DHARDMEMTESTS -DHARDSTACKTESTS -DLUA_COMPAT_5_2 -fno-builtin -ffunction-sections -fdata-sections</commandLine>
+          <commandLine>-Dnational -mips32r2 -EL -mhard-float -fno-short-double -mfp64 -nostdinc -D__PIC32MZ__ -G 0 -Os -fno-builtin -DLUA_COMPAT_MODULE -DLUA_USE_CTYPE -DLUA_C89_NUMBERS -DCLOCKS_PER_SEC=1000 -DLUA_COMPAT_5_2 -fno-builtin -ffunction-sections -fdata-sections</commandLine>
         </cTool>
         <asmTool>
           <commandLine>-mdsp -mips32r2 -EL -mfp64 -G 0 -Os</commandLine>
@@ -1572,10 +1568,6 @@
       <item path="Lua/platform/spi.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/platform/uart.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="doc/net" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="doc/pio.md" ex="false" tool="3" flavor2="0">
       </item>
       <item path="drivers/adc/adc.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -3259,8 +3251,6 @@
       <item path="sys/vsio.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="sys/wait.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="todo" ex="false" tool="3" flavor2="0">
       </item>
       <item path="utils/delay.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -3593,10 +3583,6 @@
       </item>
       <item path="Lua/platform/uart.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="doc/net" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="doc/pio.md" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="drivers/adc/adc.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="drivers/adc/adc.h" ex="false" tool="3" flavor2="0">
@@ -5279,8 +5265,6 @@
       <item path="sys/vsio.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="sys/wait.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="todo" ex="false" tool="3" flavor2="0">
       </item>
       <item path="utils/delay.c" ex="false" tool="0" flavor2="0">
       </item>

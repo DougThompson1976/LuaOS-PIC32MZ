@@ -550,7 +550,6 @@ static uint8_t _uart_wait_response(u8_t unit, char *command, char *ret, uint8_t 
                 int i;
                 for (i = 0; i < nargs; i++) {
                     arg = va_arg(args, char *);
-
                     if (!substring) {
                         ok = ((strcmp(buffer, arg) == 0) || (strcmp(buffer, "ERROR") == 0));
                     } else {

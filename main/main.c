@@ -133,10 +133,12 @@ extern double nmea_geoloc_to_decimal(char *token);
    
 void initTask(void *pvParameters) {
     UNUSED_ARG(pvParameters);
-            
+    
     // Init leds
     gpio_pin_output(LED_ACT);
     gpio_pin_clr(LED_ACT);
+
+    gpio_pin_output(0x20);
     
     #if USE_ETHERNET | USE_GPRS
         // Create network task
