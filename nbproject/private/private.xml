@@ -7,10 +7,23 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/gpio/gpio.h</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/cpu/cpu.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/lib/libc/gen/clock.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/sim908/sim908.h</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Samples/pwm/led-freq.lua</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Samples/uart/terminal.lua</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/5.3.1/loslib.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/utils/delay.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/lib/pthread/pthread.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/5.3.1/lvm.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/gpio/gpio.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/lua_adds.inc</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/5.3.1/llimits.h</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/gpio/gpio.h</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/tmr.c</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/platform/pio.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Samples/gpio/servo.lua</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/uart/uart.c</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/main/main.c</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/auxmods.h</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/platform/uart.c</file>
@@ -18,18 +31,14 @@
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/5.3.1/ldo.h</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/5.3.1/lapi.c</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/5.3.1/lgc.h</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/utils/delay.c</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/5.3.1/ldo.c</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/5.3.1/lua.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/lib/pthread/pthread.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/5.3.1/lvm.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/sim908/sim908.c</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/pio.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/gpio/gpio.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/lua_adds.inc</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Samples/pwm/led-dac.lua</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/5.3.1/luac.c</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/uart.c</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/5.3.1/lua.h</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/5.3.1/llimits.h</file>
         </group>
     </open-files>
 </project-private>

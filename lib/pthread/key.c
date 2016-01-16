@@ -37,9 +37,6 @@ int pthread_key_create(pthread_key_t *k, void (*destructor)(void*)) {
     struct pthread_key *key;
     int res;
     
-    // Init library, if needed
-    _pthread_init();
-
     // Allocate space for the key
     key = (struct pthread_key *)malloc(sizeof(struct pthread_key));
     if (!key) {
@@ -66,9 +63,6 @@ int pthread_setspecific(pthread_key_t k, const void *value) {
     struct pthread_key *key;    
     int res;
     
-    // Init library, if needed
-    _pthread_init();
-
     // Get key
     res = list_get(&key_list, k, &key);
     if (res) {
@@ -94,9 +88,6 @@ void *pthread_getspecific(pthread_key_t k) {
     int res;
     int index;
     
-    // Init library, if needed
-    _pthread_init();
-
     // Get key
     res = list_get(&key_list, k, &key);
     if (res) {
@@ -123,9 +114,6 @@ void *pthread_getspecific(pthread_key_t k) {
 int pthread_key_delete(pthread_key_t k) {
     struct pthread_key *key;
     int res;
-
-     // Init library, if needed
-    _pthread_init();
 
     // Get key
     res = list_get(&key_list, k, &key);

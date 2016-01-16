@@ -532,7 +532,7 @@ OBJECTFILES= \
 
 
 # C Compiler Flags
-CFLAGS=-Dnational -mips32r2 -EL -mhard-float -fno-short-double -mfp64 -nostdinc -D__PIC32MZ__ -G 0 -Os -fno-builtin -DLUA_COMPAT_MODULE -DLUA_USE_CTYPE -DLUA_C89_NUMBERS -DCLOCKS_PER_SEC=1000 -DHARDMEMTESTS -DHARDSTACKTESTS -DLUA_COMPAT_5_2 -fno-builtin -ffunction-sections -fdata-sections
+CFLAGS=-Dnational -mips32r2 -EL -mhard-float -fno-short-double -mfp64 -nostdinc -D__PIC32MZ__ -G 0 -Os -fno-builtin -DLUA_COMPAT_MODULE -DLUA_USE_CTYPE -DLUA_C89_NUMBERS -DCLOCKS_PER_SEC=1000 -DLUA_COMPAT_5_2 -fno-builtin -ffunction-sections -fdata-sections
 
 # CC Compiler Flags
 CCFLAGS=

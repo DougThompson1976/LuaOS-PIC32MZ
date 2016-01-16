@@ -34,9 +34,6 @@
 extern struct mtx once_mtx;
 
 int pthread_once(pthread_once_t *once_control, void (*init_routine)(void)) {
-    // Init library, if needed
-    _pthread_init();
-
     // Init once_control, if not
     mtx_lock(&once_mtx);
     if (once_control->mutex.sem == NULL) {

@@ -35,9 +35,6 @@
 extern struct mtx cond_mtx;
  
 int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr) {
-    // Init library, if needed
-    _pthread_init();
-
     // Init conf, if not
     mtx_lock(&cond_mtx);
     if (cond->mutex.sem == NULL) {
@@ -50,9 +47,6 @@ int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr) {
 }
 
 int pthread_cond_destroy(pthread_cond_t *cond) {
-    // Init library, if needed
-    _pthread_init();
-    
     // Destroy, if config
     mtx_lock(&cond_mtx);
     if (cond->mutex.sem != NULL) {
@@ -62,10 +56,7 @@ int pthread_cond_destroy(pthread_cond_t *cond) {
     mtx_unlock(&cond_mtx);  
 }
 
-int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex) {
-    // Init library, if needed
-    _pthread_init();
-    
+int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex) {    
     // Init condition, if not
     pthread_cond_init(cond, NULL);
     
@@ -78,9 +69,6 @@ int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex) {
   
 int pthread_cond_timedwait(pthread_cond_t *cond, 
     pthread_mutex_t *mutex, const struct timespec *abstime) { 
-    
-    // Init library, if needed
-    _pthread_init();
     
     // Init condition, if not
     pthread_cond_init(cond, NULL);
@@ -97,9 +85,6 @@ int pthread_cond_timedwait(pthread_cond_t *cond,
 }
 
 int pthread_cond_signal(pthread_cond_t *cond) {
-    // Init library, if needed
-    _pthread_init();
-    
     // Init condition, if not
     pthread_cond_init(cond, NULL);
 

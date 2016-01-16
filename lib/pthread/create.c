@@ -37,9 +37,6 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr,
     int stacksize; // Stack size
     int res;
     
-    // Init library, if needed
-    _pthread_init();
-
     // Get some arguments need for the thread creation
     if (attr) {
         stacksize = attr->stack_size;

@@ -65,11 +65,8 @@ static int create_folder(char *path) {
 }
 
 void mach_dev() {
-    clock_init();
     console_init();
     console_clear();
-
-    syscalls_init();
     cpu_init();
     
     // Open standard file descriptors

@@ -36,8 +36,6 @@
 
 extern void uxSetThreadId(UBaseType_t id);
 
-static int pthread_init = 0;   // Pthreads lib initialized?
-
 struct list key_list;
 struct list mutex_list;
 struct list thread_list;
@@ -54,9 +52,6 @@ struct pthreadTaskArg {
 void pthreadTask(void *task_arguments);
 
 void _pthread_init() {
-    // If inited, exit
-    if (pthread_init) return;
-
     // Create mutexes
     mtx_init(&once_mtx, NULL, NULL, 0);
     mtx_init(&cond_mtx, NULL, NULL, 0);
@@ -65,8 +60,6 @@ void _pthread_init() {
     list_init(&thread_list, 1);
     list_init(&mutex_list, 1);
     list_init(&key_list, 1);
-    
-    pthread_init = 1;
 }
 
 int _pthread_create(pthread_t *id, int stacksize, 
@@ -232,10 +225,9 @@ int _pthread_signal(int s, sig_t h) {
 
 int _pthread_do_signal(int s) {
     struct pthread *thread;      // Current thread
-    pthread_t current;
     int index;
     int done = 0;
-
+    
     index = list_first(&thread_list);
     while (index >= 0) {
         list_get(&thread_list, index, &thread);

@@ -17,6 +17,6 @@ end
 
 // Moves servo first in clockwise direction and then in counter-clockwise
 while true do
-    setServo(1800,1500)
-    setServo(1200,1500)
+    setServo(500,1000)
+    setServo(1200,1000)
 end
