@@ -46,7 +46,7 @@ u8_t    uart_read(u8_t unit, char *c, uint32_t timeout);
 uint8_t uart_reads(u8_t unit, char *buff, u8_t crlf, uint32_t timeout);
 uint8_t uart_wait_response(u8_t unit, char *command, char *ret, uint8_t substring, uint32_t timeout, int nargs, ...);
 uint8_t uart_send_command(u8_t unit, char *command, uint8_t crlf, char *ret, uint8_t substring, u32_t timeout, int nargs, ...);
-void    uart_consume(u8_t unit, uint32_t timeout);
+void    uart_consume(u8_t unit);
 char   *uart_name(u8_t unit);
 QueueHandle_t *uart_get_queue(u8_t unit);
 void uart_debug(int unit, int debug);

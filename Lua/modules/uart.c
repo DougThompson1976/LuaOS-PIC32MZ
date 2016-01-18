@@ -163,11 +163,29 @@ static int luart_read( lua_State* L ) {
     return 0;
 }
 
+static int luart_consume( lua_State* L ) {
+    int id = luaL_checkinteger(L, 1);
+    
+    // Some integrity checks
+    if (!platform_uart_exists(id)) {
+        return luaL_error(L, "UART %d does not exist", id);
+    }
+    
+    if (!platform_uart_issetup(id)) {
+        return luaL_error(L, "UART %d is not setup", id);        
+    }
+    
+    platform_consume(id);
+    
+    return 0;
+}
+
 static const luaL_Reg uart[] = {
     {"pins", luart_pins},
     {"setup", luart_setup},
     {"write", luart_write},
     {"read", luart_read},
+    {"consume", luart_consume},
     {NULL, NULL}
 };
 

@@ -103,3 +103,7 @@ int platform_uart_read_char(int id, char *c, int timeout) {
 int platform_uart_issetup(int id) {
     return uart_inited(id);
 }
+
+void platform_consume(int id) {
+    uart_consume(id);
+}
