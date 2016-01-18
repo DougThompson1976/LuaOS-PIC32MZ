@@ -51,6 +51,7 @@ char   *uart_name(u8_t unit);
 QueueHandle_t *uart_get_queue(u8_t unit);
 void uart_debug(int unit, int debug);
 int uart_get_br(int unit);
+int uart_inited(int unit);
 
 #endif
 

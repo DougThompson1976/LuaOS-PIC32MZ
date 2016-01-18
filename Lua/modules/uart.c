@@ -87,6 +87,10 @@ static int luart_write( lua_State* L ) {
     if (!platform_uart_exists(id)) {
         return luaL_error(L, "UART %d does not exist", id);
     }
+
+    if (!platform_uart_issetup(id)) {
+        return luaL_error(L, "UART %d is not setup", id);        
+    }
     
     // Write ...
     for(i=2;i <= arguments; i++) {
@@ -117,6 +121,10 @@ static int luart_read( lua_State* L ) {
     // Some integrity checks
     if (!platform_uart_exists(id)) {
         return luaL_error(L, "UART %d does not exist", id);
+    }
+    
+    if (!platform_uart_issetup(id)) {
+        return luaL_error(L, "UART %d is not setup", id);        
     }
     
     // Read ...
@@ -182,5 +190,14 @@ int luaopen_uart(lua_State* L)
     lua_pushinteger(L, 2);
     lua_setfield(L, -2, "STOP2");
 
+    int i;
+    char buff[6];
+
+    for(i=1;i<=NUART;i++) {
+        sprintf(buff,"UART%d",i);
+        lua_pushinteger(L, i);
+        lua_setfield(L, -2, buff);
+    }
+    
     return 1;
 }

@@ -733,3 +733,8 @@ int uart_get_br(int unit) {
 
     return ((double)PBCLK2_HZ / (double)(16 * (divisor + 1)));
 }
+
+int uart_inited(int unit) {
+    unit--;
+    return (uart[unit].init && uart[unit].irq_init);
+}
