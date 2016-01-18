@@ -1,10 +1,10 @@
 -- WHITECAT sample code
 
 -- Led is connected to this pwm
-led_pwm = 3
+led_pwm = pwm.PWM3
 
 -- Setup pwm at 10 Khz, initial duty is 0
-pwm.setup(led_pwm, pwm.DEFAULT, 10, 0)
+pwm.setup(led_pwm, pwm.DEFAULT, 10000, 0)
 
 -- Start pwm
 pwm.start(led_pwm)

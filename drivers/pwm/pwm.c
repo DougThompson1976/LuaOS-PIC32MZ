@@ -36,12 +36,12 @@
 
 /*
  * PBCLK      = peripheripal clock (MHZ)
- * pwm_freq   = pwm frequency Khz
+ * pwm_freq   = pwm frequency hz
  * preescaler = timer preescaler
  * 
- *      PBCLK - pwm_freq * 1000 * preescaler
+ *      PBCLK - pwm_freq * preescaler
  * pr = -----------------------------
- *                pwm_freq * 1000
+ *                pwm_freq
  * 
  * 
  * 
@@ -155,25 +155,25 @@ static void assign_oc_pin(int channel, int pin) {
 }
 
 // Calculate PR value for timer for desired pwm frequency
-unsigned int pwm_pr_freq(int pwmkhz) {
-    return ((PBCLK3_HZ - (pwmkhz * 1000 * (TMR2_PREESCALER + 1))) / (pwmkhz * 1000));
+unsigned int pwm_pr_freq(int pwmhz) {
+    return ((PBCLK3_HZ - (pwmhz * (TMR2_PREESCALER + 1))) / pwmhz);
 }
 
 // Calculate PR value for timer for desired pwm resolution
 unsigned int pwm_pr_res(int res) {
-    return pwm_pr_freq(((PBCLK3_HZ / ((2 << res) * (TMR2_PREESCALER + 1))) / 1000));
+    return pwm_pr_freq(PBCLK3_HZ / ((2 << res) * (TMR2_PREESCALER + 1)));
 }
 
 // Calculate pwm resolution for desired pwm frequency
-unsigned int pwm_res(int pwmkhz) {
-    return log10(PBCLK3_HZ / (pwmkhz * 1000 * (TMR2_PREESCALER + 1))) / log10(2);
+unsigned int pwm_res(int pwmhz) {
+    return log10(PBCLK3_HZ / (pwmhz * (TMR2_PREESCALER + 1))) / log10(2);
 }
 
 // Calculate real pwm frequency
 unsigned int pwm_freq(int unit) {
     unit--;
         
-    return (PBCLK3_HZ / PR2 + (TMR2_PREESCALER + 1)) / 1000;
+    return (PBCLK3_HZ / PR2 + (TMR2_PREESCALER + 1));
 }
 
 void pwm_start(int unit) {
@@ -204,17 +204,17 @@ void pwm_write(int unit, int res, int value) {
     *(&OC1RS + unit * 0x80) = PR2 * duty;
 }
 
-void pwm_setup_freq(int unit, int pwmkhz, double duty) {
+void pwm_setup_freq(int unit, int pwmhz, double duty) {
     PMD4CLR = T2MD;
     
     T2CON = 0;                       // Disable timer
     *(&OC1CONSET + unit * 0x80) = 0; // Disable OC module
-    *(&OC1R  + unit * 0x80)     = pwm_pr_freq(pwmkhz) * duty;
-    *(&OC1RS + unit * 0x80)     = pwm_pr_freq(pwmkhz) * duty;
+    *(&OC1R  + unit * 0x80)     = pwm_pr_freq(pwmhz) * duty;
+    *(&OC1RS + unit * 0x80)     = pwm_pr_freq(pwmhz) * duty;
     *(&OC1CON + unit * 0x80)    = 0x0006;
 
     T2CON = (1 << 3); // 32 bit timer
-    PR2 = pwm_pr_freq(pwmkhz);
+    PR2 = pwm_pr_freq(pwmhz);
     T2CONSET =  (1 << 15); // Enable timer    
 }
 
@@ -234,7 +234,7 @@ void pwm_setup_res(int unit, int res, int value) {
     T2CONSET =  (1 << 15); // Enable timer    
 }
 
-void pwm_init_freq(int unit, int pwmkhz, double duty) {
+void pwm_init_freq(int unit, int pwmhz, double duty) {
     int pin;
     unit--;
 
@@ -252,9 +252,9 @@ void pwm_init_freq(int unit, int pwmkhz, double duty) {
 
     assign_oc_pin(unit, pin);
     
-    pwm_setup_freq(unit, pwmkhz, duty);
+    pwm_setup_freq(unit, pwmhz, duty);
     
-    syslog(LOG_INFO,"pwm%d, at pin %c%d, %d Khz", unit + 1, 
+    syslog(LOG_INFO,"pwm%d, at pin %c%d, %d hz", unit + 1, 
            gpio_portname(pin), gpio_pinno(pin), pwm_freq(unit + 1));
 }
 
@@ -278,7 +278,7 @@ void pwm_init_res(int unit, int res, int val) {
     
     pwm_setup_res(unit, res, val);
 
-    syslog(LOG_INFO,"pwm%d, at pin %c%d, %d Khz", unit + 1, 
+    syslog(LOG_INFO,"pwm%d, at pin %c%d, %d hz", unit + 1, 
            gpio_portname(pin), gpio_pinno(pin), pwm_freq(unit + 1));
 
     pwm_start(unit + 1);    

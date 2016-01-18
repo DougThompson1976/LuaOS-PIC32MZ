@@ -32,5 +32,19 @@
 
 #define NOC 9
 
+
+unsigned int pwm_pr_freq(int pwmhz);
+unsigned int pwm_pr_res(int res);
+unsigned int pwm_res(int pwmhz);
+unsigned int pwm_freq(int unit);
+void pwm_start(int unit);
+void pwm_stop(int unit);
+void pwm_set_duty(int unit, double duty);
+void pwm_write(int unit, int res, int value);
+void pwm_setup_freq(int unit, int pwmhz, double duty);
+void pwm_setup_res(int unit, int res, int value);
+void pwm_init_freq(int unit, int pwmhz, double duty); 
+void pwm_init_res(int unit, int res, int val);
+    
 #endif	/* PWM_H */
 

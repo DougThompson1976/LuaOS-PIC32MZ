@@ -32,8 +32,8 @@
 
 #include <drivers/pwm/pwm.h>
 
-static unsigned char pwm_mode[NOC];
-static unsigned char pwm_res[NOC];
+static unsigned char lpwm_mode[NOC];
+static unsigned char lpwm_res[NOC];
 
 static int lpwm_setup(lua_State* L) {
     int khz;
@@ -67,8 +67,8 @@ static int lpwm_setup(lua_State* L) {
             return luaL_error(L, "invalid setup mode");
     }
     
-    pwm_mode[id - 1] = mode;
-    pwm_res[id - 1] = res;
+    lpwm_mode[id - 1] = mode;
+    lpwm_res[id - 1] = res;
     
     return 1;
 }
@@ -105,7 +105,7 @@ static int lpwm_setduty(lua_State* L) {
         return luaL_error(L, "pwm %d does not exist", id);
     }
     
-    if (pwm_mode[id - 1] != 0) {
+    if (lpwm_mode[id - 1] != 0) {
         return luaL_error(L, "pwm %d isn't setup in FREQUENCY mode, function not allowed", id);
     }
 
@@ -122,11 +122,11 @@ static int lpwm_write(lua_State* L) {
         return luaL_error(L, "pwm %d does not exist", id);
     }
     
-    if (pwm_mode[id - 1] != 1) {
+    if (lpwm_mode[id - 1] != 1) {
         return luaL_error(L, "pwm %d isn't setup in RESOLUTION mode, function not allowed", id);
     }
 
-    platform_pwm_write(id, pwm_res[id - 1], val);
+    platform_pwm_write(id, lpwm_res[id - 1], val);
     
     return 0;
 }
@@ -149,6 +149,15 @@ int luaopen_pwm(lua_State* L)
 
     lua_pushinteger(L, 1);
     lua_setfield(L, -2, "DAC");
+
+    int i;
+    char buff[5];
+
+    for(i=1;i<=NOC;i++) {
+        sprintf(buff,"PWM%d",i);
+        lua_pushinteger(L, i);
+        lua_setfield(L, -2, buff);
+    }
 
     return 1;
 }

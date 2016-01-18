@@ -126,7 +126,7 @@
 
 // OUTPUT COMPARE
 #define OC1_PINS      0x22
-#define OC2_PINS      0x00
+#define OC2_PINS      0x26
 #define OC3_PINS      0x25
 #define OC4_PINS      0x21
 #define OC5_PINS      0x20
