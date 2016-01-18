@@ -1,2 +1,6 @@
 /build/
 /dist/
+*.dis
+*.elf
+*.hex
+*.map
