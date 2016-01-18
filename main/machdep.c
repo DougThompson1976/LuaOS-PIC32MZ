@@ -139,5 +139,9 @@ mach_init()
     PMD6 = 0xffffffff;
     PMD7 = 0xffffffff;
     
+    clock_init();
+    syscalls_init();
+    _pthread_init();
+
     mach_dev();
 }

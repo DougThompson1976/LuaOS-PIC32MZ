@@ -30,10 +30,6 @@
 #ifndef SIM908_H
 #define	SIM908_H
 
-#define sim908_ppp_started (1 << 1)
-#define sim908_ppp_stopped (1 << 2)
-#define sim908_ppp_stop    (1 << 3)
-
 typedef enum {
     ERR_OK = 0,
     ERR_CANT_CONNECT = 1,
@@ -43,6 +39,7 @@ typedef enum {
     ERR_INIT = 5,
     ERR_PIN = 6,
     ERR_POWEROFF = 7,
+    ERR_EXIT_DATA_MODE = 8,
 } sim908_err;
 
 sim908_err sim908_init();
@@ -50,4 +47,3 @@ sim908_err sim908_connect();
 void pppInputTask(void *pvParameters);
 
 #endif	/* SIM908_H */
-

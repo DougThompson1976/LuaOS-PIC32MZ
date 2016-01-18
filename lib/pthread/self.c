@@ -32,8 +32,5 @@
 extern UBaseType_t uxGetThreadId();
 
 pthread_t pthread_self(void) {
-    // Init library, if needed
-    _pthread_init();
-
     return (pthread_t)uxGetThreadId();
 }

@@ -1,2 +1,2 @@
-# LuaOS_V1
-Lua OS for PIC32MZ EF Version 1.0
+# LuaOS
+Lua OS for PIC32MZ EF series.

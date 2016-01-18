@@ -104,7 +104,9 @@ static void statusCallback(struct netif *netif) {
             } else {
                 #if !ETH_USE_FIXED_IP
                     syslog(LOG_INFO, "netif: starting dhcp client");
-                    dhcp_start(&eth_netif);
+                    if (!eth_netif.dhcp) {
+                        dhcp_start(&eth_netif);
+                    }
                 #endif
             }
         } else {

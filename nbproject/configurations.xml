@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="95">
+<configurationDescriptor version="97">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
@@ -639,73 +639,14 @@
           <itemPath>Lua/5.3.1/lzio.c</itemPath>
           <itemPath>Lua/5.3.1/lzio.h</itemPath>
         </logicalFolder>
+        <logicalFolder name="common" displayName="common" projectFiles="true">
+          <itemPath>Lua/common/linenoise.c</itemPath>
+          <itemPath>Lua/common/linenoise.h</itemPath>
+        </logicalFolder>
         <logicalFolder name="elua" displayName="elua" projectFiles="true">
           <logicalFolder name="inc" displayName="inc" projectFiles="true">
-            <logicalFolder name="desktop" displayName="desktop" projectFiles="true">
-              <itemPath>Lua/elua/inc/desktop/desktop_conf.h</itemPath>
-              <itemPath>Lua/elua/inc/desktop/type.h</itemPath>
-            </logicalFolder>
-            <logicalFolder name="extras" displayName="extras" projectFiles="true">
-              <itemPath>Lua/elua/inc/extras/config.h</itemPath>
-              <itemPath>Lua/elua/inc/extras/dirent.h</itemPath>
-              <itemPath>Lua/elua/inc/extras/reen_off_t_off_tt.h</itemPath>
-              <itemPath>Lua/elua/inc/extras/reent.h</itemPath>
-              <itemPath>Lua/elua/inc/extras/reent.h.old</itemPath>
-              <itemPath>Lua/elua/inc/extras/unistd.h</itemPath>
-            </logicalFolder>
-            <logicalFolder name="newlib" displayName="newlib" projectFiles="true">
-              <itemPath>Lua/elua/inc/newlib/devman.h</itemPath>
-              <itemPath>Lua/elua/inc/newlib/genstd.h</itemPath>
-              <itemPath>Lua/elua/inc/newlib/ioctl.h</itemPath>
-            </logicalFolder>
-            <logicalFolder name="remotefs" displayName="remotefs" projectFiles="true">
-              <itemPath>Lua/elua/inc/remotefs/client.h</itemPath>
-              <itemPath>Lua/elua/inc/remotefs/os_io.h</itemPath>
-              <itemPath>Lua/elua/inc/remotefs/remotefs.h</itemPath>
-            </logicalFolder>
-            <itemPath>Lua/elua/inc/buf.h</itemPath>
-            <itemPath>Lua/elua/inc/cexcept.h</itemPath>
-            <itemPath>Lua/elua/inc/common.h</itemPath>
-            <itemPath>Lua/elua/inc/dlmalloc.h</itemPath>
-            <itemPath>Lua/elua/inc/elua_adc.h</itemPath>
-            <itemPath>Lua/elua/inc/elua_int.h</itemPath>
             <itemPath>Lua/elua/inc/elua_platform.h</itemPath>
-            <itemPath>Lua/elua/inc/elua_rfs.h</itemPath>
-            <itemPath>Lua/elua/inc/elua_uip.h</itemPath>
-            <itemPath>Lua/elua/inc/eluarpc.h</itemPath>
-            <itemPath>Lua/elua/inc/linenoise.h</itemPath>
-            <itemPath>Lua/elua/inc/linenoise_posix.h</itemPath>
-            <itemPath>Lua/elua/inc/luarpc_rpc.h</itemPath>
-            <itemPath>Lua/elua/inc/mmcfs.h</itemPath>
             <itemPath>Lua/elua/inc/platform_conf.h</itemPath>
-            <itemPath>Lua/elua/inc/platform_generic.h</itemPath>
-            <itemPath>Lua/elua/inc/romfs.h</itemPath>
-            <itemPath>Lua/elua/inc/rpc_serial.h</itemPath>
-            <itemPath>Lua/elua/inc/rtype.h</itemPath>
-            <itemPath>Lua/elua/inc/salloc.h</itemPath>
-            <itemPath>Lua/elua/inc/semifs.h</itemPath>
-            <itemPath>Lua/elua/inc/sermux.h</itemPath>
-            <itemPath>Lua/elua/inc/shell.h</itemPath>
-            <itemPath>Lua/elua/inc/stacks.h</itemPath>
-            <itemPath>Lua/elua/inc/swi.h</itemPath>
-            <itemPath>Lua/elua/inc/term.h</itemPath>
-            <itemPath>Lua/elua/inc/type.h</itemPath>
-            <itemPath>Lua/elua/inc/utils.h</itemPath>
-            <itemPath>Lua/elua/inc/validate.h</itemPath>
-            <itemPath>Lua/elua/inc/version.h</itemPath>
-            <itemPath>Lua/elua/inc/xmodem.h</itemPath>
-          </logicalFolder>
-          <logicalFolder name="src" displayName="src" projectFiles="true">
-            <logicalFolder name="platform" displayName="platform" projectFiles="true">
-              <logicalFolder name="pic32mz" displayName="pic32mz" projectFiles="true">
-                <itemPath>Lua/elua/src/platform/pic32mz/i2c.c</itemPath>
-                <itemPath>Lua/elua/src/platform/pic32mz/platform.c</itemPath>
-              </logicalFolder>
-            </logicalFolder>
-            <itemPath>Lua/elua/src/common_tmr.c</itemPath>
-            <itemPath>Lua/elua/src/common_uart.c</itemPath>
-            <itemPath>Lua/elua/src/elua_int.c</itemPath>
-            <itemPath>Lua/elua/src/linenoise.c</itemPath>
           </logicalFolder>
         </logicalFolder>
         <logicalFolder name="modules" displayName="modules" projectFiles="true">
@@ -720,7 +661,6 @@
           <itemPath>Lua/modules/adc.c</itemPath>
           <itemPath>Lua/modules/auxmods.h</itemPath>
           <itemPath>Lua/modules/can.c</itemPath>
-          <itemPath>Lua/modules/cpu.c</itemPath>
           <itemPath>Lua/modules/gps.c</itemPath>
           <itemPath>Lua/modules/liolib_adds.inc</itemPath>
           <itemPath>Lua/modules/loslib_adds.inc</itemPath>
@@ -1003,7 +943,6 @@
         <itemPath>main/machdev.c</itemPath>
         <itemPath>main/main.c</itemPath>
         <itemPath>main/sys_arch.c</itemPath>
-        <itemPath>main/tests.c</itemPath>
         <itemPath>main/trap.c</itemPath>
         <itemPath>main/whitecat.h</itemPath>
       </logicalFolder>
@@ -1257,9 +1196,6 @@
       <itemPath>Makefile.doc</itemPath>
       <itemPath>Makefile.hex</itemPath>
     </logicalFolder>
-    <itemPath>doc/net</itemPath>
-    <itemPath>doc/pio.md</itemPath>
-    <itemPath>todo</itemPath>
   </logicalFolder>
   <sourceRootList>
     <Elem>FreeRTOS</Elem>
@@ -1563,118 +1499,19 @@
       </item>
       <item path="Lua/5.3.1/lzio.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Lua/elua/inc/buf.h" ex="false" tool="3" flavor2="0">
+      <item path="Lua/common/linenoise.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="Lua/elua/inc/cexcept.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/common.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/desktop/desktop_conf.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/desktop/type.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/dlmalloc.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/elua_adc.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/elua_int.h" ex="false" tool="3" flavor2="0">
+      <item path="Lua/common/linenoise.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/elua/inc/elua_platform.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Lua/elua/inc/elua_rfs.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/elua_uip.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/eluarpc.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/extras/config.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/extras/dirent.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/extras/reen_off_t_off_tt.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/extras/reent.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/extras/reent.h.old" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/extras/unistd.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/linenoise.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/linenoise_posix.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/luarpc_rpc.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/mmcfs.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/newlib/devman.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/newlib/genstd.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/newlib/ioctl.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="Lua/elua/inc/platform_conf.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/platform_generic.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/remotefs/client.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/remotefs/os_io.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/remotefs/remotefs.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/romfs.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/rpc_serial.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/rtype.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/salloc.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/semifs.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/sermux.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/shell.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/stacks.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/swi.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/term.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/type.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/utils.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/validate.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/version.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/xmodem.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/src/common_tmr.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/elua/src/linenoise.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/elua/src/platform/pic32mz/platform.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
       </item>
       <item path="Lua/modules/adc.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/auxmods.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/modules/can.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/modules/cpu.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/gps.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -1731,10 +1568,6 @@
       <item path="Lua/platform/spi.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/platform/uart.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="doc/net" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="doc/pio.md" ex="false" tool="3" flavor2="0">
       </item>
       <item path="drivers/adc/adc.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -3418,8 +3251,6 @@
       <item path="sys/vsio.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="sys/wait.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="todo" ex="false" tool="3" flavor2="0">
       </item>
       <item path="utils/delay.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -3682,118 +3513,19 @@
       </item>
       <item path="Lua/5.3.1/lzio.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Lua/elua/inc/buf.h" ex="false" tool="3" flavor2="0">
+      <item path="Lua/common/linenoise.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="Lua/elua/inc/cexcept.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/common.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/desktop/desktop_conf.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/desktop/type.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/dlmalloc.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/elua_adc.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/elua_int.h" ex="false" tool="3" flavor2="0">
+      <item path="Lua/common/linenoise.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/elua/inc/elua_platform.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Lua/elua/inc/elua_rfs.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/elua_uip.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/eluarpc.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/extras/config.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/extras/dirent.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/extras/reen_off_t_off_tt.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/extras/reent.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/extras/reent.h.old" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/extras/unistd.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/linenoise.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/linenoise_posix.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/luarpc_rpc.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/mmcfs.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/newlib/devman.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/newlib/genstd.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/newlib/ioctl.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="Lua/elua/inc/platform_conf.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/platform_generic.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/remotefs/client.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/remotefs/os_io.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/remotefs/remotefs.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/romfs.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/rpc_serial.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/rtype.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/salloc.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/semifs.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/sermux.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/shell.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/stacks.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/swi.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/term.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/type.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/utils.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/validate.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/version.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/inc/xmodem.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/elua/src/common_tmr.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/elua/src/linenoise.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/elua/src/platform/pic32mz/platform.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
       </item>
       <item path="Lua/modules/adc.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/auxmods.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/modules/can.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/modules/cpu.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/gps.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -3850,10 +3582,6 @@
       <item path="Lua/platform/spi.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/platform/uart.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="doc/net" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="doc/pio.md" ex="false" tool="3" flavor2="0">
       </item>
       <item path="drivers/adc/adc.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -5537,8 +5265,6 @@
       <item path="sys/vsio.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="sys/wait.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="todo" ex="false" tool="3" flavor2="0">
       </item>
       <item path="utils/delay.c" ex="false" tool="0" flavor2="0">
       </item>

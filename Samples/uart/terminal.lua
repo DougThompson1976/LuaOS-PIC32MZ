@@ -42,3 +42,12 @@ tmr.delayms(10000)
 net.stop("gprs")
 tmr.delayms(10000)
 end
+
+
+
+net.setup("gprs","m2m.vodafone.es","3267")
+net.start("gprs")
+net.stop("gprs")
+net.start("gprs")
+gps.start()
+gps.stop()

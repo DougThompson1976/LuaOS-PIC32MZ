@@ -30,14 +30,31 @@
 #include "lua.h"
 #include "lauxlib.h"
 
+// Module flags
+static unsigned int flags = 0;
+
+#define LGPS_STARTED (1 << 0)
+
 static int lgps_start(lua_State* L) {
-    platform_gps_start();
+    if (!(flags & LGPS_STARTED)) {
+        platform_gps_start();
+        
+        flags |= LGPS_STARTED;
+    } else {
+        return luaL_error(L, "gps yet started");
+    }
     
     return 0;
 }
 
 static int lgps_stop(lua_State* L) {
-    platform_gps_stop();
+    if (flags & LGPS_STARTED) {
+        platform_gps_stop();
+
+        flags &= ~LGPS_STARTED;
+    } else {
+        return luaL_error(L, "gps not started");
+    }
     
     return 0;    
 }

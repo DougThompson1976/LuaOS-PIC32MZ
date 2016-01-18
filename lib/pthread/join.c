@@ -32,9 +32,6 @@
 int pthread_join(pthread_t thread, void **value_ptr) {
     int res;
     
-    // Init library, if needed
-    _pthread_init();
-    
     res = _pthread_join(thread);
     if (res) {
         return res;
