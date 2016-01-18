@@ -21,20 +21,9 @@
 #define PIO_PORT_OP         0
 #define PIO_PIN_OP          1
 
-// Local operation masks for all the ports
-static pio_type pio_masks[PLATFORM_IO_PORTS];
-
 // ****************************************************************************
 // Generic helper functions
 
-// Helper function: clear all masks
-static void pioh_clear_masks(void)
-{
-  int i;
-  
-  for(i = 0; i < PLATFORM_IO_PORTS; i ++)
-    pio_masks[i] = 0;
-}
 
 // Helper function: pin operations
 // Gets the stack index of the first pin and the operation
@@ -42,8 +31,11 @@ static int pioh_set_pins(lua_State* L, int stackidx, int op)
 {
   int total = lua_gettop(L);
   int i, v, port, pin;
-  
-  pioh_clear_masks();
+
+  pio_type pio_masks[PLATFORM_IO_PORTS];
+ 
+  for(i = 0; i < PLATFORM_IO_PORTS; i ++)
+    pio_masks[i] = 0;
   
   // Get all masks
   for(i = stackidx; i <= total; i ++)
