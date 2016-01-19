@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="95">
+<configurationDescriptor version="97">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
@@ -1498,6 +1498,8 @@
       <item path="Lua/common/linenoise.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/common/linenoise.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/common/shell.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/elua/inc/elua_platform.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -3504,6 +3506,8 @@
       <item path="Lua/common/linenoise.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/common/linenoise.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/common/shell.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/elua/inc/elua_platform.h" ex="false" tool="3" flavor2="0">
       </item>

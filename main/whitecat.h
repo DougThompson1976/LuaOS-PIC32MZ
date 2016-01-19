@@ -31,6 +31,7 @@
 #define	WHITECAT_H
 
 #define WHITECAT_VER "alpha 0.1"
+#define USE_SHELL 1
 
 #define UNUSED_ARG(x) (void)(x)
 

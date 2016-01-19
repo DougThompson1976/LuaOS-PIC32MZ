@@ -276,5 +276,3 @@ static int os_format(lua_State *L) {
 static int os_sleep(lua_State *L) {   
     cpu_sleep();
 }
-
-
