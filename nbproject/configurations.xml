@@ -676,7 +676,6 @@
         <logicalFolder name="platform" displayName="platform" projectFiles="true">
           <itemPath>Lua/platform/adc.c</itemPath>
           <itemPath>Lua/platform/can.c</itemPath>
-          <itemPath>Lua/platform/cpu.c</itemPath>
           <itemPath>Lua/platform/gps.c</itemPath>
           <itemPath>Lua/platform/net.c</itemPath>
           <itemPath>Lua/platform/pio.c</itemPath>
@@ -1541,8 +1540,6 @@
       <item path="Lua/platform/adc.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/platform/can.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/platform/cpu.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/platform/gps.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -3549,8 +3546,6 @@
       <item path="Lua/platform/adc.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/platform/can.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/platform/cpu.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/platform/gps.c" ex="false" tool="0" flavor2="0">
       </item>
