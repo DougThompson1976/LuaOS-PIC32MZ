@@ -5,13 +5,13 @@
 #include "platform.h"
 #include "elua_platform.h"
 #include "auxmods.h"
-#include "platform_conf.h"
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include "lrodefs.h"
 
 #include "drivers/cpu/cpu.h"
+#include "drivers/gpio/gpio.h"
 
 // PIO public constants
 #define PIO_DIR_OUTPUT      0

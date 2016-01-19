@@ -30,39 +30,44 @@
 #include "whitecat.h"
 
 #if USE_GPS
-#include "gps.h"
 
 #include "FreeRTOS.h"
+#include "queue.h"
 #include "task.h"
 #include "event_groups.h"
 
-#include <stdlib.h>
-
-#include "queue.h"
-#include "drivers/gps/nmea0183.h"
-#include "drivers/uart/uart.h"
-
+#include <drivers/uart/uart.h>
+#include <drivers/gps/gps.h>
+#include <drivers/gps/nmea0183.h>
 #include <drivers/sim908/sim908.h>
+
+#include <stdlib.h>
 #include <syslog.h>
 
 static TaskHandle_t gpsTask_h = NULL;
 static EventGroupHandle_t gpsEvent;
 static int inited = 0;
+static QueueHandle_t positions;
 
 static void gps_init() {
     if (inited) return;
     
     gpsEvent = xEventGroupCreate();
     xEventGroupClearBits(gpsEvent, evGps_started | evGps_stopped | evGps_stop);
+    
+    positions = xQueueCreate(10, sizeof(struct position));
 }
 
 static void gpsTask(void *pvParameters) {
-    QueueHandle_t *q;        // GPS queue
-    u8_t          *sentence; // Received packet
-    u8_t          *buffer;   // Current buffer position of received packet
-    u8_t           byte;     // Received byte
-    u32_t          bytes;    // Received bytes
-    EventBits_t    uxBits;
+    QueueHandle_t  *q;         // GPS queue
+    u8_t           *sentence;  // Received packet
+    u8_t           *buffer;    // Current buffer position of received packet
+    u8_t            byte;      // Received byte
+    u32_t           bytes;     // Received bytes
+    EventBits_t     uxBits;
+    struct position new_pos;
+    struct position first_pos;
+
 
     // Allocate space for sentence
     sentence = malloc(MAX_NMA_SIZE);
@@ -90,6 +95,24 @@ static void gpsTask(void *pvParameters) {
                 
                 buffer = sentence;
                 bytes = 0;
+                
+                // Queue new position, if present
+                if (nmea_new_pos()) {                                        
+                    new_pos.lat  = nmea_lat();
+                    new_pos.lon  = nmea_lon();
+                    new_pos.sats = nmea_sats();
+                    new_pos.when = time(NULL);
+                    
+
+                   if (xQueueSend(positions, &new_pos, 0) == errQUEUE_FULL) {
+                       // Queue is full
+                       // Free one element
+                       xQueueReceive(positions, &first_pos, 0);
+                       
+                       // Queue again
+                       xQueueSend(positions, &new_pos, 0);
+                   }
+                }
             }
         }
     }
@@ -131,6 +154,16 @@ int gps_stop() {
     syslog(LOG_INFO, "gps stopped");
     
     return 0;
+}
+
+int gps_get_pos(struct position *pos, int timeout) {
+    if (timeout == portMAX_DELAY) {
+        timeout = portMAX_DELAY;
+    } else {
+        timeout = portTICK_PERIOD_MS * timeout;
+    }
+    
+    return (!xQueueReceive(positions, pos, timeout));
 }
 
 #endif

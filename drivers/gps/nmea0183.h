@@ -37,6 +37,10 @@
 #define MAX_NMA_SIZE 82
 
 void nmea_parse(u8_t *sentence);
+int nmea_new_pos();
+double nmea_lat();
+double nmea_lon();
+int nmea_sats();
 
 #endif
 

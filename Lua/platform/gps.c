@@ -36,3 +36,4 @@ int platform_gps_start() {
 int platform_gps_stop() {
     return gps_stop();    
 }
+

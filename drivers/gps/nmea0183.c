@@ -40,6 +40,11 @@ static char *GPGGA = "GPGGA";  // GPGGA sentence string
 static char *GPRMC = "GPRMC";  // GPRMC sentence string
 static int  date_updated = 0;  // 0 = date is not updated yet, 1 = updated
 
+// Last position data
+static double lat, lon;
+static int sats;
+static int new_pos = 0;
+
 // As parser computes checksum incrementally, this function computes
 // the checksum that corresponds to the nma sentence string
 static int nmea_initial_checksum(char *c) {
@@ -131,17 +136,16 @@ double nmea_geoloc_to_decimal(char *token) {
 // 15   = Checksum
 static void nmea_GPGGA(char *sentence) {
     int    valid = 1; // It's a valid position?
-    double lat = 0;   // Latitude
-    double lon = 0;   // Longitude
 
     int seq = 0;      // Current nmea sentence field (0 = first after nmea command)
-    int sats = 0;
     char *c;
     char *token;
 
     int checksum = 0;
     int computed_checksum = nmea_initial_checksum(GPGGA);
 
+    new_pos = 0;
+    
     token = c = sentence;
     while (*c) {
         if (*c == ',') {
@@ -197,8 +201,7 @@ static void nmea_GPGGA(char *sentence) {
 
     if (checksum == computed_checksum) {
         if (valid) {
-            //TO DO: put in a queue
-            printf("new pos\n");
+            new_pos = 1;
         }
     }
 }
@@ -329,6 +332,22 @@ void nmea_parse(char *sentence) {
             c++;
         }
     }
+}
+
+int nmea_new_pos() {
+    return new_pos;
+}
+
+double nmea_lon() {
+    return lon;
+}
+
+double nmea_lat() {
+    return lat;
+}
+
+int nmea_sats() {
+    return sats;
 }
 
 #endif

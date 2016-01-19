@@ -58,7 +58,6 @@ static const luaL_Reg loadedlibs[] = {
 #endif
   //WHITECAT BEGIN
   {AUXLIB_PIO, luaopen_pio},
-  {AUXLIB_PD, luaopen_pd},
   {AUXLIB_TMR, luaopen_tmr},
   {AUXLIB_CAN, luaopen_can},
   {AUXLIB_NET, luaopen_net},

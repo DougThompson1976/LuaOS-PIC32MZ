@@ -31,7 +31,6 @@
 #include "lauxlib.h"
 #include "elua_platform.h"
 #include "auxmods.h"
-#include "platform_conf.h"
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>

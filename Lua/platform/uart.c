@@ -28,7 +28,10 @@
  * this software.
  */
 #include "elua_platform.h"
-#include "platform_conf.h"
+
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
 
 #include <drivers/uart/uart.h>
 

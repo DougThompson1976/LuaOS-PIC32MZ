@@ -30,6 +30,15 @@
 #ifndef GPS_H
 #define	GPS_H
 
+#include <time.h>
+
+struct position {
+    double lat;
+    double lon;
+    int sats;
+    time_t when;
+};
+
 #define evGps_started (1 << 1)
 #define evGps_stopped (1 << 2)
 #define evGps_stop    (1 << 3)

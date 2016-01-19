@@ -30,6 +30,8 @@
 #include "lua.h"
 #include "lauxlib.h"
 
+#include <drivers/gps/gps.h>
+
 // Module flags
 static unsigned int flags = 0;
 
@@ -59,9 +61,30 @@ static int lgps_stop(lua_State* L) {
     return 0;    
 }
 
+static int lgps_pos(lua_State* L) {
+    struct position pos;
+    
+    int timeout = luaL_optinteger(L, 1, 0xffffffff);
+    
+    // Read position
+    if (gps_get_pos(&pos, timeout)) {
+        // No position available
+        lua_pushnil(L);
+        return 1;
+    }
+    
+    lua_pushnumber(L, pos.lat);
+    lua_pushnumber(L, pos.lon);
+    lua_pushinteger(L, pos.sats);
+    lua_pushinteger(L, pos.when);
+
+    return 4;
+}
+
 static const luaL_Reg gps[] = {
     {"start", lgps_start}, 
     {"stop", lgps_stop}, 
+    {"position", lgps_pos}, 
     {NULL, NULL}
 };
 
