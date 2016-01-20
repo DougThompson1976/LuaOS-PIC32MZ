@@ -16,9 +16,9 @@ mcp3208 = spi.setup(spi.SPI4, spi.MASTER, pio.PE_4, 1000, 1, 1, 8)
 -- Sample
 i = 0
 while i < 100000 do
-    mcp3208:sson()
+    mcp3208:select()
     val = mcp3208:readwrite(command >> 8, command, 0)
-    mcp3208:ssoff()
+    mcp3208:deselect()
 
     val = ((val[1] & 0x0f) << 8 | val[2])
 

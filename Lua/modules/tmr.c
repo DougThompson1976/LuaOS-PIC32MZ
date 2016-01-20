@@ -47,9 +47,28 @@ static int tmr_delay_us( lua_State* L ) {
     return 0;
 }
 
+static int tmr_sleep_ms( lua_State* L ) {
+    unsigned long long period;
+
+    period = luaL_checkinteger( L, 1 );
+    usleep(period * 1000);
+    return 0;
+}
+
+static int tmr_sleep_us( lua_State* L ) {
+    unsigned long long period;
+
+    period = luaL_checkinteger( L, 1 );
+    usleep(period);
+    
+    return 0;
+}
+
 const luaL_Reg tmr_map[] = {
     {"delayms", tmr_delay_ms},
     {"delayus", tmr_delay_us},
+    {"sleepms", tmr_sleep_ms},
+    {"sleepus", tmr_sleep_us},
     {NULL, NULL}
 };
 

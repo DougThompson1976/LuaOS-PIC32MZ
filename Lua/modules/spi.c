@@ -11,7 +11,7 @@
 #include "drivers/cpu/cpu.h"
 
 // Lua: sson( id )
-static int lspi_sson( lua_State* L ) {
+static int lspi_select( lua_State* L ) {
     spi_userdata *spi = NULL;
 
     spi = (spi_userdata *)luaL_checkudata(L, 1, "spi");
@@ -23,7 +23,7 @@ static int lspi_sson( lua_State* L ) {
 }
 
 // Lua: ssoff( id )
-static int lspi_ssoff( lua_State* L ) {
+static int lspi_deselect( lua_State* L ) {
     spi_userdata *spi = NULL;
 
     spi = (spi_userdata *)luaL_checkudata(L, 1, "spi");
@@ -108,7 +108,7 @@ static int lspi_rw_helper( lua_State *L, int withread ) {
         value = platform_spi_send_recv( spi, sval[ j ] );
         if( withread )
         {
-          lua_pushnumber( L, value );
+          lua_pushinteger( L, value );
           lua_rawseti( L, -2, residx ++ );
         }
       }
@@ -134,8 +134,8 @@ const luaL_Reg spi_method_map[] =
 {
   { LSTRKEY( "setup" ),  LFUNCVAL( lspi_setup ) },
   { LSTRKEY( "pins" ),  LFUNCVAL( lspi_pins ) },
-  { LSTRKEY( "sson" ),  LFUNCVAL( lspi_sson ) },
-  { LSTRKEY( "ssoff" ),  LFUNCVAL( lspi_ssoff ) },
+  { LSTRKEY( "select" ),  LFUNCVAL( lspi_select ) },
+  { LSTRKEY( "deselect" ),  LFUNCVAL( lspi_deselect ) },
   { LSTRKEY( "write" ),  LFUNCVAL( lspi_write ) },  
   { LSTRKEY( "readwrite" ),  LFUNCVAL( lspi_readwrite ) },    
 #if LUA_OPTIMIZE_MEMORY > 0
