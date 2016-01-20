@@ -81,7 +81,7 @@ void mach_dev() {
     printf("/_____________\\\n");
     printf("W H I T E C A T\n\n");
 
-    printf("LuaOS %s Copyright (C) 2015 whitecatboard.org\n\n", LUA_OS_VER);
+    printf("LuaOS %s Copyright (C) 2015 - 2016 whitecatboard.org\n\n", LUA_OS_VER);
     
     openlog(__progname, LOG_CONS, LOG_LOCAL1);
     cpu_show_info();
