@@ -85,6 +85,21 @@ static void *do_exit(char *line) {
     sprintf(line,"os.exit()");    
 }
 
+static void *do_pwd(char *line) {
+    sprintf(line,"os.pwd()");    
+}
+
+static void *do_rm(char *line) {
+    char *path;
+    
+    path = strtok(NULL, delimiters);
+    if (!path) {
+        sprintf(line,"os.remove()", path);    
+    } else {
+        sprintf(line,"os.remove(\"%s\")", path);        
+    }
+}
+
 int lua_shell(char *line) {
     char cline[LUA_MAXINPUT];
     char *token;
@@ -109,6 +124,10 @@ int lua_shell(char *line) {
             do_dmesg(line); return 1;      
         } else if (strcmp(token,"exit") == 0) {
             do_exit(line); return 1;      
+        } else if (strcmp(token,"pwd") == 0) {
+            do_pwd(line); return 1;      
+        } else if (strcmp(token,"rm") == 0) {
+            do_rm(line); return 1;      
         }
     }
     

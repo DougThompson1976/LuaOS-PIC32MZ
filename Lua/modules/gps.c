@@ -30,6 +30,8 @@
 #include "lua.h"
 #include "lauxlib.h"
 
+#if USE_GPS
+
 #include <drivers/gps/gps.h>
 
 // Module flags
@@ -93,3 +95,5 @@ int luaopen_gps(lua_State* L) {
     
     return 1;
 }
+
+#endif

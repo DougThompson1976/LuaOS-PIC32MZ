@@ -68,7 +68,12 @@ static const luaL_Reg loadedlibs[] = {
   {AUXLIB_SCREEN, luaopen_screen},
   {AUXLIB_UART, luaopen_uart},
   {AUXLIB_PWM, luaopen_pwm},
+#if USE_GPS
   {AUXLIB_GPS, luaopen_gps},
+#endif
+#if USE_HTTP
+  {AUXLIB_HTTP, luaopen_http},
+#endif
   //WHITECAT END
   {NULL, NULL}
 };

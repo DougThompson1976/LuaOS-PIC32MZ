@@ -41,7 +41,7 @@ int socket(int domain, int type, int protocol) {
     
     // File descriptor type SOCKET
     fp->f_type = DTYPE_SOCKET;
-    fp->f_flag = FWRITE;
+    fp->f_flag = FWRITE | FREAD;
     
     *socket = lwip_socket(domain,type,protocol);
     if (*socket < 0) {
@@ -88,6 +88,7 @@ int accept(int fd, struct sockaddr *addr, socklen_t *addrlen) {
 
     // File descriptor type SOCKET
     nfp->f_type = DTYPE_SOCKET;
+    nfp->f_flag = fp->f_flag;
     
     *nsocket =  lwip_accept( *((int *)fp->f_data), addr, addrlen);
     if (*nsocket < 0) {

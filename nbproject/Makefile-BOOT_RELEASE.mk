@@ -84,6 +84,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/Lua/modules/adc.o \
 	${OBJECTDIR}/Lua/modules/can.o \
 	${OBJECTDIR}/Lua/modules/gps.o \
+	${OBJECTDIR}/Lua/modules/http.o \
 	${OBJECTDIR}/Lua/modules/mqtt.o \
 	${OBJECTDIR}/Lua/modules/net.o \
 	${OBJECTDIR}/Lua/modules/pio.o \
@@ -125,6 +126,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/drivers/sim908/sim908.o \
 	${OBJECTDIR}/drivers/spi/spi.o \
 	${OBJECTDIR}/drivers/uart/uart.o \
+	${OBJECTDIR}/http/httpsrv.o \
 	${OBJECTDIR}/lib/libc/gen/assert.o \
 	${OBJECTDIR}/lib/libc/gen/clock.o \
 	${OBJECTDIR}/lib/libc/gen/closedir.o \
@@ -829,6 +831,11 @@ ${OBJECTDIR}/Lua/modules/gps.o: Lua/modules/gps.c
 	${RM} "$@.d"
 	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/5.3.1 -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/modules/gps.o Lua/modules/gps.c
 
+${OBJECTDIR}/Lua/modules/http.o: Lua/modules/http.c 
+	${MKDIR} -p ${OBJECTDIR}/Lua/modules
+	${RM} "$@.d"
+	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/5.3.1 -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/modules/http.o Lua/modules/http.c
+
 ${OBJECTDIR}/Lua/modules/mqtt.o: Lua/modules/mqtt.c 
 	${MKDIR} -p ${OBJECTDIR}/Lua/modules
 	${RM} "$@.d"
@@ -1033,6 +1040,11 @@ ${OBJECTDIR}/drivers/uart/uart.o: drivers/uart/uart.c
 	${MKDIR} -p ${OBJECTDIR}/drivers/uart
 	${RM} "$@.d"
 	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/5.3.1 -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/drivers/uart/uart.o drivers/uart/uart.c
+
+${OBJECTDIR}/http/httpsrv.o: http/httpsrv.c 
+	${MKDIR} -p ${OBJECTDIR}/http
+	${RM} "$@.d"
+	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/5.3.1 -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/http/httpsrv.o http/httpsrv.c
 
 ${OBJECTDIR}/lib/libc/gen/assert.o: lib/libc/gen/assert.c 
 	${MKDIR} -p ${OBJECTDIR}/lib/libc/gen

@@ -363,7 +363,10 @@ static int pushline (lua_State *L, int firstline) {
     return 0;  /* no input (prompt will be popped by caller) */
   
 #if USE_SHELL
-  lua_shell(buffer);
+  extern int lua_shell_on;
+  if (lua_shell_on) {
+      lua_shell(buffer);
+  }
 #endif
   
   lua_pop(L, 1);  /* remove prompt */

@@ -471,7 +471,8 @@ static int luaB_tostring (lua_State *L) {
 
 static const luaL_Reg base_funcs[] = {
 // WHITECAT BEGIN
-  {"dumpstack", stackDump},    
+  {"dumpstack", stackDump},  
+  {"shell", lshell},   
 // WHITECAT END
   {"assert", luaB_assert},
   {"collectgarbage", luaB_collectgarbage},

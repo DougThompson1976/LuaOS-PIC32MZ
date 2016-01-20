@@ -144,6 +144,9 @@
         <itemPath>FreeRTOS/FreeRTOSConfig.h</itemPath>
         <itemPath>FreeRTOS/xc.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="http" displayName="http" projectFiles="true">
+        <itemPath>http/httpsrv.c</itemPath>
+      </logicalFolder>
       <logicalFolder name="include" displayName="include" projectFiles="true">
         <logicalFolder name="arpa" displayName="arpa" projectFiles="true">
           <itemPath>include/arpa/ftp.h</itemPath>
@@ -642,6 +645,7 @@
         <logicalFolder name="common" displayName="common" projectFiles="true">
           <itemPath>Lua/common/linenoise.c</itemPath>
           <itemPath>Lua/common/linenoise.h</itemPath>
+          <itemPath>Lua/common/shell.c</itemPath>
         </logicalFolder>
         <logicalFolder name="elua" displayName="elua" projectFiles="true">
           <logicalFolder name="inc" displayName="inc" projectFiles="true">
@@ -661,6 +665,7 @@
           <itemPath>Lua/modules/auxmods.h</itemPath>
           <itemPath>Lua/modules/can.c</itemPath>
           <itemPath>Lua/modules/gps.c</itemPath>
+          <itemPath>Lua/modules/http.c</itemPath>
           <itemPath>Lua/modules/liolib_adds.inc</itemPath>
           <itemPath>Lua/modules/loslib_adds.inc</itemPath>
           <itemPath>Lua/modules/lrodefs.h</itemPath>
@@ -1242,6 +1247,7 @@
     <Elem>mqtt</Elem>
     <Elem>Lua</Elem>
     <Elem>xmodem</Elem>
+    <Elem>http</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -1511,6 +1517,8 @@
       </item>
       <item path="Lua/modules/gps.c" ex="false" tool="0" flavor2="0">
       </item>
+      <item path="Lua/modules/http.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="Lua/modules/lrodefs.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/modules/mqtt.c" ex="false" tool="0" flavor2="0">
@@ -1689,6 +1697,8 @@
           <commandLine>-DKERNEL</commandLine>
         </cTool>
       </folder>
+      <item path="http/httpsrv.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="include/a.out.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="include/ar.h" ex="false" tool="3" flavor2="0">
@@ -3519,6 +3529,8 @@
       </item>
       <item path="Lua/modules/gps.c" ex="false" tool="0" flavor2="0">
       </item>
+      <item path="Lua/modules/http.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="Lua/modules/lrodefs.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/modules/mqtt.c" ex="false" tool="0" flavor2="0">
@@ -3697,6 +3709,8 @@
           <commandLine>-DKERNEL</commandLine>
         </cTool>
       </folder>
+      <item path="http/httpsrv.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="include/a.out.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="include/ar.h" ex="false" tool="3" flavor2="0">
