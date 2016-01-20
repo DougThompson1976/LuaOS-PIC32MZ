@@ -173,6 +173,8 @@ static void linenoiseHistoryAdd(struct linenoiseState *l);
 static void refreshLine(struct linenoiseState *l);
 static void linenoiseHistoryGet(struct linenoiseState *l, int up);
 
+extern int lua_history_on;
+
 /* Debugging macro. */
 #if 0
 FILE *lndebug_fp = NULL;
@@ -766,9 +768,8 @@ static void linenoiseHistoryAdd(struct linenoiseState *l) {
     int pos;
     char *fname;
     
-    if (!mount_is_mounted("sd")) {
-        return;
-    }
+    if (!lua_history_on) return;
+    if (!mount_is_mounted("sd")) return;
 
     fname = mount_secondary_or_primary("/history");
     fp = fopen(fname,"a");
@@ -793,9 +794,8 @@ static void linenoiseHistoryGet(struct linenoiseState *l, int up) {
     FILE *fp;
     char *fname;
     
-    if (!mount_is_mounted("sd")) {
-        return;
-    }
+    if (!lua_history_on) return;
+    if (!mount_is_mounted("sd")) return;
     
     fname = mount_secondary_or_primary("/history");
     fp = fopen(fname,"r");

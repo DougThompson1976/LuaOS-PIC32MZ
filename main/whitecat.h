@@ -32,9 +32,6 @@
 
 #define WHITECAT_VER "alpha 0.1"
 
-#define USE_SHELL           1 // Use LuaOS shell?
-#define SHELL_DEFAULT_STATE 0 // Initial LuaOS shell status (1 = on, 0 = off)
-
 #define UNUSED_ARG(x) (void)(x)
 
 // ---------------------------------------------------------------------------
@@ -277,6 +274,12 @@
 // ---------------------------------------------------------------------------
 // APPLICATION SETTINGS
 // ---------------------------------------------------------------------------
+#define HISTORY_DEFAULT_STATE 0
+
+#define USE_SHELL             1 // Use LuaOS shell?
+#define SHELL_DEFAULT_STATE   0 // Initial LuaOS shell status (1 = on, 0 = off)
+
 #define USE_HTTP 0
+
 
 #endif	/* CONFIG_H */

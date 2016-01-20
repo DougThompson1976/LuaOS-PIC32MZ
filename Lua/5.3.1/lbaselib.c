@@ -473,6 +473,7 @@ static const luaL_Reg base_funcs[] = {
 // WHITECAT BEGIN
   {"dumpstack", stackDump},  
   {"shell", lshell},   
+  {"history", lhistory},   
 // WHITECAT END
   {"assert", luaB_assert},
   {"collectgarbage", luaB_collectgarbage},

@@ -1,4 +1,5 @@
 int lua_shell_on = SHELL_DEFAULT_STATE;
+int lua_history_on = HISTORY_DEFAULT_STATE;
 
 int stackDump (lua_State *L) {
     int i;
@@ -41,6 +42,13 @@ int stackDump (lua_State *L) {
 static int lshell(lua_State *L) { 
     luaL_checktype(L, 1, LUA_TBOOLEAN);
     lua_shell_on = lua_toboolean( L, 1 );
+    
+    return 0;
+}
+
+static int lhistory(lua_State *L) { 
+    luaL_checktype(L, 1, LUA_TBOOLEAN);
+    lua_history_on = lua_toboolean( L, 1 );
     
     return 0;
 }

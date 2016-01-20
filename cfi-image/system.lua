@@ -21,4 +21,5 @@ net.start("gprs")
 -- Other setups
 ----------------------------------------
 shell(true)              -- Enable shell
+history(true)            -- Enable history
 os.remove("/sd/history") -- Remove history
