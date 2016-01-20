@@ -35,6 +35,10 @@
 static unsigned char lpwm_mode[NOC];
 static unsigned char lpwm_res[NOC];
 
+static int lpwm_pins( lua_State* L ) {
+    return platform_pwm_pins();
+}
+
 static int lpwm_setup(lua_State* L) {
     int khz;
     double duty;
@@ -132,6 +136,7 @@ static int lpwm_write(lua_State* L) {
 }
 
 static const luaL_Reg pwm[] = {
+    {"pins", lpwm_pins},
     {"setup", lpwm_setup}, 
     {"start", lpwm_start}, 
     {"stop", lpwm_stop}, 

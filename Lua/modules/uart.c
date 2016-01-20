@@ -37,7 +37,7 @@
 #include <drivers/uart/uart.h>
 
 static int luart_pins( lua_State* L ) {
-    return platform_uart_pins(L);
+    return platform_uart_pins();
 }
 
 static int luart_setup( lua_State* L ) {

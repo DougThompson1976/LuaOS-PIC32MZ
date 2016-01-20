@@ -283,3 +283,37 @@ void pwm_init_res(int unit, int res, int val) {
 
     pwm_start(unit + 1);    
 }
+
+void pwm_pins(int unit, unsigned char *pin) {
+    int channel = unit - 1;
+
+    switch (channel) {
+        case 0:
+            *pin = OC1_PINS & 0xFF;
+            break;
+        case 1:
+            *pin = OC2_PINS & 0xFF;
+            break;
+        case 2:
+            *pin = OC3_PINS & 0xFF;
+            break;
+        case 3:
+            *pin = OC4_PINS & 0xFF;
+            break;
+        case 4:
+            *pin = OC5_PINS & 0xFF;
+            break;
+        case 5:
+            *pin = OC6_PINS & 0xFF;
+            break;
+        case 6:
+            *pin = OC7_PINS & 0xFF;
+            break;
+        case 7:
+            *pin = OC8_PINS & 0xFF;
+            break;
+        case 8:
+            *pin = OC9_PINS & 0xFF;
+            break;
+    }
+}

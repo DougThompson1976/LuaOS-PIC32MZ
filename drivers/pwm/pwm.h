@@ -45,6 +45,7 @@ void pwm_setup_freq(int unit, int pwmhz, double duty);
 void pwm_setup_res(int unit, int res, int value);
 void pwm_init_freq(int unit, int pwmhz, double duty); 
 void pwm_init_res(int unit, int res, int val);
+void pwm_pins(int unit, unsigned char *pin);
     
 #endif	/* PWM_H */
 

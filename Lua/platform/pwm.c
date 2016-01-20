@@ -32,6 +32,24 @@ int platform_pwm_exists(int id) {
     return ((id > 0) && (id <= NOC));
 }
 
+int platform_pwm_pins() {
+    int i;
+    unsigned char pin;
+    
+    for(i=1;i<=NOC;i++) {
+        pwm_pins(i, &pin);
+
+        if (pin != 0) {
+            printf(
+                "pwm%d: %c%d\t(pin %2d)\n", i,
+                gpio_portname(pin), gpio_pinno(pin),cpu_pin_number(pin)
+            );            
+        }
+    }
+    
+    return 0;
+}
+
 int platform_pwm_setup_freq(int id, int khz, double duty) {
     // Setup in base of frequency
     pwm_init_freq(id, khz, duty);

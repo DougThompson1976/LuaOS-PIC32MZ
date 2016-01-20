@@ -39,7 +39,7 @@ int platform_uart_exists( unsigned id ) {
     return ((id > 0) && (id <= NUART));
 }
 
-int platform_uart_pins( lua_State* L ) {
+int platform_uart_pins() {
     int i;
     unsigned char rx, tx;
     
