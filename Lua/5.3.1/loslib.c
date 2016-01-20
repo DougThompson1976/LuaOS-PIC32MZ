@@ -377,6 +377,8 @@ static const luaL_Reg syslib[] = {
   {"time",      os_time},
   {"tmpname",   os_tmpname},
   // WHITECAT BEGIN
+  {"shell",     os_shell},
+  {"history",   os_history},
   {"cp",        os_cp},
   {"ls",        os_ls},
   {"cd",        os_cd},

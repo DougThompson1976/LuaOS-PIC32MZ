@@ -28,7 +28,7 @@
 
 //WHITECAT BEGIN
 //#define LUA_COPYRIGHT	LUA_RELEASE "  Copyright (C) 1994-2015 Lua.org, PUC-Rio"
-#define LUA_COPYRIGHT	"Whitecat " WHITECAT_VER " powered by " LUA_RELEASE 
+#define LUA_COPYRIGHT	"LuaOS " LUA_OS_VER " powered by " LUA_RELEASE 
 //WHITECAT END
 
 #define LUA_AUTHORS	"R. Ierusalimschy, L. H. de Figueiredo, W. Celes"

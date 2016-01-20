@@ -106,7 +106,7 @@ static int lpwm_setduty(lua_State* L) {
     }
     
     if (lpwm_mode[id - 1] != 0) {
-        return luaL_error(L, "pwm %d isn't setup in FREQUENCY mode, function not allowed", id);
+        return luaL_error(L, "pwm %d isn't setup in DEFAULT mode, function not allowed", id);
     }
 
     platform_pwm_set_duty(id, duty);
@@ -123,7 +123,7 @@ static int lpwm_write(lua_State* L) {
     }
     
     if (lpwm_mode[id - 1] != 1) {
-        return luaL_error(L, "pwm %d isn't setup in RESOLUTION mode, function not allowed", id);
+        return luaL_error(L, "pwm %d isn't setup in DAC mode, function not allowed", id);
     }
 
     platform_pwm_write(id, lpwm_res[id - 1], val);

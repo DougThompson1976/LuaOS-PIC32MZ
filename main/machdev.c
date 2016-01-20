@@ -81,9 +81,9 @@ void mach_dev() {
     printf("/_____________\\\n");
     printf("W H I T E C A T\n\n");
 
-    printf("Whitecat %s Copyright (C) 2015 whitecatboard.org\n\n", WHITECAT_VER);
+    printf("LuaOS %s Copyright (C) 2015 whitecatboard.org\n\n", LUA_OS_VER);
     
-    openlog(__progname, LOG_CONS | LOG_PID, LOG_LOCAL1);
+    openlog(__progname, LOG_CONS, LOG_LOCAL1);
     cpu_show_info();
     
     //Init filesystem    
@@ -132,7 +132,7 @@ void mach_dev() {
         // Redirect console messages to /log/messages.log ...
         closelog();            
         syslog(LOG_INFO, "redirecting console messages to /sd/log/messages.log ...");
-        openlog(__progname, LOG_PID | LOG_CONS , LOG_LOCAL1);
+        openlog(__progname, LOG_CONS , LOG_LOCAL1);
     } else {
         syslog(LOG_INFO, "WARNING!! can't redirect console messages to /sd/log/messages.log, insert an SDCARD");
         syslog(LOG_INFO, "WARNING!! insert an SDCARD if you need intensive RW filesystem access");

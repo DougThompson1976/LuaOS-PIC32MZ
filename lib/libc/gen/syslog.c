@@ -145,6 +145,7 @@ vsyslog(pri, fmt, ap)
 	p = tbuf + snprintf(tbuf, size, "<%d>", pri);
 	if ((size = MAX_BUFF - (p - tbuf)) < 0) size = 0;
         
+/*
 	if (LogTag == NULL)
             LogTag = __progname;
 
@@ -152,12 +153,14 @@ vsyslog(pri, fmt, ap)
             p += snprintf(p, size, "%s", LogTag);
             if ((size = MAX_BUFF - (p - tbuf)) < 0) size = 0;
         }
+*/
         
 	if (LogStat & LOG_PID) {
             p += snprintf(p, size, "[%d]", getpid());
             if ((size = MAX_BUFF - (p - tbuf)) < 0) size = 0;
         }
         
+/*
 	if (LogTag != NULL) {
             if (size > 2) {
                 *p++ = ':';
@@ -166,6 +169,7 @@ vsyslog(pri, fmt, ap)
                 if ((size = MAX_BUFF - (p - tbuf)) < 0) size = 0;
             }
 	}
+*/
 
 	/* Substitute error message for %m. */
 	//for (t=fmt_cpy; ch = *fmt; ++fmt)

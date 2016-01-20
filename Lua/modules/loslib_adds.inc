@@ -8,6 +8,23 @@
 #include <sys/syscalls/mount.h>
 #include <sys/syscalls/device.h>
 
+int lua_shell_on = SHELL_DEFAULT_STATE;
+int lua_history_on = HISTORY_DEFAULT_STATE;
+
+static int os_shell(lua_State *L) { 
+    luaL_checktype(L, 1, LUA_TBOOLEAN);
+    lua_shell_on = lua_toboolean( L, 1 );
+    
+    return 0;
+}
+
+static int os_history(lua_State *L) { 
+    luaL_checktype(L, 1, LUA_TBOOLEAN);
+    lua_history_on = lua_toboolean( L, 1 );
+    
+    return 0;
+}
+
 static int os_cp(lua_State *L) {
     const char *src = luaL_optstring(L, 1, NULL);
     const char *dst = luaL_optstring(L, 2, NULL);

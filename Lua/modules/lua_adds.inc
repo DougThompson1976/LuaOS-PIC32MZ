@@ -49,6 +49,8 @@ static void whitecat_init(lua_State *L) {
         "/sd/autorun.lc",
     };
 
+    printf("\n");
+    
     // Execute system.lua, if exists
     if (fp = fopen("system.lua", "r" )) {
         fclose(fp);

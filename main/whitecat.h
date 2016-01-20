@@ -30,7 +30,7 @@
 #ifndef WHITECAT_H
 #define	WHITECAT_H
 
-#define WHITECAT_VER "alpha 0.1"
+#define LUA_OS_VER "alpha 0.1"
 
 #define UNUSED_ARG(x) (void)(x)
 
