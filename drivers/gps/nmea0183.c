@@ -298,7 +298,7 @@ static void nmea_GPRMC(char *sentence) {
             if (start < 1420070400) {
                 time(&start);
 
-                syslog(LOG_INFO, "nmea01843 setting system time to %d-%d-%d %d:%d:%d",year,month,day,hours,minutes,seconds);
+                syslog(LOG_DEBUG, "nmea01843 setting system time to %d-%d-%d %d:%d:%d",year,month,day,hours,minutes,seconds);
                 set_time_ymdhms(year,month,day,hours,minutes,seconds);
             }
         }

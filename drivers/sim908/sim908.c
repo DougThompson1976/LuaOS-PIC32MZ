@@ -185,7 +185,6 @@ static void ppp_stop() {
 #endif
 
 const char *sim908_error(int code) {
-    printf("error code: %d\n",code);
     switch (code) {
         case ERR_CANT_CONNECT: return "can't connect";break;
         case ERR_NO_CARRIER: return "no carrier";break;
@@ -376,7 +375,7 @@ static void sim908_exit_data_mode() {
         
     for(;;) {
         if (retries > 5) {
-             syslog(LOG_INFO, "sim908 can't exit data mode"); 
+             syslog(LOG_ERR, "sim908 can't exit data mode"); 
              break;
         }
         
@@ -457,7 +456,7 @@ sim908_err sim908_init(int gprs, int gps) {
             if (ok == ERR_OK) {
                 syslog(LOG_INFO, "sim908 is powered-off");
             } else {
-                syslog(LOG_INFO, "sim908 %s", sim908_error(ok));
+                syslog(LOG_ERR, "sim908 %s", sim908_error(ok));
                 return ok;
             }
 
@@ -466,7 +465,7 @@ sim908_err sim908_init(int gprs, int gps) {
             if (ok == ERR_OK) {
                 syslog(LOG_INFO, "sim908 is powered-on");
             } else {
-                syslog(LOG_INFO, "sim908 %s", sim908_error(ok));
+                syslog(LOG_ERR, "sim908 %s", sim908_error(ok));
                 return ok;
             }
         } else {
@@ -477,7 +476,7 @@ sim908_err sim908_init(int gprs, int gps) {
             if (ok == ERR_OK) {
                 syslog(LOG_INFO, "sim908 is powered-on");
             } else {
-                syslog(LOG_INFO, "sim908 %s", sim908_error(ok));
+                syslog(LOG_ERR, "sim908 %s", sim908_error(ok));
                 return ok;
             }
         }
@@ -489,7 +488,7 @@ sim908_err sim908_init(int gprs, int gps) {
             if (!ok) {
                 retries++;
                 if (retries > 20) {
-                    syslog(LOG_INFO, "sim908 %s", sim908_error(ERR_NOT_DETECTED));
+                    syslog(LOG_ERR, "sim908 %s", sim908_error(ERR_NOT_DETECTED));
                     return ERR_NOT_DETECTED;
                 }
                 delay(100);
@@ -511,7 +510,7 @@ sim908_err sim908_init(int gprs, int gps) {
             // Set full functionallity
             ok = uart_send_command(SIM908_UART, "AT+CFUN=1",1,  NULL, 0, 5000, 1, "OK");
             if (!ok) {
-                syslog(LOG_INFO, "sim908 %s", sim908_error(ERR_INIT));
+                syslog(LOG_ERR, "sim908 %s", sim908_error(ERR_INIT));
                 return ERR_INIT;
             }
             
@@ -525,7 +524,7 @@ sim908_err sim908_init(int gprs, int gps) {
             // Set PIN
             ok = sim908_set_pin();
             if (ok != ERR_OK) {
-                syslog(LOG_INFO, "sim908 %s", sim908_error(ok));
+                syslog(LOG_ERR, "sim908 %s", sim908_error(ok));
                 return ERR_PIN;
             }
             
@@ -541,7 +540,7 @@ sim908_err sim908_init(int gprs, int gps) {
 
             for(;;) {
                 if (retries > 60) {
-                    syslog(LOG_INFO, "sim908 %s", sim908_error(ERR_INIT));
+                    syslog(LOG_ERR, "sim908 %s", sim908_error(ERR_INIT));
                     return ERR_INIT;                
                 }
 
@@ -557,7 +556,7 @@ sim908_err sim908_init(int gprs, int gps) {
        
         ok = uart_wait_response(SIM908_UART, NULL, NULL, 0, 3000, 1, "OK");
         if (!ok) {
-            syslog(LOG_INFO, "sim908 %s", sim908_error(ERR_INIT));
+            syslog(LOG_ERR, "sim908 %s", sim908_error(ERR_INIT));
             return ERR_INIT;
         }
         
@@ -575,19 +574,19 @@ sim908_err sim908_init(int gprs, int gps) {
             // Init GPS
             ok = uart_send_command(SIM908_UART, "AT+CGPSPWR=1", 1, NULL, 0, 2000, 1, "OK");
             if (!ok) {
-                syslog(LOG_INFO, "sim908 %s", sim908_error(ERR_INIT));
+                syslog(LOG_ERR, "sim908 %s", sim908_error(ERR_INIT));
                 return ERR_INIT;
             }
 
             ok = uart_send_command(SIM908_UART, "AT+CGPSRST=0", 1, NULL, 0, 2000, 1, "OK");
             if (!ok) {
-                syslog(LOG_INFO, "sim908 %s", sim908_error(ERR_INIT));
+                syslog(LOG_ERR, "sim908 %s", sim908_error(ERR_INIT));
                 return ERR_INIT;
             }
 
             ok = uart_send_command(SIM908_UART, "AT+CGPSOUT=255", 1, NULL, 0, 2000, 1, "OK");
             if (!ok) {
-                syslog(LOG_INFO, "sim908 %s", sim908_error(ERR_INIT));
+                syslog(LOG_ERR, "sim908 %s", sim908_error(ERR_INIT));
                 return ERR_INIT;
             }
 
@@ -635,7 +634,7 @@ static void pppTask(void *pvParameters) {
     // Allocate space for packet
     packet = pvPortMalloc(PPPOS_RX_BUFSIZE);
     if (!packet) {
-        syslog(LOG_INFO, "sim908 memory error"); 
+        syslog(LOG_ERR, "sim908 memory error"); 
         vTaskDelete(NULL);
     }
 
@@ -758,7 +757,7 @@ sim908_err sim908_connect() {
         if (strcmp(temp_buffer, "+COPS: 0") == 0) {
             retries++;
             if (retries > 50) {
-                syslog(LOG_INFO, "sim908 %s", sim908_error(ERR_NO_CARRIER));
+                syslog(LOG_ERR, "sim908 %s", sim908_error(ERR_NO_CARRIER));
                 return ERR_NO_CARRIER;
             }
             delay(100);
@@ -766,7 +765,7 @@ sim908_err sim908_connect() {
     } while (strcmp(temp_buffer, "+COPS: 0") == 0);
 
     if (!ok) {
-        syslog(LOG_INFO, "sim908 %s", sim908_error(ERR_NO_CARRIER));
+        syslog(LOG_ERR, "sim908 %s", sim908_error(ERR_NO_CARRIER));
         return ERR_NO_CARRIER;
     }
 
@@ -803,7 +802,7 @@ sim908_err sim908_connect() {
 
     ok = uart_send_command(SIM908_UART, temp_buffer, 1, NULL, 0, 30000, 1, "OK");
     if (!ok) {
-        syslog(LOG_INFO, "sim908 %s", sim908_error(ERR_CANT_SET_APN));
+        syslog(LOG_ERR, "sim908 %s", sim908_error(ERR_CANT_SET_APN));
         return ERR_CANT_SET_APN;
     }
 
@@ -813,12 +812,12 @@ sim908_err sim908_connect() {
     ok = uart_send_command(SIM908_UART, "ATD*99#", 1, temp_buffer, 0, 60000, 2, "CONNECT", "NO CARRIER");
 
     if (!ok) {
-        syslog(LOG_INFO, "sim908 %s", sim908_error(ERR_CANT_CONNECT));
+        syslog(LOG_ERR, "sim908 %s", sim908_error(ERR_CANT_CONNECT));
         return ERR_CANT_CONNECT;
     }
 
     if (strcmp(temp_buffer, "NO CARRIER") == 0) {
-        syslog(LOG_INFO, "sim908 %s", sim908_error(ERR_CANT_CONNECT));
+        syslog(LOG_ERR, "sim908 %s", sim908_error(ERR_CANT_CONNECT));
         return ERR_CANT_CONNECT;
     }
 
@@ -864,7 +863,7 @@ void sim908_stop(int gprs, int gps) {
         if (ok == ERR_OK) {
             syslog(LOG_INFO, "sim908 is powered-off");
         } else {
-            syslog(LOG_INFO, "sim908 %s", sim908_error(ok));
+            syslog(LOG_ERR, "sim908 %s", sim908_error(ok));
         }
     } 
 }

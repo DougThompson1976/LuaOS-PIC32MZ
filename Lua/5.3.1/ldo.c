@@ -33,7 +33,9 @@
 #include "lvm.h"
 #include "lzio.h"
 
-
+// WHITECAT BEGIN
+#include <syslog.h>
+// WHITECAT END
 
 #define errorstatus(s)	((s) > LUA_YIELD)
 
@@ -99,21 +101,33 @@ struct lua_longjmp {
 static void seterrorobj (lua_State *L, int errcode, StkId oldtop) {
   switch (errcode) {
     case LUA_ERRMEM: {  /* memory error? */
+      // WHITECAT BEGIN
+      // TO DO: SYSLOG
+      // WHITECAT END
+        
       setsvalue2s(L, oldtop, G(L)->memerrmsg); /* reuse preregistered msg. */
       break;
     }
     case LUA_ERRERR: {
+      // WHITECAT BEGIN
+      // TO DO: SYSLOG
+      // WHITECAT END
+
       setsvalue2s(L, oldtop, luaS_newliteral(L, "error in error handling"));
       break;
     }
     default: {
+      // WHITECAT BEGIN
+      // TO DO: SYSLOG
+      // WHITECAT END
+      
       setobjs2s(L, oldtop, L->top - 1);  /* error message on current top */
       break;
     }
   }
   L->top = oldtop + 1;
 }
-
+ 
 
 l_noret luaD_throw (lua_State *L, int errcode) {
   if (L->errorJmp) {  /* thread has an error handler? */

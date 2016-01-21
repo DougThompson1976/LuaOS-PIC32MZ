@@ -21,7 +21,7 @@
 #include "lualib.h"
 
 // WHITECAT BEGIN
-#include <Lua/5.3.1/lbaselib_adds.inc>
+#include <Lua/modules/lbaselib_adds.inc>
 // WHITECAT END
 
 static int luaB_print (lua_State *L) {

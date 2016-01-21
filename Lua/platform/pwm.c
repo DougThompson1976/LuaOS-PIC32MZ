@@ -50,6 +50,10 @@ int platform_pwm_pins() {
     return 0;
 }
 
+int platform_pwm_freq(int id) {
+    return pwm_freq(id);
+}
+
 int platform_pwm_setup_freq(int id, int khz, double duty) {
     // Setup in base of frequency
     pwm_init_freq(id, khz, duty);

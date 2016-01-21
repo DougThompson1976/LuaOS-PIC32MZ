@@ -4,12 +4,17 @@
 #include <param.h>
 #include <stdio.h>
 
+#include <syslog.h>
+
 #include <drivers/console/console.h>
 #include <sys/syscalls/mount.h>
 #include <sys/syscalls/device.h>
 
+extern const char *__progname;
+
 int lua_shell_on = SHELL_DEFAULT_STATE;
 int lua_history_on = HISTORY_DEFAULT_STATE;
+int lua_syslog_level = 0xff;
 
 static int os_shell(lua_State *L) { 
     luaL_checktype(L, 1, LUA_TBOOLEAN);
@@ -292,4 +297,69 @@ static int os_format(lua_State *L) {
 
 static int os_sleep(lua_State *L) {   
     cpu_sleep();
+}
+
+static int os_loglevel(lua_State *L) {   
+    int total = lua_gettop(L);
+    int mask = 0;
+    int flag = 0;
+    int i;
+    
+    for(i=1;i<=total;i++) {
+        flag = luaL_checkinteger(L, i);
+        if ((flag < 0) || (flag > 7)) {
+            return luaL_error(L, "invalid flag");        
+        }
+        
+        mask |= LOG_MASK(flag);
+    }
+    
+    setlogmask(mask);
+    
+    return 0;    
+}
+
+static int os_logcons(lua_State *L) {  
+    int mask = LOG_NDELAY;
+    
+    luaL_checktype(L, 1, LUA_TBOOLEAN);
+    int cons = lua_toboolean( L, 1 );
+
+    if (cons) {
+        mask = mask | LOG_CONS;
+    }
+    
+    closelog();
+    openlog(__progname, mask , LOG_LOCAL1);
+    
+    return 0;
+}
+
+void os_constants(lua_State *L) {  
+    lua_pushinteger(L, LOG_EMERG);
+    lua_setfield(L, -2, "LOG_EMERG");
+
+    lua_pushinteger(L, LOG_ALERT);
+    lua_setfield(L, -2, "LOG_ALERT");
+
+    lua_pushinteger(L, LOG_CRIT);
+    lua_setfield(L, -2, "LOG_CRIT");
+
+    lua_pushinteger(L, LOG_ERR);
+    lua_setfield(L, -2, "LOG_ERR");
+
+    lua_pushinteger(L, LOG_WARNING);
+    lua_setfield(L, -2, "LOG_WARNING");
+
+    lua_pushinteger(L, LOG_NOTICE);
+    lua_setfield(L, -2, "LOG_NOTICE");
+
+    lua_pushinteger(L, LOG_INFO);
+    lua_setfield(L, -2, "LOG_INFO");
+
+    lua_pushinteger(L, LOG_DEBUG);
+    lua_setfield(L, -2, "LOG_DEBUG");
+
+    lua_pushinteger(L, LOG_EMERG | LOG_ALERT | LOG_CRIT | LOG_ERR | LOG_WARNING | LOG_NOTICE | LOG_INFO | LOG_DEBUG);
+    lua_setfield(L, -2, "LOG_ALL");
 }

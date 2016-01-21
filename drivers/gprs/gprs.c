@@ -39,10 +39,10 @@ int gprs_start() {
     if (err == ERR_OK) {
         err = sim908_connect();
         if (err != ERR_OK) {
-            syslog(LOG_INFO, "sim908 %s", sim908_error(err));        
+            syslog(LOG_ERR, "sim908 %s", sim908_error(err));        
         }
     } else {
-        syslog(LOG_INFO, "sim908 %s", sim908_error(err));        
+        syslog(LOG_ERR, "sim908 %s", sim908_error(err));        
     }
 
     return (err != ERR_OK);    

@@ -236,7 +236,7 @@ void openlog(ident, logstat, logfac)
     LogFile = NULL;
 
     if (mount_is_mounted("sd")) {
-        LogFile = fopen("/sd/log/messages.log","w");
+        LogFile = fopen("/sd/log/messages.log","a+");
     }
     
     connected = (LogFile != NULL);	

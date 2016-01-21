@@ -137,7 +137,7 @@ int gps_start() {
 
         syslog(LOG_INFO, "gps started");
     } else {
-        syslog(LOG_INFO, "sim908 %s", sim908_error(err));        
+        syslog(LOG_ERR, "sim908 %s", sim908_error(err));        
     }
 
     return (err != ERR_OK);    

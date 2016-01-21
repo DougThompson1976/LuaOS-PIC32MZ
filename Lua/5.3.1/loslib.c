@@ -391,16 +391,23 @@ static const luaL_Reg syslib[] = {
   {"dmesg",     os_dmesg},
   {"format",    os_format},
   {"sleep",     os_sleep},
+  {"loglevel",  os_loglevel},
+  {"logcons",   os_logcons},
   // WHITECAT END
   {NULL, NULL}
-};  
-  
+};   
+   
 /* }====================================================== */
 
 
 
 LUAMOD_API int luaopen_os (lua_State *L) {
   luaL_newlib(L, syslib);
+  
+  // WHITECAT BEGIN
+  os_constants(L);
+  // WHITECAT END
+
   return 1;
 }
 

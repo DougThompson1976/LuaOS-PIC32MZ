@@ -158,7 +158,7 @@ int spiffs_mount() {
     
 retry:
     if (retries > 2) {
-        syslog(LOG_INFO, "spiffs%d can't mount file", unit);
+        syslog(LOG_ERR, "spiffs%d can't mount file", unit);
         return -1;
     }
 
@@ -169,11 +169,11 @@ retry:
     
     if (res < 0) {
         if (fs.err_code == SPIFFS_ERR_NOT_A_FS) {
-            syslog(LOG_INFO, "spiffs%d no file system detect, formating", unit);
+            syslog(LOG_ERR, "spiffs%d no file system detect, formating", unit);
             SPIFFS_unmount(&fs);
             res = SPIFFS_format(&fs);
             if (res < 0) {
-                syslog(LOG_INFO, "spiffs%d format error",unit);
+                syslog(LOG_ERR, "spiffs%d format error",unit);
                 return -1;
             }
                         

@@ -161,7 +161,7 @@ static int cfi_setup(struct cfi *cfi) {
     cfi->sectors = (cfi_size(cfi) * 1024 * 1024) / cfi->sectsiz;
 
     if (cfi_size(cfi) <= 0) {
-        syslog(LOG_INFO, "cfi%d can't detect spi flash", cfi->unit);
+        syslog(LOG_ERR, "cfi%d can't detect spi flash", cfi->unit);
         return 0;
     }
     

@@ -279,7 +279,7 @@
 #define USE_SHELL             1 // Use LuaOS shell?
 #define SHELL_DEFAULT_STATE   0 // Initial LuaOS shell status (1 = on, 0 = off)
 
-#define USE_HTTP 0
+#define USE_HTTP 1
 
 
 #endif	/* CONFIG_H */

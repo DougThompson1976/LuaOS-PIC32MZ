@@ -20,6 +20,9 @@ net.start("gprs")
 ---------------------------------------------------
 -- Other setups
 ---------------------------------------------------
+os.loglevel(os.LOG_ERROR)
+
+os.logcons(false)        -- Enable/disable syslog messages to console
 os.shell(true)           -- Enable/disable shell
 os.history(true)         -- Enable/disable history
 os.remove("/sd/history") -- Remove history
