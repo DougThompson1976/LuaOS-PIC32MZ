@@ -307,11 +307,15 @@ static int os_loglevel(lua_State *L) {
     
     for(i=1;i<=total;i++) {
         flag = luaL_checkinteger(L, i);
-        if ((flag < 0) || (flag > 7)) {
+        if (((flag < 0) || (flag > 7)) && (flag != 0xff)) {
             return luaL_error(L, "invalid flag");        
         }
         
-        mask |= LOG_MASK(flag);
+        if (flag == 0xff) {
+            mask |= LOG_UPTO(LOG_DEBUG);          
+        } else {
+            mask |= LOG_UPTO(flag);
+        }
     }
     
     setlogmask(mask);
@@ -360,6 +364,6 @@ void os_constants(lua_State *L) {
     lua_pushinteger(L, LOG_DEBUG);
     lua_setfield(L, -2, "LOG_DEBUG");
 
-    lua_pushinteger(L, LOG_EMERG | LOG_ALERT | LOG_CRIT | LOG_ERR | LOG_WARNING | LOG_NOTICE | LOG_INFO | LOG_DEBUG);
+    lua_pushinteger(L, 0xff);
     lua_setfield(L, -2, "LOG_ALL");
 }

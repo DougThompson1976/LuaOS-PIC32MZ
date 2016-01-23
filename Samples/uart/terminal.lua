@@ -4,7 +4,7 @@
 
 line = ""
 console = 1
-uartid = 3
+uartid = 4
 
 -- Setup UART, 115200 bps, 8N1
 uart.setup(uartid, 115200, 8, uart.PARNONE, uart.STOP1)
