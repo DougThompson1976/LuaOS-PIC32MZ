@@ -232,4 +232,5 @@ void list_destroy(struct list *list, int items) {
     free(list->index);
     
     mtx_unlock(&list->mutex);    
+    mtx_destroy(&list->mutex);
 }

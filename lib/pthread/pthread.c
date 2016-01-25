@@ -355,6 +355,7 @@ void pthreadTask(void *taskArgs) {
          
         if (clean->clean) {
             (*clean->clean)(clean->args);
+            free(clean->args);
         }
         
         index = list_next(&thread->clean_list, index);

@@ -339,9 +339,16 @@ static int os_logcons(lua_State *L) {
     return 0;
 }
 
-static int os_stats() {
-    printf("Free mem: %d (%d)\n",xPortGetFreeHeapSize(),xPortGetMinimumEverFreeHeapSize());
+static int os_stats(lua_State *L) {
+    const char *stat = luaL_optstring(L, 1, NULL);
 
+    if (stat && strcmp(stat,"mem") == 0) {
+        lua_pushinteger(L, xPortGetFreeHeapSize());
+        return 1;
+    } else {
+        printf("Free mem: %d\n",xPortGetFreeHeapSize());        
+    }
+    
     return 0;
 }
 
