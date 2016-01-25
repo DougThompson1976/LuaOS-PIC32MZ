@@ -166,20 +166,26 @@ static void linkStatusCB(ppp_pcb *ppp, int err_code, void *ctx) {
 
 // Pause ppp task
 static void ppp_pause() {
+    syslog(LOG_INFO, "sim908 pausing ppp");    
     xEventGroupSetBits(sim908Event, sim908_ppp_pause); 
     xEventGroupWaitBits(sim908Event, sim908_ppp_paused, pdTRUE, pdFALSE, portMAX_DELAY);
+    syslog(LOG_INFO, "sim908 ppp paused");
 }
 
 // Resume ppp task
 static void ppp_resume() {
-    xEventGroupClearBits(sim908Event, sim908_ppp_pause | sim908_ppp_resume); 
+    syslog(LOG_INFO, "sim908 resuming ppp");    
+    xEventGroupSetBits(sim908Event, sim908_ppp_resume); 
     xEventGroupWaitBits(sim908Event, sim908_ppp_resumed, pdTRUE, pdFALSE, portMAX_DELAY);
+    syslog(LOG_INFO, "sim908 ppp resumed");
 }
 
 // Stop ppp task
 static void ppp_stop() {
+    syslog(LOG_INFO, "sim908 stopping ppp");    
     xEventGroupSetBits(sim908Event, sim908_ppp_stop);        
     xEventGroupWaitBits(sim908Event, sim908_ppp_stopped, pdTRUE, pdFALSE, portMAX_DELAY);
+    syslog(LOG_INFO, "sim908 ppp stopped");
 }
 
 #endif
@@ -674,8 +680,8 @@ static void pppTask(void *pvParameters) {
         }        
 
         if (uxBits & (sim908_ppp_resume)) {
-            xEventGroupSetBits(sim908Event, sim908_ppp_resumed);   
             xEventGroupClearBits(sim908Event, sim908_ppp_pause | sim908_ppp_paused);   
+            xEventGroupSetBits(sim908Event, sim908_ppp_resumed);   
             continue;
         }        
 
