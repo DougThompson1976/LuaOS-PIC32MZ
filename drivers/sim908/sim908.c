@@ -728,9 +728,7 @@ static void pppTask(void *pvParameters) {
     ppp_close(ppp,1);
     ppp_free(ppp);
     ppp = NULL;
-                    
-    syslog(LOG_INFO, "sim908 ppp stopped");
-    
+                        
     xEventGroupSetBits(sim908Event, sim908_ppp_stopped);    
     xEventGroupClearBits(sim908Event, 
             sim908_ppp_stop |
