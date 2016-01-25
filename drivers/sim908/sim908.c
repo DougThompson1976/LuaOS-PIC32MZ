@@ -828,7 +828,7 @@ sim908_err sim908_connect() {
     syslog(LOG_INFO, "sim908 gprs connected");
 
     // Create task for process input packets
-    xTaskCreate(pppTask, "pppin", ppinTaskStack, NULL, tskIDLE_PRIORITY, &pppTask_h);
+    xTaskCreate(pppTask, "pppin", ppinTaskStack, NULL, tskDEF_PRIORITY, &pppTask_h);
     xEventGroupWaitBits(sim908Event, sim908_ppp_started, pdTRUE, pdFALSE, portMAX_DELAY);
     
     return ERR_OK;

@@ -132,7 +132,7 @@ int gps_start() {
     err = sim908_init(0, 1);
     if (err == ERR_OK) {
         // Create task for gps process
-        xTaskCreate(gpsTask, "gps", configMINIMAL_STACK_SIZE * 10, NULL, tskIDLE_PRIORITY, &gpsTask_h);
+        xTaskCreate(gpsTask, "gps", configMINIMAL_STACK_SIZE * 10, NULL, tskDEF_PRIORITY, &gpsTask_h);
         xEventGroupWaitBits(gpsEvent, evGps_started, pdTRUE, pdFALSE, portMAX_DELAY);
 
         syslog(LOG_INFO, "gps started");

@@ -339,6 +339,12 @@ static int os_logcons(lua_State *L) {
     return 0;
 }
 
+static int os_stats() {
+    printf("Free mem: %d (%d)\n",xPortGetFreeHeapSize(),xPortGetMinimumEverFreeHeapSize());
+
+    return 0;
+}
+
 void os_constants(lua_State *L) {  
     lua_pushinteger(L, LOG_EMERG);
     lua_setfield(L, -2, "LOG_EMERG");

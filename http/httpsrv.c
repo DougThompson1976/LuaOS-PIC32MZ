@@ -219,7 +219,7 @@ static void httpTask(void *pvParameters) {
 }
 
 void http_start() {
-    xTaskCreate(httpTask, "http", configMINIMAL_STACK_SIZE * 10, NULL, tskIDLE_PRIORITY, NULL);
+    xTaskCreate(httpTask, "http", configMINIMAL_STACK_SIZE * 10, NULL, tskDEF_PRIORITY, NULL);
 }
 
 void http_stop() {

@@ -132,7 +132,7 @@ int _pthread_create(pthread_t *id, int stacksize,
     // Create related task
     res = xTaskCreate(
             pthreadTask, name, stacksize, taskArgs, 
-            tskIDLE_PRIORITY, &xCreatedTask
+            tskDEF_PRIORITY, &xCreatedTask
     );
    
     if(res != pdPASS) {

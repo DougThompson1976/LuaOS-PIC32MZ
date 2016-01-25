@@ -61,10 +61,10 @@
 #define ETH_PAD_SIZE                2
 #define LWIP_CHKSUM_ALGORITHM       2
 #define LWIP_TCP_KEEPALIVE          1
-#define TCPIP_THREAD_PRIO           tskIDLE_PRIORITY
+#define TCPIP_THREAD_PRIO           tskDEF_PRIORITY
 #define TCPIP_THREAD_STACKSIZE      tcpipTaskStack
 #define DEFAULT_THREAD_STACKSIZE    defaultStack
-#define DEFAULT_THREAD_PRIO         tskIDLE_PRIORITY
+#define DEFAULT_THREAD_PRIO         tskDEF_PRIORITY
 #define TCPIP_MBOX_SIZE             50
 #define DEFAULT_ACCEPTMBOX_SIZE     50
 #define DEFAULT_RAW_RECVMBOX_SIZE   50

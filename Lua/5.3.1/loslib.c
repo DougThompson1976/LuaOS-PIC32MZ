@@ -393,6 +393,7 @@ static const luaL_Reg syslib[] = {
   {"sleep",     os_sleep},
   {"loglevel",  os_loglevel},
   {"logcons",   os_logcons},
+  {"stats",     os_stats},
   // WHITECAT END
   {NULL, NULL}
 };   

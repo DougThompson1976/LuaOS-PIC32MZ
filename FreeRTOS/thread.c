@@ -33,7 +33,11 @@
 #include <errno.h>
 
 #include "lua.h"
+#include "lapi.h"
 #include "lauxlib.h"
+#include "lgc.h"
+#include "lmem.h"
+#include "ldo.h"
 
 #include "pthread.h"
 
@@ -234,6 +238,8 @@ static int thread_start(lua_State* L) {
     pthread_attr_t attr;
     int res, idx;
     pthread_t id;
+    int retries;
+    global_State *g;
     
     init();
 
@@ -269,8 +275,21 @@ static int thread_start(lua_State* L) {
 
     thread->thid = idx;
     
+    retries = 0;
+    
+retry:  
     res = pthread_create(&id, &attr, thread_start_task, thread);
     if (res) {
+        if ((res == ENOMEM) && (retries < 4)) {
+            luaC_checkGC(L);  /* stack grow uses memory */
+            luaD_checkstack(L, LUA_MINSTACK);  /* ensure minimum stack size */
+            
+            retries++;
+            goto retry;
+        }
+        
+        list_remove(&lthread_list, idx);
+        
         return luaL_error(L, "can't start pthread (%s)",strerror(errno));
     }
 
@@ -283,8 +302,8 @@ static int thread_start(lua_State* L) {
     // Return lthread id
     lua_pushinteger(L, idx);
     return 1;
-}
-
+}    
+     
 static int thread_sleep(lua_State* L) {
     int seconds;
     
@@ -371,4 +390,5 @@ int luaopen_thread(lua_State* L)
 {
     luaL_newlib(L, thread);
     return 1;
-}
+} 
+ 
