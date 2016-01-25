@@ -29,11 +29,14 @@
 
 #include "pthread.h"
 
+#include <errno.h>
+
 int pthread_join(pthread_t thread, void **value_ptr) {
     int res;
     
     res = _pthread_join(thread);
     if (res) {
+        errno = res;
         return res;
     }
     

@@ -76,6 +76,7 @@ int _pthread_create(pthread_t *id, int stacksize,
     // Set pthread arguments for creation
     taskArgs = (struct pthreadTaskArg *)malloc(sizeof(struct pthreadTaskArg));
     if (!taskArgs) {
+        errno = EAGAIN;
         return EAGAIN;
     }
                 
@@ -86,6 +87,7 @@ int _pthread_create(pthread_t *id, int stacksize,
     thread = (struct pthread *)malloc(sizeof(struct pthread));
     if (!thread) {
         free(taskArgs);
+        errno = EAGAIN;
         return EAGAIN;
     }
     
@@ -97,6 +99,7 @@ int _pthread_create(pthread_t *id, int stacksize,
         res = list_get(&thread_list, current_thread, &parent_thread);
         if (res) {
             free(taskArgs);
+            errno = EAGAIN;
             return EAGAIN;
         }
         
@@ -114,6 +117,7 @@ int _pthread_create(pthread_t *id, int stacksize,
     if (res) {
         free(taskArgs);
         free(thread);
+        errno = EAGAIN;
         return EAGAIN;
     }
 
@@ -132,7 +136,18 @@ int _pthread_create(pthread_t *id, int stacksize,
     );
    
     if(res != pdPASS) {
-        return EAGAIN;
+        // Remove from thread list
+        list_remove(&thread_list,*id);
+        free(taskArgs);
+        free(thread);
+
+        if (res == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY) {
+            errno = ENOMEM;
+            return ENOMEM;
+        } else {
+            errno = EAGAIN;
+            return EAGAIN;
+        }
     }
     
     mtx_lock(&thread->init_mtx);
@@ -152,12 +167,14 @@ int _pthread_join(pthread_t id) {
     // Get thread
     res = list_get(&thread_list, id, &thread);
     if (res) {
+        errno = res;
         return res;
     }
     
     // Create join structure
     join = (struct pthread_join *)malloc(sizeof(struct pthread_join));
     if (!join) {
+        errno = ESRCH;
         return ESRCH;
     }
     
@@ -165,6 +182,7 @@ int _pthread_join(pthread_t id) {
     join->queue = xQueueCreate(1, sizeof(char));
     if (join->queue == 0) {
         free(join);
+        errno = ESRCH;
         return ESRCH;            
     }
 
@@ -173,6 +191,7 @@ int _pthread_join(pthread_t id) {
     if (res) {
         vQueueDelete(join->queue);
         free(join);
+        errno = ESRCH;
         return ESRCH;
     }
 
@@ -190,6 +209,7 @@ int _pthread_free(pthread_t id) {
     // Get thread
     res = list_get(&thread_list, id, &thread);
     if (res) {
+        errno = res;
         return res;
     }
 
@@ -211,6 +231,7 @@ int _pthread_signal(int s, sig_t h) {
     struct pthread *thread;      // Current thread
     
     if (s > NSIG) {
+        errno = EINVAL;
         return EINVAL;
     }
     
@@ -252,6 +273,7 @@ int _pthread_stop(pthread_t id) {
     // Get thread
     res = list_get(&thread_list, id, &thread);
     if (res) {
+        errno = res;
         return res;
     }
     
@@ -268,6 +290,7 @@ int _pthread_suspend(pthread_t id) {
     // Get thread
     res = list_get(&thread_list, id, &thread);
     if (res) {
+        errno = res;
         return res;
     }
     
@@ -284,6 +307,7 @@ int _pthread_resume(pthread_t id) {
     // Get thread
     res = list_get(&thread_list, id, &thread);
     if (res) {
+        errno = res;
         return res;
     }
         

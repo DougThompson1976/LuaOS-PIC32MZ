@@ -44,6 +44,7 @@ int pthread_attr_destroy(pthread_attr_t *attr) {
 
 int pthread_attr_setstacksize(pthread_attr_t *attr, size_t stacksize) {
     if (stacksize < PTHREAD_STACK_MIN) {
+        errno = EINVAL;
         return EINVAL;
     }
     

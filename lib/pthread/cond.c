@@ -75,6 +75,7 @@ int pthread_cond_timedwait(pthread_cond_t *cond,
     
     // Wait for condition
     if (xSemaphoreTake(cond->mutex.sem, portTICK_PERIOD_MS * 1000 * abstime->ts_sec) != pdTRUE) {
+        errno = ETIMEDOUT;
         return ETIMEDOUT;
     }
     

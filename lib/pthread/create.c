@@ -41,6 +41,7 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr,
     if (attr) {
         stacksize = attr->stack_size;
         if (stacksize < PTHREAD_STACK_MIN) {
+            errno = EINVAL;
             return EINVAL;
         }
     } else {
@@ -50,6 +51,7 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr,
     // Create a new pthread
     res = _pthread_create(thread, stacksize, start_routine, args);
     if (res) {
+        errno = res;
         return res;
     }
        

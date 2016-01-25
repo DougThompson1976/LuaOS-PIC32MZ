@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <signal.h>
+#include <errno.h>
 
 #include "lua.h"
 #include "lauxlib.h"
@@ -270,7 +271,7 @@ static int thread_start(lua_State* L) {
     
     res = pthread_create(&id, &attr, thread_start_task, thread);
     if (res) {
-        return luaL_error(L, "can't start pthread");
+        return luaL_error(L, "can't start pthread (%s)",strerror(errno));
     }
 
     // Update thread status

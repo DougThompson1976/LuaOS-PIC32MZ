@@ -38,6 +38,7 @@ static int _check_attr(const pthread_mutexattr_t *attr) {
     int type = attr->type;
         
     if ((type < PTHREAD_MUTEX_NORMAL) || (type > PTHREAD_MUTEX_DEFAULT)) {
+        errno = EINVAL;
         return EINVAL;
     }
    
@@ -49,24 +50,28 @@ int pthread_mutex_init(pthread_mutex_t *mut, const pthread_mutexattr_t *attr) {
     int res;
 
     if (!attr) {
+        errno = EINVAL;
         return EINVAL;
     }
     
     // Check attr
     res = _check_attr(attr);
     if (res) {
+        errno = res;
         return res;
     }
 
     // Test if it's init yet
     res = list_get(&mutex_list, *mut, &mutex);
     if (!res) {
+        errno = EBUSY;
         return EBUSY;
     }
 
     // Create mutex structure
     mutex = (struct pthread_mutex *)malloc(sizeof(struct pthread_mutex));
     if (!mutex) {
+        errno = EINVAL;
         return EINVAL;
     }
 
@@ -81,6 +86,7 @@ int pthread_mutex_init(pthread_mutex_t *mut, const pthread_mutexattr_t *attr) {
     if(!mutex->sem){
         *mut = 0;
         free(mutex->sem);
+        errno = ENOMEM;
         return ENOMEM;
     }
     
@@ -92,6 +98,7 @@ int pthread_mutex_init(pthread_mutex_t *mut, const pthread_mutexattr_t *attr) {
         free(mutex->sem);
         vSemaphoreDelete(mutex->sem);
         
+        errno = res;
         return res;
     }
 
@@ -105,6 +112,7 @@ int pthread_mutex_lock(pthread_mutex_t *mut) {
     // Get mutex
     res = list_get(&mutex_list, *mut, &mutex);
     if (res) {
+        errno = res;
         return res;
     }
     
@@ -112,11 +120,13 @@ int pthread_mutex_lock(pthread_mutex_t *mut) {
     if (mutex->type == PTHREAD_MUTEX_RECURSIVE) {
         if (xSemaphoreTakeRecursive(mutex->sem, PTHREAD_MTX_LOCK_TIMEOUT) != pdPASS) {
             PTHREAD_MTX_DEBUG_LOCK();
+            errno = EINVAL;
             return EINVAL;
         }
     } else {
         if (xSemaphoreTake(mutex->sem, PTHREAD_MTX_LOCK_TIMEOUT) != pdPASS) {
             PTHREAD_MTX_DEBUG_LOCK();
+            errno = EINVAL;
             return EINVAL;
         }        
     }
@@ -131,6 +141,7 @@ int pthread_mutex_unlock(pthread_mutex_t *mut) {
     // Get mutex
     res = list_get(&mutex_list, *mut, &mutex);
     if (res) {
+        errno = res;
         return res;
     }
     
@@ -151,16 +162,19 @@ int pthread_mutex_trylock(pthread_mutex_t *mut) {
     // Get mutex
     res = list_get(&mutex_list, *mut, &mutex);
     if (res) {
+        errno = res;
         return res;
     }
     
     // Try lock
     if (mutex->type == PTHREAD_MUTEX_RECURSIVE) {
         if (xSemaphoreTakeRecursive(mutex->sem,0 ) != pdTRUE) {
+            errno = EBUSY;
             return EBUSY;
         }
     } else {
         if (xSemaphoreTake(mutex->sem,0 ) != pdTRUE) {
+            errno = EBUSY;
             return EBUSY;
         }
     }
@@ -175,6 +189,7 @@ int pthread_mutex_destroy(pthread_mutex_t *mut) {
     // Get mutex
     res = list_get(&mutex_list, *mut, &mutex);
     if (res) {
+        errno = res;
         return res;
     }
 
@@ -190,6 +205,7 @@ int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int type) {
 
     // Check attr
     if (!attr) {
+        errno = EINVAL;
         return EINVAL;
     }
 
@@ -197,6 +213,7 @@ int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int type) {
     
     res = _check_attr(&temp_attr);
     if (res) {
+        errno = res;
         return res;
     }
 
