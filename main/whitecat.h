@@ -218,7 +218,7 @@
 #define defaultStack   configMINIMAL_STACK_SIZE * 20
 #define initTaskStack  configMINIMAL_STACK_SIZE * 10
 #define netTaskStack   configMINIMAL_STACK_SIZE * 10
-#define luaTaskStack   configMINIMAL_STACK_SIZE * 20
+#define luaTaskStack   configMINIMAL_STACK_SIZE * 30
 #define mqttStack      configMINIMAL_STACK_SIZE * 10
 #define ppinTaskStack  configMINIMAL_STACK_SIZE * 10
 

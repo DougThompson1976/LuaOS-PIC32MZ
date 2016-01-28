@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="95">
+<configurationDescriptor version="97">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
@@ -583,7 +583,6 @@
           <itemPath>Lua/5.3.1/lauxlib.c</itemPath>
           <itemPath>Lua/5.3.1/lauxlib.h</itemPath>
           <itemPath>Lua/5.3.1/lbaselib.c</itemPath>
-          <itemPath>Lua/modules/lbaselib_adds.inc</itemPath>
           <itemPath>Lua/5.3.1/lbitlib.c</itemPath>
           <itemPath>Lua/5.3.1/lcode.c</itemPath>
           <itemPath>Lua/5.3.1/lcode.h</itemPath>
@@ -630,7 +629,6 @@
           <itemPath>Lua/5.3.1/lua.c</itemPath>
           <itemPath>Lua/5.3.1/lua.h</itemPath>
           <itemPath>Lua/5.3.1/lua.hpp</itemPath>
-          <itemPath>Lua/modules/lua_adds.inc</itemPath>
           <itemPath>Lua/5.3.1/luac.c</itemPath>
           <itemPath>Lua/5.3.1/luaconf.h</itemPath>
           <itemPath>Lua/5.3.1/lualib.h</itemPath>
@@ -641,6 +639,9 @@
           <itemPath>Lua/5.3.1/lvm.h</itemPath>
           <itemPath>Lua/5.3.1/lzio.c</itemPath>
           <itemPath>Lua/5.3.1/lzio.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="adds" displayName="adds" projectFiles="true">
+          <itemPath>Lua/adds/luaconf.h</itemPath>
         </logicalFolder>
         <logicalFolder name="common" displayName="common" projectFiles="true">
           <itemPath>Lua/common/linenoise.c</itemPath>
@@ -666,8 +667,6 @@
           <itemPath>Lua/modules/can.c</itemPath>
           <itemPath>Lua/modules/gps.c</itemPath>
           <itemPath>Lua/modules/http.c</itemPath>
-          <itemPath>Lua/modules/liolib_adds.inc</itemPath>
-          <itemPath>Lua/modules/loslib_adds.inc</itemPath>
           <itemPath>Lua/modules/lrodefs.h</itemPath>
           <itemPath>Lua/modules/mqtt.c</itemPath>
           <itemPath>Lua/modules/net.c</itemPath>
@@ -1197,8 +1196,107 @@
       <itemPath>Makefile.doc</itemPath>
       <itemPath>Makefile.hex</itemPath>
     </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+      <itemPath>Makefile.asm</itemPath>
+      <itemPath>Makefile.doc</itemPath>
+      <itemPath>Makefile.hex</itemPath>
+    </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+      <itemPath>Makefile.asm</itemPath>
+      <itemPath>Makefile.doc</itemPath>
+      <itemPath>Makefile.hex</itemPath>
+    </logicalFolder>
   </logicalFolder>
   <sourceRootList>
+    <Elem>FreeRTOS</Elem>
+    <Elem>include</Elem>
+    <Elem>machine</Elem>
+    <Elem>sys</Elem>
+    <Elem>main</Elem>
+    <Elem>drivers</Elem>
+    <Elem>utils</Elem>
+    <Elem>lib</Elem>
+    <Elem>vm</Elem>
+    <Elem>mqtt</Elem>
+    <Elem>Lua</Elem>
+    <Elem>xmodem</Elem>
+    <Elem>FreeRTOS</Elem>
+    <Elem>include</Elem>
+    <Elem>machine</Elem>
+    <Elem>sys</Elem>
+    <Elem>main</Elem>
+    <Elem>drivers</Elem>
+    <Elem>utils</Elem>
+    <Elem>lib</Elem>
+    <Elem>vm</Elem>
+    <Elem>mqtt</Elem>
+    <Elem>Lua</Elem>
+    <Elem>xmodem</Elem>
+    <Elem>FreeRTOS</Elem>
+    <Elem>include</Elem>
+    <Elem>machine</Elem>
+    <Elem>sys</Elem>
+    <Elem>main</Elem>
+    <Elem>drivers</Elem>
+    <Elem>utils</Elem>
+    <Elem>lib</Elem>
+    <Elem>vm</Elem>
+    <Elem>mqtt</Elem>
+    <Elem>Lua</Elem>
+    <Elem>xmodem</Elem>
+    <Elem>FreeRTOS</Elem>
+    <Elem>include</Elem>
+    <Elem>machine</Elem>
+    <Elem>sys</Elem>
+    <Elem>main</Elem>
+    <Elem>drivers</Elem>
+    <Elem>utils</Elem>
+    <Elem>lib</Elem>
+    <Elem>vm</Elem>
+    <Elem>mqtt</Elem>
+    <Elem>Lua</Elem>
+    <Elem>xmodem</Elem>
+    <Elem>http</Elem>
     <Elem>FreeRTOS</Elem>
     <Elem>include</Elem>
     <Elem>machine</Elem>
@@ -1500,6 +1598,8 @@
       <item path="Lua/5.3.1/lzio.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/5.3.1/lzio.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/adds/luaconf.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/common/linenoise.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -3512,6 +3612,8 @@
       <item path="Lua/5.3.1/lzio.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/5.3.1/lzio.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/adds/luaconf.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/common/linenoise.c" ex="false" tool="0" flavor2="0">
       </item>

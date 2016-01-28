@@ -11,9 +11,6 @@
 #include <limits.h>
 #include <stddef.h>
 
-//WHITECAT
-#define LUA_MAXINPUT 512
-
 /*
 ** ===================================================================
 ** Search for "@@" to find all configurable definitions.
@@ -190,15 +187,8 @@
 
 #else			/* }{ */
 
-// WHITECAT BEGIN
-//#define LUA_ROOT	"/usr/local/"
-#define LUA_ROOT	"/"
-// WHITECAT END
-
-// WHITECAT BEGIN
-//#define LUA_LDIR	LUA_ROOT "share/lua/" LUA_VDIR "/"
-#define LUA_LDIR	LUA_ROOT "lib/share/lua/"
-// WHITECAT END
+#define LUA_ROOT	"/usr/local/"
+#define LUA_LDIR	LUA_ROOT "share/lua/" LUA_VDIR "/"
 
 #define LUA_CDIR	LUA_ROOT "lib/lua/"
 #define LUA_PATH_DEFAULT  \

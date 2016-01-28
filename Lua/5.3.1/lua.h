@@ -14,9 +14,8 @@
 #include <stdarg.h>
 #include <stddef.h>
 
-//WHITECAT BEGIN
 #include "luaconf.h"
-//WHITECAT END
+#include <Lua/adds/luaconf.h>
 
 #define LUA_VERSION_MAJOR	"5"
 #define LUA_VERSION_MINOR	"3"
