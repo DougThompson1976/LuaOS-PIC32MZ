@@ -80,11 +80,19 @@ int platform_uart_setup(lua_State* L, int id, int bauds, int databits, int parit
 } 
 
 void platform_uart_write_byte(int id, int c) {
-    uart_write(id, c);
+    if (id == CONSOLE_UART) {
+        fwrite(&c, 1, 1, stdout);
+    } else {
+        uart_write(id, c);
+    }
 }
 
 void platform_uart_write_string(int id, const char *s) {
-    uart_writes(id, (char *)s);
+    if (id == CONSOLE_UART) {
+        fwrite(s, strlen(s) + 1, 1, stdout);
+    } else {
+        uart_writes(id, (char *)s);
+    }
 }
 
 int platform_uart_read_string(int id, char *str, int crlf, int timeout) {    

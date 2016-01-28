@@ -193,6 +193,9 @@ int luaopen_uart(lua_State* L)
 {
     luaL_newlib(L, uart);
 
+    lua_pushinteger(L, CONSOLE_UART);
+    lua_setfield(L, -2, "CONSOLE");
+
     lua_pushinteger(L, 0);
     lua_setfield(L, -2, "PARNONE");
 
