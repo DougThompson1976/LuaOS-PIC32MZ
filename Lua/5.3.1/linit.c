@@ -56,25 +56,7 @@ static const luaL_Reg loadedlibs[] = {
 #if defined(LUA_COMPAT_BITLIB)
   {LUA_BITLIBNAME, luaopen_bit32},
 #endif
-  //WHITECAT BEGIN
-  {AUXLIB_PIO, luaopen_pio},
-  {AUXLIB_TMR, luaopen_tmr},
-  {AUXLIB_CAN, luaopen_can},
-  {AUXLIB_NET, luaopen_net},
-  {AUXLIB_ADC, luaopen_adc},
-  {AUXLIB_SPI, luaopen_spi},
-  {AUXLIB_MQTT, luaopen_mqtt},
-  {AUXLIB_THREAD, luaopen_thread },
-  {AUXLIB_SCREEN, luaopen_screen},
-  {AUXLIB_UART, luaopen_uart},
-  {AUXLIB_PWM, luaopen_pwm},
-#if USE_GPS
-  {AUXLIB_GPS, luaopen_gps},
-#endif
-#if USE_HTTP
-  {AUXLIB_HTTP, luaopen_http},
-#endif
-  //WHITECAT END
+  LINIT_REG_ADDS
   {NULL, NULL}
 };
 
@@ -85,5 +67,7 @@ LUALIB_API void luaL_openlibs (lua_State *L) {
     luaL_requiref(L, lib->name, lib->func, 1);
     lua_pop(L, 1);  /* remove lib */
   }
+
+  LINIT_OPEN_ADDS
 }
 

@@ -376,25 +376,7 @@ static const luaL_Reg syslib[] = {
   {"setlocale", os_setlocale},
   {"time",      os_time},
   {"tmpname",   os_tmpname},
-  // WHITECAT BEGIN
-  {"shell",     os_shell},
-  {"history",   os_history},
-  {"cp",        os_cp},
-  {"ls",        os_ls},
-  {"cd",        os_cd},
-  {"pwd",       os_pwd},
-  {"mkdir",     os_mkdir},
-  {"edit",      os_edit},
-  {"clear",     os_clear},
-  {"cat",       os_cat},
-  {"more",      os_more},
-  {"dmesg",     os_dmesg},
-  {"format",    os_format},
-  {"sleep",     os_sleep},
-  {"loglevel",  os_loglevel},
-  {"logcons",   os_logcons},
-  {"stats",     os_stats},
-  // WHITECAT END
+  LOSLIB_REG_ADDS
   {NULL, NULL}
 };   
    
@@ -405,10 +387,8 @@ static const luaL_Reg syslib[] = {
 LUAMOD_API int luaopen_os (lua_State *L) {
   luaL_newlib(L, syslib);
   
-  // WHITECAT BEGIN
-  os_constants(L);
-  // WHITECAT END
-
+  LOSLIB_OPEN_ADDS
+          
   return 1;
 }
 

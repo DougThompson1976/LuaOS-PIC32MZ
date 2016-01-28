@@ -470,9 +470,7 @@ static int luaB_tostring (lua_State *L) {
 
 
 static const luaL_Reg base_funcs[] = {
-// WHITECAT BEGIN
-  {"dumpstack", stackDump},  
-// WHITECAT END
+  LBASELIB_REG_ADDS
   {"assert", luaB_assert},
   {"collectgarbage", luaB_collectgarbage},
   {"dofile", luaB_dofile},
@@ -521,6 +519,9 @@ LUAMOD_API int luaopen_base (lua_State *L) {
     lua_pushstring(L, lua_typename(L, i));
   lua_pushcclosure(L, luaB_type, LUA_NUMTAGS);
   lua_setfield(L, -2, "type");
+  
+  LBASELIB_OPEN_ADDS
+          
   return 1;
 }
 

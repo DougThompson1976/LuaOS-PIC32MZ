@@ -722,9 +722,7 @@ static const luaL_Reg iolib[] = {
   {"tmpfile", io_tmpfile},
   {"type", io_type},
   {"write", io_write},
-  // WHITECAT BEGIN
-  {"receive", f_receive},
-  // WHITECAT END
+  LIOLIB_REG_ADDS
   {NULL, NULL}
 };
 
@@ -787,6 +785,9 @@ LUAMOD_API int luaopen_io (lua_State *L) {
   createstdfile(L, stdin, IO_INPUT, "stdin");
   createstdfile(L, stdout, IO_OUTPUT, "stdout");
   createstdfile(L, stderr, NULL, "stderr");
+
+  LIOLIB_OPEN_ADDS
+          
   return 1;
 }
 
