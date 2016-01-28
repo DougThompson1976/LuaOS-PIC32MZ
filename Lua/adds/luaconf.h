@@ -65,5 +65,21 @@
 #define LOSLIB_OPEN_ADDS \
   os_constants(L);
 
+#ifdef lbaselib_c
+#undef lbaselib_c
+#include <Lua/modules/lbaselib_adds.inc>
+#endif
+
+#ifdef liolib_c
+#undef liolib_c
+#include <Lua/modules/liolib_adds.inc>
+#include <sys/syscalls/mount.h>
+#endif
+
+#ifdef loslib_c
+#undef loslib_c
+#include <Lua/modules/loslib_adds.inc>
+#endif
+
 #endif
 

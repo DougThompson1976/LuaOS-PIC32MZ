@@ -22,10 +22,6 @@
 #include "lauxlib.h"
 #include "lualib.h"
  
-// WHITECAT BEGIN
-#include <Lua/modules/liolib_adds.inc>
-#include <sys/syscalls/mount.h>
-// WHITECAT END
 
 #if !defined(l_checkmode)
 

@@ -1,3 +1,6 @@
+#include "whitecat.h"
+#include "lauxlib.h"
+
 #include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h> 
@@ -5,7 +8,6 @@
 #include <stdio.h>
 #include <syslog.h>
 
-#include "whitecat.h"
 #include <drivers/uart/uart.h>
 
 static int f_receive (lua_State *L) {

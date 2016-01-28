@@ -21,10 +21,6 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
-// WHITECAT BEGIN
-#include <Lua/modules/loslib_adds.inc>
-// WHITECAT END
-
   
 /*
 ** {==================================================================
