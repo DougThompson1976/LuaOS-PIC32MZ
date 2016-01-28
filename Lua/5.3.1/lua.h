@@ -9,13 +9,10 @@
 #ifndef lua_h
 #define lua_h
 
-#include "whitecat.h"
-
 #include <stdarg.h>
 #include <stddef.h>
 
 #include "luaconf.h"
-#include <Lua/adds/luaconf.h>
 
 #define LUA_VERSION_MAJOR	"5"
 #define LUA_VERSION_MINOR	"3"
@@ -25,10 +22,7 @@
 #define LUA_VERSION	"Lua " LUA_VERSION_MAJOR "." LUA_VERSION_MINOR
 #define LUA_RELEASE	LUA_VERSION "." LUA_VERSION_RELEASE
 
-//WHITECAT BEGIN
-//#define LUA_COPYRIGHT	LUA_RELEASE "  Copyright (C) 1994-2015 Lua.org, PUC-Rio"
-#define LUA_COPYRIGHT	"LuaOS " LUA_OS_VER " powered by " LUA_RELEASE 
-//WHITECAT END
+#define LUA_COPYRIGHT	LUA_RELEASE "  Copyright (C) 1994-2015 Lua.org, PUC-Rio"
 
 #define LUA_AUTHORS	"R. Ierusalimschy, L. H. de Figueiredo, W. Celes"
 
@@ -488,5 +482,8 @@ struct lua_Debug {
 * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************************************************************/
 
+// WHITECAT BEGIN
+#include <Lua/adds/luaconf.h>
+// WHITECAT END
 
 #endif
