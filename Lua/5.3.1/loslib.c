@@ -92,30 +92,7 @@
 */
 #if !defined(lua_tmpnam)	/* { */
 
-//WHITECAT BEGIN
-//#if defined(LUA_USE_POSIX)	/* { */
-//
-//#include <unistd.h>
-//
-//#define LUA_TMPNAMBUFSIZE	32
-//
-//#if !defined(LUA_TMPNAMTEMPLATE)
-//#define LUA_TMPNAMTEMPLATE	"/tmp/lua_XXXXXX"
-//#endif
-//
-//#define lua_tmpnam(b,e) { \
-//        strcpy(b, LUA_TMPNAMTEMPLATE); \
-//        e = mkstemp(b); \
-//        if (e != -1) close(e); \
-//        e = (e == -1); }
-//
-//#else				/* }{ */
-//
-///* ISO C definitions */
-//#define LUA_TMPNAMBUFSIZE	L_tmpnam
-//#define lua_tmpnam(b,e)		{ e = (tmpnam(b) == NULL); }
-//
-//#endif				/* } */
+#if defined(LUA_USE_POSIX)	/* { */
 
 #include <unistd.h>
 
@@ -124,14 +101,20 @@
 #if !defined(LUA_TMPNAMTEMPLATE)
 #define LUA_TMPNAMTEMPLATE	"/tmp/lua_XXXXXX"
 #endif
-
 #define lua_tmpnam(b,e) { \
         strcpy(b, LUA_TMPNAMTEMPLATE); \
         e = mkstemp(b); \
         if (e != -1) close(e); \
         e = (e == -1); }
 
-//WHITECAT END
+#else				/* }{ */
+
+/* ISO C definitions */
+#define LUA_TMPNAMBUFSIZE	L_tmpnam
+#define lua_tmpnam(b,e)		{ e = (tmpnam(b) == NULL); }
+
+#endif				/* } */
+
 
 #endif				/* } */
 /* }================================================================== */

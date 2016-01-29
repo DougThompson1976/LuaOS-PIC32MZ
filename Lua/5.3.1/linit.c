@@ -34,10 +34,6 @@
 #include "lualib.h"
 #include "lauxlib.h"
 
-//WHITECAT BEGIN
-#include "auxmods.h"
-//WHITECAT END
-
 /*
 ** these libs are loaded by lua.c and are readily available to any Lua
 ** program

@@ -33,10 +33,6 @@
 #include "lvm.h"
 #include "lzio.h"
 
-// WHITECAT BEGIN
-#include <syslog.h>
-// WHITECAT END
-
 #define errorstatus(s)	((s) > LUA_YIELD)
 
 
@@ -73,16 +69,9 @@
 
 /* ISO C handling with long jumps */
 
-// WHITECAT BEGIN
-//#define LUAI_THROW(L,c)		longjmp((c)->b, 1)
-//#define LUAI_TRY(L,c,a)		if (setjmp((c)->b) == 0) { a }
-//#define luai_jmpbuf		jmp_buf
-
-#define LUAI_THROW(L,c)		_longjmp((c)->b, 1)
-#define LUAI_TRY(L,c,a)		if (_setjmp((c)->b) == 0) { a }
+#define LUAI_THROW(L,c)		longjmp((c)->b, 1)
+#define LUAI_TRY(L,c,a)		if (setjmp((c)->b) == 0) { a }
 #define luai_jmpbuf		jmp_buf
-
-// WHITECAT END
 
 #endif							/* } */
 
@@ -101,26 +90,14 @@ struct lua_longjmp {
 static void seterrorobj (lua_State *L, int errcode, StkId oldtop) {
   switch (errcode) {
     case LUA_ERRMEM: {  /* memory error? */
-      // WHITECAT BEGIN
-      // TO DO: SYSLOG
-      // WHITECAT END
-        
       setsvalue2s(L, oldtop, G(L)->memerrmsg); /* reuse preregistered msg. */
       break;
     }
     case LUA_ERRERR: {
-      // WHITECAT BEGIN
-      // TO DO: SYSLOG
-      // WHITECAT END
-
       setsvalue2s(L, oldtop, luaS_newliteral(L, "error in error handling"));
       break;
     }
     default: {
-      // WHITECAT BEGIN
-      // TO DO: SYSLOG
-      // WHITECAT END
-      
       setobjs2s(L, oldtop, L->top - 1);  /* error message on current top */
       break;
     }

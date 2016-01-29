@@ -2,6 +2,9 @@
 #define WLUA_CONF
 
 #include "whitecat.h"
+#include "auxmods.h"
+
+#include <unistd.h>
 
 #define LUA_MAXINPUT 512
 
@@ -17,6 +20,27 @@
 #undef  LUA_COPYRIGHT
 #define LUA_COPYRIGHT	"LuaOS " LUA_OS_VER " powered by " LUA_RELEASE 
 
+#undef  LUAI_THROW
+#define LUAI_THROW(L,c)		_longjmp((c)->b, 1)
+
+#undef  LUAI_TRY
+#define LUAI_TRY(L,c,a)		if (_setjmp((c)->b) == 0) { a }
+
+#undef  luai_jmpbuf
+#define luai_jmpbuf		jmp_buf
+
+
+#define LUA_TMPNAMBUFSIZE	32
+
+#if !defined(LUA_TMPNAMTEMPLATE)
+#define LUA_TMPNAMTEMPLATE	"/tmp/lua_XXXXXX"
+#endif
+
+#define lua_tmpnam(b,e) { \
+        strcpy(b, LUA_TMPNAMTEMPLATE); \
+        e = mkstemp(b); \
+        if (e != -1) close(e); \
+        e = (e == -1); }
 
 // Adds in standard Lua modukes
 
