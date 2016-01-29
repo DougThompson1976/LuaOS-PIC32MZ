@@ -85,6 +85,10 @@ OBJECTFILES= \
 	${OBJECTDIR}/Lua/modules/can.o \
 	${OBJECTDIR}/Lua/modules/gps.o \
 	${OBJECTDIR}/Lua/modules/http.o \
+	${OBJECTDIR}/Lua/modules/lbaselib_adds.o \
+	${OBJECTDIR}/Lua/modules/liolib_adds.o \
+	${OBJECTDIR}/Lua/modules/loslib_adds.o \
+	${OBJECTDIR}/Lua/modules/lua_adds.o \
 	${OBJECTDIR}/Lua/modules/mqtt.o \
 	${OBJECTDIR}/Lua/modules/net.o \
 	${OBJECTDIR}/Lua/modules/pio.o \
@@ -550,41 +554,41 @@ LDLIBSOPTIONS=lib/libc/string/bcmp.o lib/libc/string/bcopy.o lib/libc/string/bze
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos_v1
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos: lib/libc/string/bcmp.o
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos_v1: lib/libc/string/bcmp.o
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos: lib/libc/string/bcopy.o
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos_v1: lib/libc/string/bcopy.o
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos: lib/libc/string/bzero.o
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos_v1: lib/libc/string/bzero.o
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos: lib/libc/string/ffs.o
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos_v1: lib/libc/string/ffs.o
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos: lib/libc/string/index.o
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos_v1: lib/libc/string/index.o
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos: lib/libc/string/rindex.o
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos_v1: lib/libc/string/rindex.o
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos: lib/libc/string/strcmp.o
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos_v1: lib/libc/string/strcmp.o
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos: lib/libc/string/strlen.o
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos_v1: lib/libc/string/strlen.o
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos: lib/libc/gen/_setjmp.o
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos_v1: lib/libc/gen/_setjmp.o
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos: lib/libc/gen/fabs.o
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos_v1: lib/libc/gen/fabs.o
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos: lib/libc/gen/isinf.o
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos_v1: lib/libc/gen/isinf.o
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos: lib/libc/gen/ldexp.o
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos_v1: lib/libc/gen/ldexp.o
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos: lib/libc/gen/modf.o
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos_v1: lib/libc/gen/modf.o
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos: FreeRTOS/port/port_asm.o
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos_v1: FreeRTOS/port/port_asm.o
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos: main/locore.o
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos_v1: main/locore.o
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos_v1: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos ${OBJECTFILES} ${LDLIBSOPTIONS} -mips32r2 -EL -nostdlib -nostartfiles -T ./main/boot.ld -Wl,--oformat=elf32-littlemips -o LuaOS_V1.elf -Wl,-z,max-page-size=4096,-Os -Wl,-Map=LuaOS_V1.map -Wl,--gc-sections
+	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos_v1 ${OBJECTFILES} ${LDLIBSOPTIONS} -mips32r2 -EL -nostdlib -nostartfiles -T ./main/boot.ld -Wl,--oformat=elf32-littlemips -o LuaOS_V1.elf -Wl,-z,max-page-size=4096,-Os -Wl,-Map=LuaOS_V1.map -Wl,--gc-sections
 
 ${OBJECTDIR}/FreeRTOS/common/croutine.o: FreeRTOS/common/croutine.c 
 	${MKDIR} -p ${OBJECTDIR}/FreeRTOS/common
@@ -835,6 +839,26 @@ ${OBJECTDIR}/Lua/modules/http.o: Lua/modules/http.c
 	${MKDIR} -p ${OBJECTDIR}/Lua/modules
 	${RM} "$@.d"
 	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/5.3.1 -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/modules/http.o Lua/modules/http.c
+
+${OBJECTDIR}/Lua/modules/lbaselib_adds.o: Lua/modules/lbaselib_adds.inc 
+	${MKDIR} -p ${OBJECTDIR}/Lua/modules
+	${RM} "$@.d"
+	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/5.3.1 -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/modules/lbaselib_adds.o Lua/modules/lbaselib_adds.inc
+
+${OBJECTDIR}/Lua/modules/liolib_adds.o: Lua/modules/liolib_adds.inc 
+	${MKDIR} -p ${OBJECTDIR}/Lua/modules
+	${RM} "$@.d"
+	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/5.3.1 -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/modules/liolib_adds.o Lua/modules/liolib_adds.inc
+
+${OBJECTDIR}/Lua/modules/loslib_adds.o: Lua/modules/loslib_adds.inc 
+	${MKDIR} -p ${OBJECTDIR}/Lua/modules
+	${RM} "$@.d"
+	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/5.3.1 -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/modules/loslib_adds.o Lua/modules/loslib_adds.inc
+
+${OBJECTDIR}/Lua/modules/lua_adds.o: Lua/modules/lua_adds.inc 
+	${MKDIR} -p ${OBJECTDIR}/Lua/modules
+	${RM} "$@.d"
+	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/5.3.1 -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/modules/lua_adds.o Lua/modules/lua_adds.inc
 
 ${OBJECTDIR}/Lua/modules/mqtt.o: Lua/modules/mqtt.c 
 	${MKDIR} -p ${OBJECTDIR}/Lua/modules
@@ -3067,7 +3091,7 @@ ${OBJECTDIR}/utils/ping.o: utils/ping.c
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/luaos_v1
 
 # Subprojects
 .clean-subprojects:

@@ -119,7 +119,7 @@ void led_on() {
 void *lua_start(void *arg) {
     for(;;) {
         char* lua_argv[] = {(char *)"lua", NULL};
-        lua_main(1, lua_argv);
+        luaos_main(1, lua_argv);
     }
 
     return NULL;

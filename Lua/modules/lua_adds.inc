@@ -36,8 +36,95 @@ pthread_mutex_t lua_mutex;
 static int dofile (lua_State *L, const char *name);
 
 extern int threadInited;
+extern int lua_shell_on;
 
-static void whitecat_init(lua_State *L) {
+
+
+inline void LuaLockInit(lua_State *L) {
+    if (threadInited) {
+        pthread_mutexattr_t attr;
+
+        pthread_mutexattr_init(&attr);
+        pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+
+        pthread_mutex_init(&lua_mutex, &attr);
+    }
+}
+
+inline void LuaLock(lua_State *L) {
+    if (threadInited) {
+        pthread_mutex_lock(&lua_mutex);
+    }
+}
+
+inline void LuaUnlock(lua_State *L) {
+    if (threadInited) {
+        pthread_mutex_unlock(&lua_mutex);
+    }
+}
+
+static char *get_prompt (lua_State *L, int firstline) { 
+  char *p;
+  
+  lua_getglobal(L, firstline ? "_PROMPT" : "_PROMPT2");
+  p = (char *)lua_tostring(L, -1);
+
+  if (p == NULL) {
+      if (firstline) {
+          char *path;
+          
+          path = (char *)malloc(256);
+          if (!path) {
+              return LUA_PROMPT;
+          }
+          
+          if (getcwd(path, 256)) {
+              path = strcat(path, " ");
+              path = strcat(path, LUA_PROMPT);
+              
+              return path;
+          }
+      } else {
+          return LUA_PROMPT2;
+      }
+  } else {
+      return p;
+  }
+}
+static int luaos_pushline (lua_State *L, int firstline) {
+  char buffer[LUA_MAXINPUT];
+  char *b = buffer;
+  size_t l;
+    
+  char *prmt = get_prompt(L, firstline);
+  int readstatus = lua_readline(L, b, prmt);
+  if (readstatus == 0)
+    return 0;  /* no input (prompt will be popped by caller) */
+  
+#if USE_SHELL
+  if (lua_shell_on) {
+      lua_shell(buffer);
+  }
+#endif
+  
+  lua_pop(L, 1);  /* remove prompt */
+  l = strlen(b);
+  if (l > 0 && b[l-1] == '\n')  /* line ends with newline? */
+    b[--l] = '\0';  /* remove it */
+  if (firstline && b[0] == '=')  /* for compatibility with 5.2, ... */
+    lua_pushfstring(L, "return %s", b + 1);  /* change '=' to 'return' */
+  else
+    lua_pushlstring(L, b, l);
+
+  lua_freeline(L, b);
+  
+  free(prmt);
+  
+  return 1;
+}
+
+// Execute system.lua and autorun.lua at boot time
+static void luaos_boot_scripts(lua_State *L) {
     int  boot;
     FILE *fp;
     int i;
@@ -77,25 +164,63 @@ static void whitecat_init(lua_State *L) {
     printf("\n");
 }
 
-inline void LuaLockInit(lua_State *L) {
-    if (threadInited) {
-        pthread_mutexattr_t attr;
+// LuaOS version of pmain
+//
+// Changes from original source are:
+// 
+// * LuaOS always starts in interactive mode, removed unnecessary code
+// * Run system.lua before executing the interpreter (in same state)
+// * Run autorun.lua before executing the interpreter (in same state)
+static int luaos_pmain (lua_State *L) {
+  int argc = (int)lua_tointeger(L, 1);
+  char **argv = (char **)lua_touserdata(L, 2);
+  int script;
+  int args = collectargs(argv, &script);
 
-        pthread_mutexattr_init(&attr);
-        pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+  luaL_openlibs(L);  /* open standard libraries */
+  createargtable(L, argv, argc, script);  /* create table 'arg' */
+  
+  print_version();
+  luaos_boot_scripts(L);
+  for(;;)
+      doREPL(L);  /* do read-eval-print loop */
 
-        pthread_mutex_init(&lua_mutex, &attr);
-    }
+  lua_pushboolean(L, 1);  /* signal no errors */
+  return 1;    
 }
 
-inline void LuaLock(lua_State *L) {
-    if (threadInited) {
-        pthread_mutex_lock(&lua_mutex);
-    }
-}
+// LuaOS version of lua_main
+//
+// Changes from original source are:
+//
+// * Create a global reference to Lua state for further access outside Lua
+// * Call to LuaOS version of pmain
+int luaos_main (int argc, char **argv) {
+  int status, result;
 
-inline void LuaUnlock(lua_State *L) {
-    if (threadInited) {
-        pthread_mutex_unlock(&lua_mutex);
-    }
+  lua_State *L = luaL_newstate();  /* create state */
+  if (L == NULL) {
+    l_message(argv[0], "cannot create state: not enough memory");
+    return EXIT_FAILURE;
+  }
+  
+  //WHITECAT BEGIN
+  gLuaState = L;
+  //WHITECAT END
+  
+  lua_pushcfunction(L, &luaos_pmain);  /* to call 'pmain' in protected mode */
+  lua_pushinteger(L, argc);  /* 1st argument */
+  lua_pushlightuserdata(L, argv); /* 2nd argument */
+  status = lua_pcall(L, 2, 1, 0);  /* do the call */
+    
+  result = lua_toboolean(L, -1);  /* get result */
+  report(L, status);
+
+  //WHITECAT BEGIN
+  gLuaState = NULL;
+  //WHITECAT END
+  
+  lua_close(L);
+
+  return (result && status == LUA_OK) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

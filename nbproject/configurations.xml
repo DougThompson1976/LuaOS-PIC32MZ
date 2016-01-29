@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="97">
+<configurationDescriptor version="95">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
@@ -667,7 +667,11 @@
           <itemPath>Lua/modules/can.c</itemPath>
           <itemPath>Lua/modules/gps.c</itemPath>
           <itemPath>Lua/modules/http.c</itemPath>
+          <itemPath>Lua/modules/lbaselib_adds.inc</itemPath>
+          <itemPath>Lua/modules/liolib_adds.inc</itemPath>
+          <itemPath>Lua/modules/loslib_adds.inc</itemPath>
           <itemPath>Lua/modules/lrodefs.h</itemPath>
+          <itemPath>Lua/modules/lua_adds.inc</itemPath>
           <itemPath>Lua/modules/mqtt.c</itemPath>
           <itemPath>Lua/modules/net.c</itemPath>
           <itemPath>Lua/modules/pio.c</itemPath>
@@ -1619,7 +1623,15 @@
       </item>
       <item path="Lua/modules/http.c" ex="false" tool="0" flavor2="0">
       </item>
+      <item path="Lua/modules/lbaselib_adds.inc" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/modules/liolib_adds.inc" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/modules/loslib_adds.inc" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="Lua/modules/lrodefs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/modules/lua_adds.inc" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/mqtt.c" ex="false" tool="0" flavor2="0">
       </item>

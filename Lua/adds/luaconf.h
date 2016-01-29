@@ -6,6 +6,10 @@
 
 #include <unistd.h>
 
+#define LUA_PROMPT		"> "
+#define LUA_PROMPT2		">> "
+
+
 #define LUA_MAXINPUT 512
 
 #undef  LUA_ROOT
@@ -29,7 +33,6 @@
 #undef  luai_jmpbuf
 #define luai_jmpbuf		jmp_buf
 
-
 #define LUA_TMPNAMBUFSIZE	32
 
 #if !defined(LUA_TMPNAMTEMPLATE)
@@ -41,6 +44,23 @@
         e = mkstemp(b); \
         if (e != -1) close(e); \
         e = (e == -1); }
+
+
+
+
+//#include <Lua/common/linenoise.h>
+//#include "lstate.h"
+
+#undef  lua_readline
+#define lua_readline(L,b,p)     ((void)L, (linenoise(b, p)) != -1)
+
+#define lua_saveline(L,idx)     { (void)L; (void)idx; }
+#define lua_freeline(L,b)       { (void)L; (void)b; }
+
+
+
+
+
 
 // Adds in standard Lua modukes
 
@@ -105,5 +125,21 @@
 #include <Lua/modules/loslib_adds.inc>
 #endif
 
+#ifdef lua_c
+#undef lua_c
+
+static int report (lua_State *L, int status);
+static void l_message (const char *pname, const char *msg);
+static int runargs (lua_State *L, char **argv, int n);
+static void print_version (void);
+void doREPL (lua_State *L);
+static void print_usage (const char *badoption);
+static int collectargs (char **argv, int *first);
+static void createargtable (lua_State *L, char **argv, int argc, int script);
+
+#include "lauxlib.h"
+#include "lualib.h"
+#include <Lua/modules/lua_adds.inc>
 #endif
 
+#endif

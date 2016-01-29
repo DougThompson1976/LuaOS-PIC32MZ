@@ -18,8 +18,6 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
-#include "lua_adds.inc"
-
 #if !defined(LUA_PROMPT)
 #define LUA_PROMPT		"> "
 #define LUA_PROMPT2		">> "
@@ -85,20 +83,11 @@
 
 #else				/* }{ */
 
-//WHICAT BEGIN
-#include <Lua/common/linenoise.h>
-#include "lstate.h"
-#define lua_readline(L,b,p)     ((void)L, (linenoise(b, p)) != -1)
-#define lua_saveline(L,idx)     { (void)L; (void)idx; }
-#define lua_freeline(L,b)       { (void)L; (void)b; }
-
-//#define lua_readline(L,b,p) \
-//        ((void)L, fputs(p, stdout), fflush(stdout),  /* show prompt */ \
-//        fgets(b, LUA_MAXINPUT, stdin) != NULL)  /* get line */
-//#define lua_saveline(L,line)	{ (void)L; (void)line; }
-//#define lua_freeline(L,b)	{ (void)L; (void)b; }
-
-//WHICAT END
+#define lua_readline(L,b,p) \
+        ((void)L, fputs(p, stdout), fflush(stdout),  /* show prompt */ \
+        fgets(b, LUA_MAXINPUT, stdin) != NULL)  /* get line */
+#define lua_saveline(L,line)	{ (void)L; (void)line; }
+#define lua_freeline(L,b)	{ (void)L; (void)b; }
 
 #endif				/* } */
 
@@ -134,9 +123,6 @@ static void laction (int i) {
 }
 
 
-/*
- * WHITECAT BEGIN
- * 
 static void print_usage (const char *badoption) {
   lua_writestringerror("%s: ", progname);
   if (badoption[1] == 'e' || badoption[1] == 'l')
@@ -156,10 +142,6 @@ static void print_usage (const char *badoption) {
   ,
   progname);
 }
- * 
- * WHITECAT END
- */
-
 
 /*
 ** Prints an error message, adding the program name in front of it
@@ -283,50 +265,6 @@ static int dolibrary (lua_State *L, const char *name) {
 ** Returns the string to be used as a prompt by the interpreter.
 */
 
-// WHITECAT BEGIN
-//
-// Preappend current working directory to prompt
-/*
-static const char *get_prompt (lua_State *L, int firstline) {
-  const char *p;
-  lua_getglobal(L, firstline ? "_PROMPT" : "_PROMPT2");
-  p = lua_tostring(L, -1);
-  if (p == NULL) p = (firstline ? LUA_PROMPT : LUA_PROMPT2);
-  return p;
-}
-*/
-
-static char *get_prompt (lua_State *L, int firstline) { 
-  char *p;
-  
-  lua_getglobal(L, firstline ? "_PROMPT" : "_PROMPT2");
-  p = (char *)lua_tostring(L, -1);
-
-  if (p == NULL) {
-      if (firstline) {
-          char *path;
-          
-          path = (char *)malloc(256);
-          if (!path) {
-              return LUA_PROMPT;
-          }
-          
-          if (getcwd(path, 256)) {
-              path = strcat(path, " ");
-              path = strcat(path, LUA_PROMPT);
-              
-              return path;
-          }
-      } else {
-          return LUA_PROMPT2;
-      }
-  } else {
-      return p;
-  }
-}
-
-// WHITECAT END
-
 /* mark in error messages for incomplete statements */
 #define EOFMARK		"<eof>"
 #define marklen		(sizeof(EOFMARK)/sizeof(char) - 1)
@@ -361,13 +299,6 @@ static int pushline (lua_State *L, int firstline) {
   int readstatus = lua_readline(L, b, prmt);
   if (readstatus == 0)
     return 0;  /* no input (prompt will be popped by caller) */
-  
-#if USE_SHELL
-  extern int lua_shell_on;
-  if (lua_shell_on) {
-      lua_shell(buffer);
-  }
-#endif
   
   lua_pop(L, 1);  /* remove prompt */
   l = strlen(b);
@@ -417,7 +348,7 @@ static int multiline (lua_State *L) {
     size_t len;
     const char *line = lua_tolstring(L, 1, &len);  /* get what it has */
     int status = luaL_loadbuffer(L, line, len, "=stdin");  /* try it */
-    if (!incomplete(L, status) || !pushline(L, 0)) {
+    if (!incomplete(L, status) || !luaos_pushline(L, 0)) {
       lua_saveline(L, line);  /* keep history */
       return status;  /* cannot or should not try to add continuation line */
     }
@@ -437,7 +368,7 @@ static int multiline (lua_State *L) {
 static int loadline (lua_State *L) {
   int status;
   lua_settop(L, 0);
-  if (!pushline(L, 1))
+  if (!luaos_pushline(L, 1))
     return -1;  /* no input */
   if ((status = addreturn(L)) != LUA_OK)  /* 'return ...' did not work? */
     status = multiline(L);  /* try as command, maybe with continuation lines */
@@ -628,9 +559,7 @@ static int pmain (lua_State *L) {
   luaL_checkversion(L);  /* check that interpreter has correct version */
   if (argv[0] && argv[0][0]) progname = argv[0];
   if (args == has_error) {  /* bad arg? */
-    // WHITECAT BEGIN
-    //print_usage(argv[script]);  /* 'script' has index of bad arg. */
-    // WHITECAT END
+    print_usage(argv[script]);  /* 'script' has index of bad arg. */
     return 0;
   }
   if (args & has_v)  /* option '-v'? */
@@ -655,7 +584,6 @@ static int pmain (lua_State *L) {
   else if (script == argc && !(args & (has_e | has_v))) {  /* no arguments? */
     if (lua_stdin_is_tty()) {  /* running in interactive mode? */
       print_version();
-      whitecat_init(L);
       for(;;)
           doREPL(L);  /* do read-eval-print loop */
     }
@@ -674,10 +602,6 @@ int lua_main (int argc, char **argv) {
     return EXIT_FAILURE;
   }
   
-  //WHITECAT BEGIN
-  gLuaState = L;
-  //WHITECAT END
-  
   lua_pushcfunction(L, &pmain);  /* to call 'pmain' in protected mode */
   lua_pushinteger(L, argc);  /* 1st argument */
   lua_pushlightuserdata(L, argv); /* 2nd argument */
@@ -686,10 +610,6 @@ int lua_main (int argc, char **argv) {
   result = lua_toboolean(L, -1);  /* get result */
   report(L, status);
 
-  //WHITECAT BEGIN
-  gLuaState = NULL;
-  //WHITECAT END
-  
   lua_close(L);
 
   return (result && status == LUA_OK) ? EXIT_SUCCESS : EXIT_FAILURE;

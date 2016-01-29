@@ -129,11 +129,6 @@ l_noret luaD_throw (lua_State *L, int errcode) {
       abort();
     }
   }
-
-  // WHITECAT BEGIN
-  for(;;) {
-  }
-  // WHITECAT END
 }
 
 
