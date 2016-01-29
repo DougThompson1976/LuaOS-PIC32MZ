@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="95">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
-    <logicalFolder name="HeaderFiles"
-                   displayName="Header Files"
-                   projectFiles="true">
-      <itemPath>Lua/platform/pio.h</itemPath>
-      <itemPath>Lua/platform/platform.h</itemPath>
-    </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
                    projectFiles="true">
+      <logicalFolder name="HeaderFiles"
+                     displayName="Header Files"
+                     projectFiles="true">
+        <itemPath>Lua/platform/pio.h</itemPath>
+        <itemPath>Lua/platform/platform.h</itemPath>
+      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
@@ -577,69 +577,6 @@
         </logicalFolder>
       </logicalFolder>
       <logicalFolder name="Lua" displayName="Lua" projectFiles="true">
-        <logicalFolder name="5.3.1" displayName="5.3.1" projectFiles="true">
-          <itemPath>Lua/5.3.1/lapi.c</itemPath>
-          <itemPath>Lua/5.3.1/lapi.h</itemPath>
-          <itemPath>Lua/5.3.1/lauxlib.c</itemPath>
-          <itemPath>Lua/5.3.1/lauxlib.h</itemPath>
-          <itemPath>Lua/5.3.1/lbaselib.c</itemPath>
-          <itemPath>Lua/5.3.1/lbitlib.c</itemPath>
-          <itemPath>Lua/5.3.1/lcode.c</itemPath>
-          <itemPath>Lua/5.3.1/lcode.h</itemPath>
-          <itemPath>Lua/5.3.1/lcorolib.c</itemPath>
-          <itemPath>Lua/5.3.1/lctype.c</itemPath>
-          <itemPath>Lua/5.3.1/lctype.h</itemPath>
-          <itemPath>Lua/5.3.1/ldblib.c</itemPath>
-          <itemPath>Lua/5.3.1/ldebug.c</itemPath>
-          <itemPath>Lua/5.3.1/ldebug.h</itemPath>
-          <itemPath>Lua/5.3.1/ldo.c</itemPath>
-          <itemPath>Lua/5.3.1/ldo.h</itemPath>
-          <itemPath>Lua/5.3.1/ldump.c</itemPath>
-          <itemPath>Lua/5.3.1/lfunc.c</itemPath>
-          <itemPath>Lua/5.3.1/lfunc.h</itemPath>
-          <itemPath>Lua/5.3.1/lgc.c</itemPath>
-          <itemPath>Lua/5.3.1/lgc.h</itemPath>
-          <itemPath>Lua/5.3.1/linit.c</itemPath>
-          <itemPath>Lua/5.3.1/liolib.c</itemPath>
-          <itemPath>Lua/5.3.1/llex.c</itemPath>
-          <itemPath>Lua/5.3.1/llex.h</itemPath>
-          <itemPath>Lua/5.3.1/llimits.h</itemPath>
-          <itemPath>Lua/5.3.1/lmathlib.c</itemPath>
-          <itemPath>Lua/5.3.1/lmem.c</itemPath>
-          <itemPath>Lua/5.3.1/lmem.h</itemPath>
-          <itemPath>Lua/5.3.1/loadlib.c</itemPath>
-          <itemPath>Lua/5.3.1/lobject.c</itemPath>
-          <itemPath>Lua/5.3.1/lobject.h</itemPath>
-          <itemPath>Lua/5.3.1/lopcodes.c</itemPath>
-          <itemPath>Lua/5.3.1/lopcodes.h</itemPath>
-          <itemPath>Lua/5.3.1/loslib.c</itemPath>
-          <itemPath>Lua/5.3.1/lparser.c</itemPath>
-          <itemPath>Lua/5.3.1/lparser.h</itemPath>
-          <itemPath>Lua/5.3.1/lprefix.h</itemPath>
-          <itemPath>Lua/5.3.1/lstate.c</itemPath>
-          <itemPath>Lua/5.3.1/lstate.h</itemPath>
-          <itemPath>Lua/5.3.1/lstring.c</itemPath>
-          <itemPath>Lua/5.3.1/lstring.h</itemPath>
-          <itemPath>Lua/5.3.1/lstrlib.c</itemPath>
-          <itemPath>Lua/5.3.1/ltable.c</itemPath>
-          <itemPath>Lua/5.3.1/ltable.h</itemPath>
-          <itemPath>Lua/5.3.1/ltablib.c</itemPath>
-          <itemPath>Lua/5.3.1/ltm.c</itemPath>
-          <itemPath>Lua/5.3.1/ltm.h</itemPath>
-          <itemPath>Lua/5.3.1/lua.c</itemPath>
-          <itemPath>Lua/5.3.1/lua.h</itemPath>
-          <itemPath>Lua/5.3.1/lua.hpp</itemPath>
-          <itemPath>Lua/5.3.1/luac.c</itemPath>
-          <itemPath>Lua/5.3.1/luaconf.h</itemPath>
-          <itemPath>Lua/5.3.1/lualib.h</itemPath>
-          <itemPath>Lua/5.3.1/lundump.c</itemPath>
-          <itemPath>Lua/5.3.1/lundump.h</itemPath>
-          <itemPath>Lua/5.3.1/lutf8lib.c</itemPath>
-          <itemPath>Lua/5.3.1/lvm.c</itemPath>
-          <itemPath>Lua/5.3.1/lvm.h</itemPath>
-          <itemPath>Lua/5.3.1/lzio.c</itemPath>
-          <itemPath>Lua/5.3.1/lzio.h</itemPath>
-        </logicalFolder>
         <logicalFolder name="adds" displayName="adds" projectFiles="true">
           <itemPath>Lua/adds/luaconf.h</itemPath>
         </logicalFolder>
@@ -690,6 +627,69 @@
           <itemPath>Lua/platform/pwm.c</itemPath>
           <itemPath>Lua/platform/spi.c</itemPath>
           <itemPath>Lua/platform/uart.c</itemPath>
+        </logicalFolder>
+        <logicalFolder name="src" displayName="src" projectFiles="true">
+          <itemPath>Lua/src/lapi.c</itemPath>
+          <itemPath>Lua/src/lapi.h</itemPath>
+          <itemPath>Lua/src/lauxlib.c</itemPath>
+          <itemPath>Lua/src/lauxlib.h</itemPath>
+          <itemPath>Lua/src/lbaselib.c</itemPath>
+          <itemPath>Lua/src/lbitlib.c</itemPath>
+          <itemPath>Lua/src/lcode.c</itemPath>
+          <itemPath>Lua/src/lcode.h</itemPath>
+          <itemPath>Lua/src/lcorolib.c</itemPath>
+          <itemPath>Lua/src/lctype.c</itemPath>
+          <itemPath>Lua/src/lctype.h</itemPath>
+          <itemPath>Lua/src/ldblib.c</itemPath>
+          <itemPath>Lua/src/ldebug.c</itemPath>
+          <itemPath>Lua/src/ldebug.h</itemPath>
+          <itemPath>Lua/src/ldo.c</itemPath>
+          <itemPath>Lua/src/ldo.h</itemPath>
+          <itemPath>Lua/src/ldump.c</itemPath>
+          <itemPath>Lua/src/lfunc.c</itemPath>
+          <itemPath>Lua/src/lfunc.h</itemPath>
+          <itemPath>Lua/src/lgc.c</itemPath>
+          <itemPath>Lua/src/lgc.h</itemPath>
+          <itemPath>Lua/src/linit.c</itemPath>
+          <itemPath>Lua/src/liolib.c</itemPath>
+          <itemPath>Lua/src/llex.c</itemPath>
+          <itemPath>Lua/src/llex.h</itemPath>
+          <itemPath>Lua/src/llimits.h</itemPath>
+          <itemPath>Lua/src/lmathlib.c</itemPath>
+          <itemPath>Lua/src/lmem.c</itemPath>
+          <itemPath>Lua/src/lmem.h</itemPath>
+          <itemPath>Lua/src/loadlib.c</itemPath>
+          <itemPath>Lua/src/lobject.c</itemPath>
+          <itemPath>Lua/src/lobject.h</itemPath>
+          <itemPath>Lua/src/lopcodes.c</itemPath>
+          <itemPath>Lua/src/lopcodes.h</itemPath>
+          <itemPath>Lua/src/loslib.c</itemPath>
+          <itemPath>Lua/src/lparser.c</itemPath>
+          <itemPath>Lua/src/lparser.h</itemPath>
+          <itemPath>Lua/src/lprefix.h</itemPath>
+          <itemPath>Lua/src/lstate.c</itemPath>
+          <itemPath>Lua/src/lstate.h</itemPath>
+          <itemPath>Lua/src/lstring.c</itemPath>
+          <itemPath>Lua/src/lstring.h</itemPath>
+          <itemPath>Lua/src/lstrlib.c</itemPath>
+          <itemPath>Lua/src/ltable.c</itemPath>
+          <itemPath>Lua/src/ltable.h</itemPath>
+          <itemPath>Lua/src/ltablib.c</itemPath>
+          <itemPath>Lua/src/ltm.c</itemPath>
+          <itemPath>Lua/src/ltm.h</itemPath>
+          <itemPath>Lua/src/lua.c</itemPath>
+          <itemPath>Lua/src/lua.h</itemPath>
+          <itemPath>Lua/src/lua.hpp</itemPath>
+          <itemPath>Lua/src/luac.c</itemPath>
+          <itemPath>Lua/src/luaconf.h</itemPath>
+          <itemPath>Lua/src/lualib.h</itemPath>
+          <itemPath>Lua/src/lundump.c</itemPath>
+          <itemPath>Lua/src/lundump.h</itemPath>
+          <itemPath>Lua/src/lutf8lib.c</itemPath>
+          <itemPath>Lua/src/lvm.c</itemPath>
+          <itemPath>Lua/src/lvm.h</itemPath>
+          <itemPath>Lua/src/lzio.c</itemPath>
+          <itemPath>Lua/src/lzio.h</itemPath>
         </logicalFolder>
       </logicalFolder>
       <logicalFolder name="lwip" displayName="lwip" projectFiles="true">
@@ -1376,7 +1376,7 @@
             <pElem>lwip/src/include</pElem>
             <pElem>lwip/src/include/lwip</pElem>
             <pElem>mqtt</pElem>
-            <pElem>Lua/5.3.1</pElem>
+            <pElem>Lua/src</pElem>
             <pElem>Lua/elua/inc</pElem>
             <pElem>Lua/modules</pElem>
             <pElem>Lua/platform</pElem>
@@ -1481,128 +1481,6 @@
       </item>
       <item path="FreeRTOS/xc.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Lua/5.3.1/lapi.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lapi.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lauxlib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lauxlib.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lbaselib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lbitlib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lcode.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lcode.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lcorolib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lctype.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lctype.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/ldblib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/ldebug.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/ldebug.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/ldo.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/ldo.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/ldump.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lfunc.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lfunc.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lgc.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lgc.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/linit.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/liolib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/llex.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/llex.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/llimits.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lmathlib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lmem.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lmem.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/loadlib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lobject.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lobject.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lopcodes.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lopcodes.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/loslib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lparser.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lparser.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lprefix.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lstate.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lstate.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lstring.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lstring.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lstrlib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/ltable.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/ltable.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/ltablib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/ltm.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/ltm.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lua.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lua.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lua.hpp" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/luac.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/luaconf.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lualib.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lundump.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lundump.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lutf8lib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lvm.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lvm.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lzio.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lzio.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="Lua/adds/luaconf.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/common/linenoise.c" ex="false" tool="0" flavor2="0">
@@ -1678,6 +1556,128 @@
       <item path="Lua/platform/spi.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/platform/uart.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lapi.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lapi.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lauxlib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lauxlib.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lbaselib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lbitlib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lcode.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lcode.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lcorolib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lctype.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lctype.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/ldblib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/ldebug.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/ldebug.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/ldo.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/ldo.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/ldump.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lfunc.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lfunc.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lgc.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lgc.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/linit.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/liolib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/llex.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/llex.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/llimits.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lmathlib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lmem.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lmem.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/loadlib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lobject.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lobject.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lopcodes.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lopcodes.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/loslib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lparser.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lparser.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lprefix.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lstate.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lstate.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lstring.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lstring.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lstrlib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/ltable.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/ltable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/ltablib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/ltm.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/ltm.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lua.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lua.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lua.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/luac.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/luaconf.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lualib.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lundump.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lundump.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lutf8lib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lvm.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lvm.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lzio.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lzio.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="drivers/adc/adc.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -3398,7 +3398,7 @@
             <pElem>lwip/src/include</pElem>
             <pElem>lwip/src/include/lwip</pElem>
             <pElem>mqtt</pElem>
-            <pElem>Lua/5.3.1</pElem>
+            <pElem>Lua/src</pElem>
             <pElem>Lua/elua/inc</pElem>
             <pElem>Lua/modules</pElem>
             <pElem>Lua/platform</pElem>
@@ -3503,128 +3503,6 @@
       </item>
       <item path="FreeRTOS/xc.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Lua/5.3.1/lapi.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lapi.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lauxlib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lauxlib.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lbaselib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lbitlib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lcode.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lcode.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lcorolib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lctype.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lctype.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/ldblib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/ldebug.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/ldebug.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/ldo.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/ldo.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/ldump.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lfunc.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lfunc.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lgc.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lgc.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/linit.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/liolib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/llex.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/llex.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/llimits.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lmathlib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lmem.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lmem.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/loadlib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lobject.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lobject.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lopcodes.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lopcodes.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/loslib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lparser.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lparser.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lprefix.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lstate.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lstate.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lstring.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lstring.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lstrlib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/ltable.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/ltable.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/ltablib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/ltm.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/ltm.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lua.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lua.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lua.hpp" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/luac.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/luaconf.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lualib.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lundump.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lundump.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lutf8lib.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lvm.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lvm.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lzio.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/5.3.1/lzio.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="Lua/adds/luaconf.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/common/linenoise.c" ex="false" tool="0" flavor2="0">
@@ -3692,6 +3570,128 @@
       <item path="Lua/platform/spi.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/platform/uart.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lapi.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lapi.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lauxlib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lauxlib.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lbaselib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lbitlib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lcode.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lcode.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lcorolib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lctype.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lctype.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/ldblib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/ldebug.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/ldebug.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/ldo.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/ldo.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/ldump.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lfunc.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lfunc.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lgc.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lgc.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/linit.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/liolib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/llex.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/llex.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/llimits.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lmathlib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lmem.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lmem.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/loadlib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lobject.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lobject.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lopcodes.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lopcodes.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/loslib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lparser.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lparser.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lprefix.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lstate.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lstate.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lstring.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lstring.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lstrlib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/ltable.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/ltable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/ltablib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/ltm.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/ltm.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lua.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lua.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lua.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/luac.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/luaconf.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lualib.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lundump.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lundump.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lutf8lib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lvm.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lvm.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Lua/src/lzio.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/src/lzio.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="drivers/adc/adc.c" ex="false" tool="0" flavor2="0">
       </item>
