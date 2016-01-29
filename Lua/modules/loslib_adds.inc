@@ -167,7 +167,7 @@ static int os_edit (lua_State *L) {
     // Create file if does not exists
     FILE *fp = fopen(path, "a");
     if (!fp) {
-        luaL_fileresult(L, 0, path);
+        return luaL_fileresult(L, 0, path);
     }
     fclose(fp);
   
@@ -231,7 +231,7 @@ static int os_cat(lua_State *L) {
     int res;
     
     if ((res = more(path, 0)) < 0) {
-        luaL_fileresult(L, 0, path);
+        return luaL_fileresult(L, 0, path);
     }
 
     return 0;
@@ -242,7 +242,7 @@ static int os_more(lua_State *L) {
     int res;
     
     if ((res = more(path, 1)) < 0) {
-        luaL_fileresult(L, 0, path);
+        return luaL_fileresult(L, 0, path);
     }
 
     return 0;
@@ -256,7 +256,7 @@ static int os_dmesg(lua_State *L) {
     fname = mount_secondary_or_primary("/log/messages.log");
 
     if ((res = more(fname, 1)) < 0) {
-        luaL_fileresult(L, 0, path);
+        return luaL_fileresult(L, 0, path);
     }
 
     free(fname);
