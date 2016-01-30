@@ -226,7 +226,7 @@ rm_command:
     {
 		sprintf(
 			buff, 
-			"do local r,m,e = os.rm(\"%s\"); if (not (m == nil)) then print(\"rm: \"..m); end end",
+			"do local r,m,e = os.remove(\"%s\"); if (not (m == nil)) then print(\"rm: \"..m); end end",
 			args[0]
 		);
 		YYACCEPT;
