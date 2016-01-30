@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="95">
+<configurationDescriptor version="97">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -581,9 +581,11 @@
           <itemPath>Lua/adds/luaconf.h</itemPath>
         </logicalFolder>
         <logicalFolder name="common" displayName="common" projectFiles="true">
+          <itemPath>Lua/common/lex.yy.c</itemPath>
           <itemPath>Lua/common/linenoise.c</itemPath>
           <itemPath>Lua/common/linenoise.h</itemPath>
-          <itemPath>Lua/common/shell.c</itemPath>
+          <itemPath>Lua/common/y.tab.c</itemPath>
+          <itemPath>Lua/common/y.tab.h</itemPath>
         </logicalFolder>
         <logicalFolder name="elua" displayName="elua" projectFiles="true">
           <logicalFolder name="inc" displayName="inc" projectFiles="true">
@@ -1483,11 +1485,15 @@
       </item>
       <item path="Lua/adds/luaconf.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Lua/common/lex.yy.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="Lua/common/linenoise.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/common/linenoise.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Lua/common/shell.c" ex="false" tool="0" flavor2="0">
+      <item path="Lua/common/y.tab.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/common/y.tab.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/elua/inc/elua_platform.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -3505,11 +3511,15 @@
       </item>
       <item path="Lua/adds/luaconf.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Lua/common/lex.yy.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="Lua/common/linenoise.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/common/linenoise.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Lua/common/shell.c" ex="false" tool="0" flavor2="0">
+      <item path="Lua/common/y.tab.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/common/y.tab.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/elua/inc/elua_platform.h" ex="false" tool="3" flavor2="0">
       </item>
