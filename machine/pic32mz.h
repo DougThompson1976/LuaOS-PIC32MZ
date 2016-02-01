@@ -25,6 +25,8 @@
 #define _IO_PIC32MZ_H
 
 #ifdef __LANGUAGE_ASSEMBLY__
+#define _CP0_STATUS_BEV_MASK                   (1 << 22)
+
 #define _CP0_INDEX                             $0, 0
 #define _CP0_INX                               $0, 0
 #define _CP0_RANDOM                            $1, 0
@@ -1747,13 +1749,15 @@
 #define NVMDATA0        PIC32_R (0x0630)
 #define NVMSRCADDR      PIC32_R (0x0670)
 // WHITECAT END
-
   
 #define OSCCON          PIC32_R (0x1200)    /* Oscillator Control */
 #define OSCCONSET       PIC32_R (0x1208)    
 #define OSCTUN          PIC32_R (0x1210)
 #define SPLLCON         PIC32_R (0x1220)
 #define RCON            PIC32_R (0x1240)
+#define RCONCLR         PIC32_R (0x1244)
+#define RCONSET         PIC32_R (0x1248)
+#define RCONINV         PIC32_R (0x124C)
 #define RSWRST          PIC32_R (0x1250)
 #define RSWRSTCLR       PIC32_R (0x1254)
 #define RSWRSTSET       PIC32_R (0x1258)

@@ -300,6 +300,8 @@ static int os_format(lua_State *L) {
 
 static int os_sleep(lua_State *L) {   
     cpu_sleep();
+    
+    return 0;
 }
 
 static int os_loglevel(lua_State *L) {   

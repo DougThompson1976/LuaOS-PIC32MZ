@@ -78,7 +78,7 @@ PIC32_DEVCFG (
     DEVCFG1_POSCMOD_EC              |
     DEVCFG1_OSCIOFNC_OFF            |
     DEVCFG1_FCKSM_CSDCMD            |
-    DEVCFG1_WDTPS_PS1048576         |	
+    DEVCFG1_WDTPS_PS2048         |	
     DEVCFG1_WDTSPGM_STOP            |
     DEVCFG1_WINDIS_NORMAL           |        
     DEVCFG1_FWDTEN_OFF              |
@@ -114,6 +114,12 @@ void led_on() {
     TRISBCLR = 0xffffff;
     LATBSET = 0xffffff;
 }
+
+void led_off() {
+    TRISBCLR = 0xffffff;
+    LATBSET = 0x0;
+}
+
 #include "math.h"
 
 void *lua_start(void *arg) {

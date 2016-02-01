@@ -86,21 +86,22 @@
         // http://www.imgtec.com/downloads/app-notes/MD00901-2B-CPS-APP-01.03.zip
         //
 start:
-        mtc0    zero, MACH_C0_Count     # Clear cp0 Count (Used to measure boot time.)
-#if 0
-check_nmi:                              # Check whether we are here due to a reset or NMI.
-        mfc0    s1, MACH_C0_Status      # Read Status
-        ext     s1, s1, 19, 1           # extract NMI
-        beqz    s1, init_gpr            # Branch if this is NOT an NMI exception.
+        mfc0    k0, _CP0_STATUS
+        ext     k0, k0, 0x13, 0x1
+        beqz    k0, _no_nmi
         nop
 
-        # Call nmi_exception().
-        la      sp, _eram - 16          # Set up stack base.
-        la      gp, _gp                 # GP register value defined by linker script.
-        la      s1, nmi_exception       # Call user-defined NMI handler.
-        jalr    s1
-        nop
-#endif
+_nmi:
+        mfc0    k0, _CP0_STATUS                   # retrieve STATUS
+        lui     k1, ~(_CP0_STATUS_BEV_MASK >> 16) & 0xffff
+        ori     k1, k1, ~_CP0_STATUS_BEV_MASK & 0xffff
+        and     k0, k0, k1                        # Clear BEV
+        mtc0    k0, _CP0_STATUS                   # store STATUS
+        eret
+
+_no_nmi:
+        mtc0    zero, MACH_C0_Count     # Clear cp0 Count (Used to measure boot time.)
+
         //
         // Set all GPRs of all register sets to predefined state.
         //

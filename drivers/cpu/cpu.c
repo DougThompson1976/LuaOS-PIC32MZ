@@ -30,6 +30,7 @@
 #include "whitecat.h"
 
 #include <machine/pic32mz.h>
+#include <machine/machConst.h>
 #include <drivers/cpu/cpu.h>
 #include <drivers/gpio/gpio.h>
 #include <stdio.h>
@@ -255,18 +256,19 @@ void cpu_show_info() {
 }
 
 void cpu_reset() {
-    SYSKEY = 0x00000000; //write invalid key to force lock
-    SYSKEY = 0xAA996655; //write key1 to SYSKEY
-    SYSKEY = 0x556699AA; //write key2 to SYSKEY
+    vTaskSuspendAll();
+
+    SYSKEY = 0x00000000; // write invalid key to force lock
+    SYSKEY = 0xAA996655; // write key1 to SYSKEY
+    SYSKEY = 0x556699AA; // write key2 to SYSKEY
 
     // OSCCON is now unlocked
     
     /* set SWRST bit to arm reset */
     RSWRSTSET = 1;
-
+    
     /* read RSWRST register to trigger reset */
-    unsigned int dummy;
-    dummy = RSWRST;
+    unsigned int dummy = RSWRST;
 
     /* prevent any unwanted code execution until reset occurs*/
     while(1);
@@ -289,18 +291,39 @@ unsigned int cpu_pin_assigned(unsigned int pin) {
 }
 
 
-void cpu_sleep() {
+inline void cpu_sleep() {
+    vTaskSuspendAll();
+
+    // Lock sequence
+    SYSKEY = 0;			
     SYSKEY = UNLOCK_KEY_0;
     SYSKEY = UNLOCK_KEY_1;
 
     OSCCONSET = 0x10;   // set Power-Saving mode to Sleep
-
-    SYSKEY = 0;			
-
+                
+    WDTCON = (0x57430000 | (1 << 15) | (1 << 0));
+    
     WDTCONCLR = 0x0002; // Disable WDT window mode
-    WDTCONSET = 0x8000; // Enable WDT
+    WDTCONSET = 0x8001; // Enable and serve WDT
 
-    WDTCONSET = 0x01;
+    // Unlock
+    SYSKEY = 0;	
 
-    asm volatile("wait");
+    asm ("nop");
+    asm ("nop");
+    asm ("nop");
+    asm ("nop");
+    asm ("nop");
+    asm ("nop");
+    asm ("nop");
+
+    asm ("wait"); // Enter in selected power-saving mode
+    
+    // Disable WDT
+    WDTCONCLR = (1 << 15);
+        
+    RCONCLR = (1 << 4);
+    RCONCLR = (1 << 3);
+    
+    xTaskResumeAll();
 }
