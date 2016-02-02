@@ -88,6 +88,10 @@
           <itemPath>drivers/pwm/pwm.c</itemPath>
           <itemPath>drivers/pwm/pwm.h</itemPath>
         </logicalFolder>
+        <logicalFolder name="rtc" displayName="rtc" projectFiles="true">
+          <itemPath>drivers/rtc/rtc.c</itemPath>
+          <itemPath>drivers/rtc/rtc.h</itemPath>
+        </logicalFolder>
         <logicalFolder name="sd" displayName="sd" projectFiles="true">
           <itemPath>drivers/sd/disklabel.h</itemPath>
           <itemPath>drivers/sd/sd.c</itemPath>
@@ -943,6 +947,7 @@
         <itemPath>machine/vmparam.h</itemPath>
       </logicalFolder>
       <logicalFolder name="main" displayName="main" projectFiles="true">
+        <itemPath>main/build.h</itemPath>
         <itemPath>main/locore.s</itemPath>
         <itemPath>main/lwipopts.h</itemPath>
         <itemPath>main/machdep.c</itemPath>
@@ -1767,6 +1772,10 @@
       </item>
       <item path="drivers/pwm/pwm.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="drivers/rtc/rtc.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="drivers/rtc/rtc.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="drivers/sd/disklabel.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="drivers/sd/sd.c" ex="false" tool="0" flavor2="0">
@@ -3009,6 +3018,8 @@
       <item path="machine/varargs.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="machine/vmparam.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="main/build.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main/lwipopts.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -3785,6 +3796,10 @@
       </item>
       <item path="drivers/pwm/pwm.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="drivers/rtc/rtc.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="drivers/rtc/rtc.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="drivers/sd/disklabel.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="drivers/sd/sd.c" ex="false" tool="0" flavor2="0">
@@ -5027,6 +5042,8 @@
       <item path="machine/varargs.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="machine/vmparam.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="main/build.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main/lwipopts.h" ex="false" tool="3" flavor2="0">
       </item>

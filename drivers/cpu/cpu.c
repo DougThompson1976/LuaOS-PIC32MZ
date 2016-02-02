@@ -29,10 +29,12 @@
 
 #include "whitecat.h"
 
+#include <time.h>
 #include <machine/pic32mz.h>
 #include <machine/machConst.h>
 #include <drivers/cpu/cpu.h>
 #include <drivers/gpio/gpio.h>
+#include <drivers/rtc/rtc.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <syslog.h>
@@ -290,8 +292,14 @@ unsigned int cpu_pin_assigned(unsigned int pin) {
     
 }
 
+inline void cpu_idle() {
+    struct tm *info;
+    time_t now;
+    
+    now = time(NULL);
+    info = localtime(&now);
+    syslog(LOG_INFO,"cpu enter to iddle mode at %s",asctime(info));
 
-inline void cpu_sleep() {
     vTaskSuspendAll();
 
     // Lock sequence
@@ -299,31 +307,27 @@ inline void cpu_sleep() {
     SYSKEY = UNLOCK_KEY_0;
     SYSKEY = UNLOCK_KEY_1;
 
-    OSCCONSET = 0x10;   // set Power-Saving mode to Sleep
-                
-    WDTCON = (0x57430000 | (1 << 15) | (1 << 0));
-    
-    WDTCONCLR = 0x0002; // Disable WDT window mode
-    WDTCONSET = 0x8001; // Enable and serve WDT
-
+    OSCCONCLR = (1 << 4);   // set Power-Saving mode to iddle
+                 
     // Unlock
     SYSKEY = 0;	
 
-    asm ("nop");
-    asm ("nop");
-    asm ("nop");
-    asm ("nop");
-    asm ("nop");
-    asm ("nop");
-    asm ("nop");
+    // Discontinue TMR1 on iddle
+    T1CONCLR = (1 << 15);
+    T1CONSET = (1 << 13);
+    T1CONSET = (1 << 15);
 
     asm ("wait"); // Enter in selected power-saving mode
     
-    // Disable WDT
-    WDTCONCLR = (1 << 15);
-        
     RCONCLR = (1 << 4);
     RCONCLR = (1 << 3);
     
     xTaskResumeAll();
+
+    // Update clock from RTC
+    rtc_update_clock();
+
+    now = time(NULL);
+    info = localtime(&now);
+    syslog(LOG_INFO,"cpu exit from iddle mode at %s",asctime(info));
 }

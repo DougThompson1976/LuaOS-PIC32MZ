@@ -28,6 +28,7 @@
  */
 
 #include "whitecat.h"
+#include "build.h"
 
 #include <drivers/gpio/gpio.h>
 
@@ -59,7 +60,9 @@ static volatile unsigned long long tuseconds = 0; // Seconds counter (from boot)
 unsigned int activity = 0;
 
 void clock_init(void) {
-    mtx_init(&clock_mtx, NULL, NULL, 0);
+    mtx_init(&clock_mtx, NULL, NULL, 0);  
+    
+    tseconds = BUILD_TIME;
 }
 
 void newTick(void) {
@@ -97,6 +100,11 @@ void newTick(void) {
 void set_time_s(u32_t secs) {
     mtx_lock(&clock_mtx);
     tseconds = secs;
+
+#if USE_RTC
+    rtc_init(secs);
+#endif
+    
     mtx_unlock(&clock_mtx);
 }
 
@@ -113,13 +121,13 @@ int gettimeofday(struct timeval *tv , struct timezone *tz) {
 
 time_t time(time_t *t) {
     mtx_lock(&clock_mtx);
-    
+
     time_t current = (tseconds);
     
     if (t) {
         *t = current;
     }
-    
+
     mtx_unlock(&clock_mtx);
 
     return (current);
@@ -157,5 +165,10 @@ void set_time_ymdhms(u16_t year, u8_t month, u8_t day, u8_t hours, u8_t minutes,
 
     mtx_lock(&clock_mtx);
     tseconds = secs;
+
+#if USE_RTC
+    rtc_init(secs);
+#endif
+
     mtx_unlock(&clock_mtx);
 }

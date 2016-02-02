@@ -137,6 +137,11 @@ mach_init()
     
     PMD5 = 0xffffffff;
     PMD6 = 0xffffffff;
+
+#if USE_RTC    
+    PMD6CLR = RTCCMD;
+#endif
+    
     PMD7 = 0xffffffff;
     
     clock_init();

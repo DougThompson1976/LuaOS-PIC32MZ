@@ -51,6 +51,7 @@
 #include <syslog.h>
 #include <stdarg.h>
 #include <dirent.h>
+#include <time.h>
 
 #include "pthread.h"
 

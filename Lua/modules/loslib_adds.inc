@@ -298,8 +298,8 @@ static int os_format(lua_State *L) {
     return 0;
 }
 
-static int os_sleep(lua_State *L) {   
-    cpu_sleep();
+static int os_idle(lua_State *L) {   
+    cpu_idle();
     
     return 0;
 }

@@ -54,6 +54,11 @@ build: .build-post
  
 .build-pre:
 # Add your pre 'build' code here...
+	echo "#ifndef BUILD_H" > main/build.h 
+	echo "#define BUILD_H" >> main/build.h 
+	echo "#define BUILD_TIME \\" >> main/build.h 
+	date +%s >> main/build.h 
+	echo "#endif" >> main/build.h 
 	make -f Makefile.asm FOLDER=main asm
 	make -f Makefile.asm FOLDER=FreeRTOS/port asm
 	make -f Makefile.asm FOLDER=lib/libc/gen asm

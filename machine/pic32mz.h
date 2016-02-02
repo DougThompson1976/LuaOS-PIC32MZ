@@ -1737,6 +1737,32 @@
 #define CFGPG           PIC32_R (0x00e0)
 
 // WHITECAT BEGIN
+#define RTCCON          PIC32_R (0x0C00)
+#define RTCCONCLR       PIC32_R (0x0C04)
+#define RTCCONSET       PIC32_R (0x0C08)
+#define RTCCONINV       PIC32_R (0x0C0C)
+#define RTCALRM         PIC32_R (0x0C10)
+#define RTCALRMCLR      PIC32_R (0x0C14)
+#define RTCALRMSET      PIC32_R (0x0C18)
+#define RTCALRMINV      PIC32_R (0x0C1C)
+#define RTCTIME         PIC32_R (0x0C20)
+#define RTCTIMECLR      PIC32_R (0x0C24)
+#define RTCTIMESET      PIC32_R (0x0C28)
+#define RTCTIMEINV      PIC32_R (0x0C2C)
+#define RTCDATE         PIC32_R (0x0C30)
+#define RTCDATECLR      PIC32_R (0x0C34)
+#define RTCDATESET      PIC32_R (0x0C38)
+#define RTCDATEINV      PIC32_R (0x0C3C)
+#define ALRMTIME        PIC32_R (0x0C40)
+#define ALRMTIMECLR     PIC32_R (0x0C44)
+#define ALRMTIMESET     PIC32_R (0x0C48)
+#define ALRMTIMEINV     PIC32_R (0x0C4C)
+#define ALRMDATE        PIC32_R (0x0C50)
+#define ALRMDATECLR     PIC32_R (0x0C54)
+#define ALRMDATESET     PIC32_R (0x0C58)
+#define ALRMDATEINV     PIC32_R (0x0C5C)
+  
+  
 #define NVMCON          PIC32_R (0x0600)
 #define NVMCONCLR       PIC32_R (0x0604)
 #define NVMCONSET       PIC32_R (0x0608)
@@ -1751,7 +1777,9 @@
 // WHITECAT END
   
 #define OSCCON          PIC32_R (0x1200)    /* Oscillator Control */
+#define OSCCONCLR       PIC32_R (0x1204)    
 #define OSCCONSET       PIC32_R (0x1208)    
+#define OSCCONINV       PIC32_R (0x120C)    
 #define OSCTUN          PIC32_R (0x1210)
 #define SPLLCON         PIC32_R (0x1220)
 #define RCON            PIC32_R (0x1240)

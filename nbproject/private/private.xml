@@ -7,15 +7,21 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/adds/luaconf.h</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/5.3.1/liolib.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/5.3.1/linit.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/5.3.1/lua.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/5.3.1/lauxlib.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/common/y.tab.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/common/shell.y</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/lib/libc/string/strcpy.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/spi/spi.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/common/shell.l</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/liolib_adds.inc</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/5.3.1/ldo.c</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/loslib_adds.inc</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/5.3.1/lua.h</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/cdefs.h</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/common/lex.yy.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/systm.h</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/include/string.h</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/main/locore.s</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/lua_adds.inc</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/src/loslib.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/vm/device_pager.c</file>
         </group>
     </open-files>
 </project-private>

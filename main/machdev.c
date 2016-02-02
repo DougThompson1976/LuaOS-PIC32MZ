@@ -64,7 +64,7 @@ static int create_folder(char *path) {
     return 0;
 }
 
-void mach_dev() {
+void mach_dev() {    
     console_init();
     console_clear();
     cpu_init();
@@ -127,6 +127,9 @@ void mach_dev() {
         create_folder("/sd/lib/lua");
         create_folder("/sd/tmp");
     }
+
+    tzset();
+    rtc_init(time(NULL));
     
     if (mount_is_mounted("sd")) {
         // Redirect console messages to /log/messages.log ...
@@ -140,7 +143,7 @@ void mach_dev() {
     
     // Log only errors
     setlogmask(LOG_ERR);
-    
+        
     // Continue init ...
     printf("\n");
 }

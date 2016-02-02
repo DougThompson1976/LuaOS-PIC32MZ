@@ -106,7 +106,7 @@
   {"more",      os_more}, \
   {"dmesg",     os_dmesg}, \
   {"format",    os_format}, \
-  {"sleep",     os_sleep}, \
+  {"idle",      os_idle}, \
   {"loglevel",  os_loglevel}, \
   {"logcons",   os_logcons}, \
   {"stats",     os_stats},
