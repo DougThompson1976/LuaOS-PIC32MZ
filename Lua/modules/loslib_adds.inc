@@ -299,7 +299,7 @@ static int os_format(lua_State *L) {
 }
 
 static int os_idle(lua_State *L) {   
-    cpu_idle();
+    cpu_idle(10);
     
     return 0;
 }

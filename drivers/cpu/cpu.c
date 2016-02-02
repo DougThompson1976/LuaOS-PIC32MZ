@@ -292,7 +292,7 @@ unsigned int cpu_pin_assigned(unsigned int pin) {
     
 }
 
-inline void cpu_idle() {
+void cpu_idle(int seconds) {
     struct tm *info;
     time_t now;
     
@@ -317,8 +317,10 @@ inline void cpu_idle() {
     T1CONSET = (1 << 13);
     T1CONSET = (1 << 15);
 
-    asm ("wait"); // Enter in selected power-saving mode
+    rtc_alarm_at(now + seconds);
     
+    asm ("wait"); // Enter in selected power-saving mode
+
     RCONCLR = (1 << 4);
     RCONCLR = (1 << 3);
     

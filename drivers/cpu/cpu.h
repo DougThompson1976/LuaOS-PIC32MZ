@@ -42,5 +42,6 @@ unsigned int cpu_pin_assigned(unsigned int pin);
 unsigned int cpu_pin_number(unsigned int pin);
 unsigned int cpu_port_io_pin_mask(unsigned int port);
 unsigned int cpu_port_adc_pin_mask(unsigned int port);
+void cpu_idle(int seconds);
 
 #endif

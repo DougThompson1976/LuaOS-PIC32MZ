@@ -37,19 +37,98 @@
 #include <time.h>
 #include <syslog.h>
 #include <machine/pic32mz.h>
+#include <machine/machConst.h>
 
-static void rtc_set_time(int year, int month, int day, int hours, int minutes, int seconds) {
-    year = year - 2000;
+#define RTC_BCD_CODE(a,b,c, d) \
+    d = ((((a / 10) << 4) | (a % 10)) << 24) | \
+        ((((b / 10) << 4) | (b % 10)) << 16) | \
+        ((((c / 10) << 4) | (c % 10)) << 8);
+              
+#define RTC_BCD_DECODE(a, b, c, d) \
+    a = (((d & (0xf0 << 24)) >> 28) * 10) + \
+        (((d & (0x0f << 24)) >> 24)); \
+    b = (((d & (0xf0 << 16)) >> 20) * 10) + \
+        (((d & (0x0f << 16)) >> 16)); \
+    c = (((d & (0xf0 <<  8)) >> 12) * 10) + \
+        (((d & (0x0f <<  8)) >> 8));
+        
+static void rtc_set_time(struct tm *info) {
+    int year =  info->tm_year - 100;
+    int month = info->tm_mon + 1;
     
     // Set date
-    RTCDATE = ((((year / 10) << 4) | (year % 10)) << 24) | 
-              ((((month / 10) << 4) | (month % 10)) << 16) | 
-              ((((day / 10) << 4) | (day % 10)) << 8);
-
+    RTC_BCD_CODE(year, month, info->tm_mday, RTCDATE);
+            
     // Set time
-    RTCTIME = ((((hours / 10) << 4) | (hours % 10)) << 24) | 
-              ((((minutes / 10) << 4) | (minutes % 10)) << 16) | 
-              ((((seconds / 10) << 4) | (seconds % 10)) << 8);
+    RTC_BCD_CODE(info->tm_hour, info->tm_min, info->tm_sec, RTCTIME);
+}
+
+static void rtc_set_alarm(struct tm *info) {
+    int year =  info->tm_year - 100;
+    int month = info->tm_mon + 1;
+    
+    // Set date
+    RTC_BCD_CODE(year, month, info->tm_mday, ALRMDATE);
+            
+    // Set time
+    RTC_BCD_CODE(info->tm_hour, info->tm_min, info->tm_sec, ALRMTIME);    
+}
+
+void rtc_alarm_at(time_t time) {
+    struct tm *info;
+    
+    // Convert from epoch time to tm struct
+    info = localtime(&time);
+
+    // Disable RTCC interrupts
+    IECCLR(PIC32_IRQ_RTCC >> 5) = 1 << (PIC32_IRQ_RTCC & 31); 
+    //printf("iecclr %x\n", 1 << (PIC32_IRQ_RTCC & 31));
+    
+    // Clear RTCC flag
+    IFSCLR(PIC32_IRQ_RTCC >> 5) = 1 << (PIC32_IRQ_RTCC & 31); 
+    //printf("ifsclr %x\n", 1 << (PIC32_IRQ_RTCC & 31));
+    
+    // Clear the RTCC priority and sub-priority
+    IPCCLR(PIC32_IRQ_RTCC >> 2) = 0x1f << (5 * (PIC32_IRQ_RTCC & 0x03));
+    //printf("ipcclr %x\n",  0x1f << (5 * (PIC32_IRQ_RTCC & 0x03)));
+
+    // Set RTCC IPL 3, sub-priority 1
+    IPCSET(PIC32_IRQ_RTCC >> 2) = (0x1f << (8 * (PIC32_IRQ_RTCC & 0x03))) & 0x0d0d0d0d;
+    //printf("ipcclr %x\n",  (0x1f << (8 * (PIC32_IRQ_RTCC & 0x03))) & 0x0d0d0d0d);
+
+    // Lock sequence
+    SYSKEY = 0;			
+    SYSKEY = UNLOCK_KEY_0;
+    SYSKEY = UNLOCK_KEY_1;
+
+    // Enable write
+    RTCCONSET = (1 << 3);
+
+    // Alarm off
+    // Chime is disabled
+    // PIV is read-only and returns the state of the Alarm Pulse
+    // Alarm mask to once per day
+    // Alarm will trigger one time
+    RTCALRM = (1 << 13) |
+              (0b0110 << 8);
+    
+    // Wait for ALRMSYNC to be 0
+    while(RTCALRM & (1 << 12));
+    
+    rtc_set_alarm(info);
+    
+    // Enable alarm
+    RTCALRMSET = (1 << 15);
+
+    // Disable write
+    RTCCONSET = (1 << 3);
+
+    // Unlock
+    SYSKEY = 0;	
+    
+    // Enable RTCC interrupts
+    IECSET(PIC32_IRQ_RTCC >> 5) = 1 << (PIC32_IRQ_RTCC & 31); 
+    //printf("iecset %x\n",  1 << (PIC32_IRQ_RTCC & 31));
 }
 
 void rtc_init(time_t time) {
@@ -58,8 +137,6 @@ void rtc_init(time_t time) {
     // Convert from epoch time to tm struct
     info = localtime(&time);
 
-    syslog(LOG_INFO,"rtc setting time and date to %s",asctime(info));
-    
     // Lock sequence
     SYSKEY = 0;			
     SYSKEY = UNLOCK_KEY_0;
@@ -77,8 +154,7 @@ void rtc_init(time_t time) {
     // Enable write
     RTCCONSET = (1 << 3);
 
-    rtc_set_time(info->tm_year,info->tm_mon, info->tm_mday,
-                 info->tm_hour,info->tm_min, info->tm_sec);
+    rtc_set_time(info);
 
     // Turn-on RTC
     RTCCONSET = (1 << 15);
@@ -94,30 +170,28 @@ void rtc_init(time_t time) {
 }
 
 void rtc_update_clock() {
-    int year, month, day, hours, mins, secs;
+    struct tm info;
+    unsigned int timev;
+    unsigned int datev;
     
-    int timev = RTCTIME;
-    int datev = RTCDATE;
+    // Wait for read window
+    while (RTCCON & (1 << 2));
+    
+    timev = RTCTIME;
+    datev = RTCDATE;
+    
+    RTC_BCD_DECODE(info.tm_year, info.tm_mon, info.tm_mday, datev);
+    RTC_BCD_DECODE(info.tm_hour, info.tm_min, info.tm_sec, timev);
 
-    year =  2000 +
-            (((datev & (0xf0 << 24)) >> 28) * 10) + 
-            (((datev & (0x0f << 24)) >> 24)) -
-            1900;
-            
-    month = (((datev & (0xf0 << 16)) >> 20) * 10) + 
-            (((datev & (0x0f << 16)) >> 16));
+    info.tm_year = info.tm_year + 100;
+    info.tm_mon = info.tm_mon - 1;
+                
+    info.tm_isdst = -1;
+    
+    set_time_s(mktime(&info));
+}
 
-    day =   (((datev & (0xf0 << 8)) >> 12) * 10) + 
-            (((datev & (0x0f << 8)) >> 8));
-    
-    hours = (((timev & (0xf0 << 24)) >> 28) * 10) + 
-            (((timev & (0x0f << 24)) >> 24));
-    
-    mins =  (((timev & (0xf0 << 16)) >> 20) * 10) + 
-            (((timev & (0x0f << 16)) >> 16));
-    
-    secs =  (((timev & (0xf0 << 8)) >> 12) * 10) + 
-            (((timev & (0x0f << 8)) >> 8));
-    
-    set_time_ymdhms(year, month, day, hours, mins, secs);    
+void rtc_intr(void) {
+    // Clear RTCC flag
+    IFSCLR(PIC32_IRQ_RTCC >> 5) = 1 << (PIC32_IRQ_RTCC & 31);     
 }

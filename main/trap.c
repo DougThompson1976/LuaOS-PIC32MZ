@@ -135,5 +135,10 @@ void interrupt() {
         /* ETHERNET */		
         case SPI_PHY_INT:  ether_intr(); break;
 #endif
+        
+#if USE_RTC
+        case PIC32_IRQ_RTCC:  rtc_intr(); break;
+#endif
+        
     }	 
 }

@@ -37,6 +37,7 @@
 
 void rtc_init(time_t time);
 void rtc_update_clock();
+void rtc_alarm_at(time_t time);
 
 #endif /* RTC_H */
 
