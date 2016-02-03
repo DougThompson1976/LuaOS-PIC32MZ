@@ -26,6 +26,6 @@ rm      yylval.string=strdup(yytext);return SLUA_COMMAND_RM;
 
 .|[ ]   ;
 
-([/\.]|[a-z]|[A-Z]|(0-9))+ yylval.string=strdup(yytext);return SLUA_ARGUMENT;
+([/\.-]|[a-z]|[A-Z]|(0-9))+ yylval.string=strdup(yytext);return SLUA_ARGUMENT;
 
 %%

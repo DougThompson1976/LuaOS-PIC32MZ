@@ -573,9 +573,6 @@ void spiffs_copy_image(const char *path) {
         }
         
         closedir(dir);
-        
-        sprintf(npathd,"%s/%s", path, "-old");
-        rename(path, npathd);
     }
 
 }
