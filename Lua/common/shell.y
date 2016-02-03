@@ -255,19 +255,22 @@ argument:
 %%
 
 void lua_shell(char *line) {
-	arg = 0;
+    arg = 0;
 
-	// Add \n to end of line
+    // Add \n to end of line
     int len = strlen(line);
     
     line[len] = '\n';
     line[len + 1] = '\0';
     
-	// Scan and parse
+    // Scan and parse
     yy_scan_string(line);
-	if (!yyparse()) {
+    if (!yyparse()) {
     	strcpy(line, buff);
-	}
+    } else {
+        // Remove \n to end of line
+        line[len] = '\0';
+    }
 	
      yylex_destroy();
 }
