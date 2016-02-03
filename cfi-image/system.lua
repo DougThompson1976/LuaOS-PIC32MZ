@@ -11,8 +11,8 @@
 -- net.start("en")
 
 -- Start gprs
-net.setup("gprs","m2m.vodafone.es","3267")
-net.start("gprs")
+-- net.setup("gprs","m2m.vodafone.es","3267")
+-- net.start("gprs")
 
 -- Start sntp client
 -- net.sntp()
@@ -20,9 +20,8 @@ net.start("gprs")
 ---------------------------------------------------
 -- Other setups
 ---------------------------------------------------
-os.loglevel(os.LOG_ERROR)
-
-os.logcons(false)        -- Enable/disable syslog messages to console
+os.loglevel(os.LOG_ALL)  -- Log all
+os.logcons(true)         -- Enable/disable syslog messages to console
 os.shell(true)           -- Enable/disable shell
 os.history(true)         -- Enable/disable history
 os.remove("/sd/history") -- Remove history

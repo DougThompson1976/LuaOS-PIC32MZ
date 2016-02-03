@@ -42,7 +42,7 @@
 #include <runetype.h>
 #include <stdio.h>
 
-#define _PATH_LOCALE            "/usr/share/locale"
+#define _PATH_LOCALE            "/sys/zoneinfo"
 
 #define _INVALID_RUNE           _CurrentRuneLocale->invalid_rune
 

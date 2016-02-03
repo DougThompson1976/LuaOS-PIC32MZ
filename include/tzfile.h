@@ -43,8 +43,8 @@
  * Information about time zone files.
  */
             /* Time zone object file directory */
-#define TZDIR       "/usr/share/zoneinfo"
-#define TZDEFAULT   "/etc/localtime"
+#define TZDIR       "/sys/zoneinfo"
+#define TZDEFAULT   "/sys/zoneinfo/localtime"
 #define TZDEFRULES  "posixrules"
 
 /*

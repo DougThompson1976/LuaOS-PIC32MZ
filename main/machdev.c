@@ -103,20 +103,17 @@ void mach_dev() {
 
     // Create mandatory folders on primary device
     if (primary_is_mounted()) {
-        int some_folder = 0;
+        create_folder("/sys");
+        create_folder("/sys/conf");
+        create_folder("/sys/font");
+        create_folder("/sys/zoneinfo");
+        create_folder("/lib");
+        create_folder("/lib/share");
+        create_folder("/lib/share/lua");
+        create_folder("/lib/lua");
+        create_folder("/tmp");
         
-        some_folder |= create_folder("/sys");
-        some_folder |= create_folder("/sys/conf");
-        some_folder |= create_folder("/sys/font");
-        some_folder |= create_folder("/lib");
-        some_folder |= create_folder("/lib/share");
-        some_folder |= create_folder("/lib/share/lua");
-        some_folder |= create_folder("/lib/lua");
-        some_folder |= create_folder("/tmp");
-        
-        if (some_folder) {
-            spiffs_copy_image("/sd/cfi-image");
-        }
+        spiffs_copy_image("/sd/cfi-image");
     }
         
     if (mount_is_mounted("sd")) {

@@ -566,14 +566,16 @@ void spiffs_copy_image(const char *path) {
                 }
                 
                 fclose(fsrc);
-                fclose(fdst);
-
+                fclose(fdst);                
             } else {
                 spiffs_copy_image(npaths);
             }
         }
         
         closedir(dir);
+        
+        sprintf(npathd,"%s/%s", path, "-old");
+        rename(path, npathd);
     }
 
 }
