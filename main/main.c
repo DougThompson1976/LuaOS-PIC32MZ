@@ -146,12 +146,7 @@ void initTask(void *pvParameters) {
     gpio_pin_clr(LED_ACT);
 
     gpio_pin_output(0x20);
-    
-#if USE_ETHERNET | USE_GPRS
-        // Create network task
-        xTaskCreate(netTask, "net", netTaskStack, NULL, tskIDLE_PRIORITY, NULL);
-    #endif
-        
+            
     pthread_attr_t attr;
     pthread_t thread;
     int res;

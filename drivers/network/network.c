@@ -53,6 +53,8 @@
 #include "netif/ppp/ppp.h"
 #include "lwip/tcpip.h"
 
+#include <mutex.h>
+
 static const char *net_error[] = {
     NULL,
     "Service yet started",
@@ -62,6 +64,9 @@ static const char *net_error[] = {
     "Service not yet started",
     "Interface not setup"
 };
+
+static int started = 0;
+static struct mtx init_mtx;
 
 // Started services
 static int sntp_started = 0;
@@ -154,6 +159,8 @@ void netTask(void *pvParameters) {
     // Init TCP/IP stack, this create a thread for the stack
     tcpip_init(tcpip_init_done, NULL);
 
+    mtx_unlock(&init_mtx);
+    
     for(;;) {
         // Wait for network events ...
         uxBits = xEventGroupWaitBits(networkEvent, 
@@ -215,6 +222,20 @@ void netTask(void *pvParameters) {
     vTaskDelete(NULL);
 }
 
+static void start() {
+    if (!started){
+        mtx_init(&init_mtx, NULL, NULL, 0);
+        mtx_lock(&init_mtx);
+        
+        xTaskCreate(netTask, "net", netTaskStack, NULL, tskIDLE_PRIORITY, NULL);
+
+        mtx_lock(&init_mtx);
+        mtx_destroy(&init_mtx);
+        
+        started = 1;
+    }
+}
+
 int netSntpStart() {
     if (sntp_started) {
         return NET_YET_STARTED;
@@ -245,6 +266,8 @@ int netStart(const char *interface) {
             return NET_YET_STARTED;
         }
         
+        start();
+        
         xEventGroupSetBits(networkEvent, evEthernet_start);  
         uxBits = xEventGroupWaitBits(netTaskEvent, evNetTask_started |  evNetTask_failed, pdTRUE, pdFALSE, portTICK_PERIOD_MS * 8000);
         if (uxBits & evNetTask_started) {
@@ -266,6 +289,8 @@ int netStart(const char *interface) {
             return NET_NOT_SETUP;
         }
         
+        start();
+
         xEventGroupSetBits(networkEvent, evGprs_start);  
         
         // Don't wait for GPRS, it's so slow ...
