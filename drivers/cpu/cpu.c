@@ -35,6 +35,7 @@
 #include <drivers/cpu/cpu.h>
 #include <drivers/gpio/gpio.h>
 #include <drivers/rtc/rtc.h>
+#include <drivers/network/network.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <syslog.h>
@@ -300,6 +301,11 @@ void cpu_idle(int seconds) {
     info = localtime(&now);
     syslog(LOG_INFO,"cpu enter to iddle mode at %s",asctime(info));
 
+    // Stop network interfaces
+    int restart_en =   (netStop("en")   != NET_NOT_YET_STARTED);
+    int restart_gprs = (netStop("gprs") != NET_NOT_YET_STARTED);
+    int restart_wf =   (netStop("wf")   != NET_NOT_YET_STARTED);
+    
     vTaskSuspendAll();
 
     // Lock sequence
@@ -332,4 +338,17 @@ void cpu_idle(int seconds) {
     now = time(NULL);
     info = localtime(&now);
     syslog(LOG_INFO,"cpu exit from iddle mode at %s",asctime(info));
+    
+    // Restart netork interfaces
+    if (restart_en) {
+        netStart("en");
+    }
+
+    if (restart_gprs) {
+        netStart("gprs");
+    }
+
+    if (restart_wf) {
+        netStart("wf");
+    }
 }

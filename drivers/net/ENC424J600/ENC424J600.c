@@ -762,4 +762,11 @@ err_t low_level_output(struct netif *netif, struct pbuf *p) {
     return ERR_OK;
 }
 
+void enc424j600_stop() {
+    syslog(LOG_ERR, "netif: stopping phy at spi%u port", SPI_PHY_SPI);
+    
+    IECCLR(PIC32_IRQ_INT2 >> 5) = 1 << (PIC32_IRQ_INT2 & 31); // Disable INT2
+    IFSCLR(PIC32_IRQ_INT2 >> 5) = 1 << (PIC32_IRQ_INT2 & 31); // Clear INT2 flag
+}
+
 #endif

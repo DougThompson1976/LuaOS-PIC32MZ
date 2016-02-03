@@ -366,6 +366,8 @@ void ethernet_stop() {
     eth_netif.hwaddr[3] = 0;
     eth_netif.hwaddr[4] = 0;
     eth_netif.hwaddr[5] = 0;
+    
+    enc424j600_stop();
 }
 
 #endif
