@@ -121,7 +121,7 @@ static int os_ls (lua_State *L) {
 }
 
 static int os_cd (lua_State *L) {
-    const char *path = luaL_checkstring(L, 1);
+    const char *path = luaL_optstring(L, 1, "/");
       
     if (chdir(path) < 0) {
         return luaL_fileresult(L, 0, path);
