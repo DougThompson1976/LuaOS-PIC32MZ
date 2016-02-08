@@ -7,21 +7,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/drivers/net/ENC424J600/ENC424J600.h</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/machine/pic32mz.h</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/modules/loslib_adds.inc</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/drivers/dma/dma.c</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/main/trap.c</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/drivers/rtc/rtc.h</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/drivers/net/ENC424J600/ENC424J600.c</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/drivers/uart/uart.c</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/drivers/cpu/cpu.h</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/drivers/rtc/rtc.c</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/lib/libc/gen/ctime.c</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/drivers/uart/uart.h</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/drivers/cpu/cpu.c</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/drivers/clock/clock.c</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/machine/machConst.h</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/sys/syscalls/ops/fat_ops.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/sys/fat/ff.c</file>
         </group>
     </open-files>
 </project-private>

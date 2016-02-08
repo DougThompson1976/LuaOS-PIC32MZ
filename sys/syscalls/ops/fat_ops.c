@@ -304,13 +304,24 @@ int fat_readdir(struct file *fp, struct dirent *ent) {
     FILINFO fno;
     char *fn;
     
+    fno.lfname = malloc((_MAX_LFN + 1) * 2);
+    if (!fno.lfname) {
+        return ENOMEM;
+    }
+    
+    fno.lfsize = (_MAX_LFN + 1) * 2;
+
     *ent->d_name = '\0';
     for(;;) {
+        *(fno.lfname) = '\0';
+        
         // Read directory
         res = f_readdir((DIR *)fp->f_dir, &fno);
 
         // Break condition
-        if (res != FR_OK || fno.fname[0] == 0) break;            
+        if (res != FR_OK || fno.fname[0] == 0) {
+            break;
+        }            
 
         if (fno.fname[0] == '.') {
             if (fno.fname[1] == '.') {
@@ -324,11 +335,17 @@ int fat_readdir(struct file *fp, struct dirent *ent) {
             } 
         }
         
-        if (fno.fattrib & (AM_HID | AM_SYS | AM_VOL)) continue;
-
+        if (fno.fattrib & (AM_HID | AM_SYS | AM_VOL)) {
+            continue;
+        }
+        
         // Get name
-        fn = fno.fname;
-
+        if (*(fno.lfname)) {
+            fn = fno.lfname;
+        } else {
+            fn = fno.fname;
+        }
+        
         ent->d_type = 0;
 
         if (fno.fattrib & AM_DIR) {
@@ -348,10 +365,12 @@ int fat_readdir(struct file *fp, struct dirent *ent) {
         }
         
         strcpy(ent->d_name, fn);
-
+        
         break;
     }
     
+    free(fno.lfname);
+
     return fat_result(res);
 }
 

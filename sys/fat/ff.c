@@ -1698,23 +1698,23 @@ void get_fileinfo (		/* No return code */
 	*p = 0;		/* Terminate SFN string by a \0 */
 
 #if _USE_LFN
-//	if (fno->lfname) {
-//		i = 0; p = fno->lfname;
-//		if (dp->sect && fno->lfsize && dp->lfn_idx != 0xFFFF) {	/* Get LFN if available */
-//			lfn = dp->lfn;
-//			while ((w = *lfn++) != 0) {		/* Get an LFN character */
+	if (fno->lfname) {
+		i = 0; p = fno->lfname;
+		if (dp->sect && fno->lfsize && dp->lfn_idx != 0xFFFF) {	/* Get LFN if available */
+			lfn = dp->lfn;
+			while ((w = *lfn++) != 0) {		/* Get an LFN character */
 #if !_LFN_UNICODE
-//				w = ff_convert(w, 0);		/* Unicode -> OEM */
-//				if (!w) { i = 0; break; }	/* No LFN if it could not be converted */
-//				if (_DF1S && w >= 0x100)	/* Put 1st byte if it is a DBC (always false on SBCS cfg) */
-//					p[i++] = (TCHAR)(w >> 8);
+				w = ff_convert(w, 0);		/* Unicode -> OEM */
+				if (!w) { i = 0; break; }	/* No LFN if it could not be converted */
+				if (_DF1S && w >= 0x100)	/* Put 1st byte if it is a DBC (always false on SBCS cfg) */
+					p[i++] = (TCHAR)(w >> 8);
 #endif
-//				if (i >= fno->lfsize - 1) { i = 0; break; }	/* No LFN if buffer overflow */
-//				p[i++] = (TCHAR)w;
-//			}
-//		}
-//		p[i] = 0;	/* Terminate LFN string by a \0 */
-//	}
+				if (i >= fno->lfsize - 1) { i = 0; break; }	/* No LFN if buffer overflow */
+				p[i++] = (TCHAR)w;
+			}
+		}
+		p[i] = 0;	/* Terminate LFN string by a \0 */
+	}
 #endif
 }
 #endif /* _FS_MINIMIZE <= 1 || _FS_RPATH >= 2 */
