@@ -3,8 +3,25 @@
 /* (C)ChaN, 2014                                                          */
 /*------------------------------------------------------------------------*/
 
+#include <time.h>
 #include <stdlib.h>
 #include <sys/fat/ff.h>
+
+DWORD get_fattime (void) {
+    struct tm *info;
+    time_t now;
+    
+    // Get current time
+    now = time(NULL);
+    info = localtime(&now);
+
+    return (((info->tm_year + 1900 - 1980) & 0b1111111) << 25) |
+           (((info->tm_mon + 1) & 0b1111) << 21) | 
+           (((info->tm_mday) & 0b11111) << 16) | 
+           ((info->tm_hour & 0b11111) << 11) | 
+           ((info->tm_min & 0b11111) << 5) | 
+           (((info->tm_sec / 2) & 0b11111) << 0);
+}
 
 #if _FS_REENTRANT
 /*------------------------------------------------------------------------*/

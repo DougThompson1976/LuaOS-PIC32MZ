@@ -29,6 +29,7 @@
 
 #include "whitecat.h"
 
+#include <time.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -232,7 +233,24 @@ int fat_stat(struct file *fp, struct stat *sb) {
     if ((fno.fattrib & AM_LFN) || (fno.fattrib & AM_ARC)) {
         sb->st_mode = S_IFREG;
     }    
+
+    // Update modified time
+    struct tm info;
     
+    info.tm_year = ((fno.fdate & 0b1111111000000000) >> 9) + 80;
+    info.tm_mon = ((fno.fdate & 0b0000000111100000) >> 5) - 1;
+    info.tm_mday = (fno.fdate & 0b0000000000011111);
+    
+    info.tm_sec = (fno.ftime & 0b0000000000011111) * 2;
+    info.tm_min = (fno.ftime & 0b0000011111100000) >> 5;
+    info.tm_hour = (fno.ftime & 0b1111100000000000) >> 11;
+    
+    sb->st_atimespec.ts_sec = mktime(&info);
+    sb->st_atimespec.ts_nsec = 0;
+    
+    sb->st_ctimespec = sb->st_atimespec;
+    sb->st_mtimespec = sb->st_atimespec;
+            
     return fat_result(res);
 }
 
@@ -369,7 +387,8 @@ int fat_readdir(struct file *fp, struct dirent *ent) {
         
         strcpy(ent->d_name, fn);
         
-        break;
+
+    break;
     }
     
     free(fno.lfname);

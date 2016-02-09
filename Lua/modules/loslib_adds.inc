@@ -79,6 +79,10 @@ static int os_ls (lua_State *L) {
     char type;
     char size[9];
     char cpath[MAXPATHLEN];
+    char tpath[MAXPATHLEN];
+    char tbuffer[250];
+    struct stat sb;
+    struct tm *tm_info;
     
     // If path is not present get the current directory as path
     if (!path) {
@@ -97,6 +101,20 @@ static int os_ls (lua_State *L) {
 
     // Read entries
     while ((ent = readdir(dir)) != NULL) {
+        strcpy(tpath, path);
+        strcat(tpath,"/");
+        strcat(tpath,ent->d_name);
+
+        if (strcmp(mount_device(tpath),"sd") == 0) {
+                
+            stat(tpath, &sb);
+        
+            tm_info = localtime(&sb.st_atimespec.ts_sec);
+            strftime(tbuffer, 250, "%c", tm_info);
+        } else {
+            tbuffer[0] = '\0';
+        }
+        
         type = 'd';
         if (ent->d_type == DT_REG) {
             type = 'f';
@@ -108,9 +126,10 @@ static int os_ls (lua_State *L) {
             strcpy(size, "       -");
         }
         
-        printf("%c\t%s\t%s\n",
+        printf("%c\t%s\t%s\t%s\n",
             type,
             size,
+            tbuffer,
             ent->d_name
         );
     }
