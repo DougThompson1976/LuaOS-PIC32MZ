@@ -42,6 +42,7 @@
  * Page to/from special files.
  */
 
+#include <sys/proc.h>
 #include <sys/param.h>
 #include <sys/systm.h>
 #include <sys/conf.h>

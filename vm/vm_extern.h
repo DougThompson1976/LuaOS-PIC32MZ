@@ -82,7 +82,9 @@ int         svm_deallocate __P((struct proc *, void *, int *));
 int         svm_inherit __P((struct proc *, void *, int *));
 int         svm_protect __P((struct proc *, void *, int *));
 void        swapinit __P((void));
-int         swapon __P((struct proc *, struct swapon_args *, int *));
+// WHITECAT BEGIN
+//int         swapon __P((struct proc *, struct swapon_args *, int *));
+// WHITECAT END
 void        swapout __P((struct proc *));
 void        swapout_threads __P((void));
 int         swfree __P((struct proc *, int));

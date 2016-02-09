@@ -312,4 +312,6 @@ remque (e)
     elem->back->forw = elem->forw;
 }
 
-#include <libkern/libkern.h>
+// WHITECAT BEGIN
+// #include <libkern/libkern.h>
+// WHITECAT END

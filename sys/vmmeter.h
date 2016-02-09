@@ -33,6 +33,12 @@
  *  @(#)vmmeter.h   8.2 (Berkeley) 7/10/94
  */
 
+// WHITECAT BEGIN
+#ifndef KERNEL
+#define KERNEL
+#endif
+// WHITECAT END
+
 /*
  * System wide statistics counters.
  */
