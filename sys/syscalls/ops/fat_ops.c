@@ -213,6 +213,9 @@ int fat_stat(struct file *fp, struct stat *sb) {
     FRESULT res;
     FILINFO fno;
 
+    fno.lfname = NULL;
+    fno.lfsize = 0;
+
     res = f_stat(fp->f_path, &fno);
     if (res == FR_OK) {
     	sb->st_size = fno.fsize;
