@@ -29,7 +29,7 @@
 #include <drivers/pwm/pwm.h>
 
 int platform_pwm_exists(int id) {
-    return ((id > 0) && (id <= NOC));
+    return ((id > 0) && (id <= NOC) && (id != 6) && (id != 9) && (id != 3));
 }
 
 int platform_pwm_pins() {

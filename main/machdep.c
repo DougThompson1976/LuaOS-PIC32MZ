@@ -65,6 +65,9 @@ void conf_performance() {
     PB4DIV = (PB4DIV & ~0b1111111) | PBCLK4_DIV;
     PB5DIV = (PB5DIV & ~0b1111111) | PBCLK5_DIV;
     
+    CFGCON |= (1 << 7 );  // Input Compare modules use an alternative 
+                          // Timer pair as their timebase clock
+
     CFGCON |= (1 << 16);  // Output Compare modules use an alternative 
                           // Timer pair as their timebase clock
     

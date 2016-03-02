@@ -205,16 +205,24 @@ static void pwm_disable_timer_module(int unit) {
 }
 
 static void pwm_enable_timer(int unit) {    
+    char timery = 0;
+
     switch (unit) {
-        case 0: T4CONSET = (1 << 15); break;
-        case 1: T5CONSET = (1 << 15); break;
-        case 2: T4CONSET = (1 << 15); break;
-        case 3: T2CONSET = (1 << 15); break;
-        case 4: T3CONSET = (1 << 15); break;
-        case 5: T2CONSET = (1 << 15); break;
-        case 6: T6CONSET = (1 << 15); break;
-        case 7: T7CONSET = (1 << 15); break;
-        case 8: T6CONSET = (1 << 15); break;
+        case 0: T4CONSET = (1 << 15); timery= 0;break;
+        case 1: T5CONSET = (1 << 15); timery= 1;break;
+        case 2: T4CONSET = (1 << 15); timery= 0;break;
+        case 3: T2CONSET = (1 << 15); timery= 0;break;
+        case 4: T3CONSET = (1 << 15); timery= 1;break;
+        case 5: T2CONSET = (1 << 15); timery= 0;break;
+        case 6: T6CONSET = (1 << 15); timery= 0;break;
+        case 7: T7CONSET = (1 << 15); timery= 1;break;
+        case 8: T6CONSET = (1 << 15); timery= 0;break;
+    }
+
+    if (timery) {
+        *(&OC1CONSET + unit * 0x80) = (1 << 3);
+    } else {
+        *(&OC1CONCLR + unit * 0x80) = (1 << 3);
     }
 }
 
@@ -236,7 +244,6 @@ static void pwm_configure_timer_freq(int unit, int pwmhz) {
     unsigned int pr;
     unsigned int preescaler;
     unsigned int preescaler_bits;
-    char timery = 0;
         
     preescaler_bits = 0;
     for(preescaler=1;preescaler <= 256;preescaler = preescaler * 2) {
@@ -252,21 +259,15 @@ static void pwm_configure_timer_freq(int unit, int pwmhz) {
     }
     
     switch (unit) {
-        case 0: T4CON = (preescaler_bits << 4);TMR4 = 0;PR4 = pr;timery=0; break;
-        case 1: T5CON = (preescaler_bits << 4);TMR5 = 0;PR5 = pr;timery=1; break;
-        case 2: T4CON = (preescaler_bits << 4);TMR4 = 0;PR4 = pr;timery=0; break;
-        case 3: T2CON = (preescaler_bits << 4);TMR2 = 0;PR2 = pr;timery=0; break;
-        case 4: T3CON = (preescaler_bits << 4);TMR3 = 0;PR3 = pr;timery=1; break;
-        case 5: T2CON = (preescaler_bits << 4);TMR2 = 0;PR2 = pr;timery=0; break;
-        case 6: T6CON = (preescaler_bits << 4);TMR6 = 0;PR6 = pr;timery=0; break;
-        case 7: T7CON = (preescaler_bits << 4);TMR7 = 0;PR7 = pr;timery=1; break;
-        case 8: T6CON = (preescaler_bits << 4);TMR6 = 0;PR6 = pr;timery=0; break;
-    }
-    
-    if (timery) {
-        *(&OC1CONSET + unit * 0x80) = (1 << 3);
-    } else {
-        *(&OC1CONCLR + unit * 0x80) = (1 << 3);
+        case 0: T4CON = (preescaler_bits << 4);TMR4 = 0;PR4 = pr;break;
+        case 1: T5CON = (preescaler_bits << 4);TMR5 = 0;PR5 = pr;break;
+        case 2: T4CON = (preescaler_bits << 4);TMR4 = 0;PR4 = pr;break;
+        case 3: T2CON = (preescaler_bits << 4);TMR2 = 0;PR2 = pr;break;
+        case 4: T3CON = (preescaler_bits << 4);TMR3 = 0;PR3 = pr;break;
+        case 5: T2CON = (preescaler_bits << 4);TMR2 = 0;PR2 = pr;break;
+        case 6: T6CON = (preescaler_bits << 4);TMR6 = 0;PR6 = pr;break;
+        case 7: T7CON = (preescaler_bits << 4);TMR7 = 0;PR7 = pr;break;
+        case 8: T6CON = (preescaler_bits << 4);TMR6 = 0;PR6 = pr;break;
     }
 }
 
@@ -274,7 +275,6 @@ static void pwm_configure_timer_res(int unit, int res) {
     unsigned int pr;
     unsigned int preescaler;
     unsigned int preescaler_bits;
-    char timery = 0;
         
     preescaler_bits = 0;
     for(preescaler=1;preescaler <= 256;preescaler = preescaler * 2) {
@@ -290,22 +290,16 @@ static void pwm_configure_timer_res(int unit, int res) {
     }
     
     switch (unit) {
-        case 0: T4CON = (preescaler_bits << 4);TMR4 = 0;PR4 = pr;timery=0; break;
-        case 1: T5CON = (preescaler_bits << 4);TMR5 = 0;PR5 = pr;timery=1; break;
-        case 2: T4CON = (preescaler_bits << 4);TMR4 = 0;PR4 = pr;timery=0; break;
-        case 3: T2CON = (preescaler_bits << 4);TMR2 = 0;PR2 = pr;timery=0; break;
-        case 4: T3CON = (preescaler_bits << 4);TMR3 = 0;PR3 = pr;timery=1; break;
-        case 5: T2CON = (preescaler_bits << 4);TMR2 = 0;PR2 = pr;timery=0; break;
-        case 6: T6CON = (preescaler_bits << 4);TMR6 = 0;PR6 = pr;timery=0; break;
-        case 7: T7CON = (preescaler_bits << 4);TMR7 = 0;PR7 = pr;timery=1; break;
-        case 8: T6CON = (preescaler_bits << 4);TMR6 = 0;PR6 = pr;timery=0; break;
-    }
-    
-    if (timery) {
-        *(&OC1CONSET + unit * 0x80) = (1 << 3);
-    } else {
-        *(&OC1CONCLR + unit * 0x80) = (1 << 3);
-    }
+        case 0: T4CON = (preescaler_bits << 4);TMR4 = 0;PR4 = pr;break;
+        case 1: T5CON = (preescaler_bits << 4);TMR5 = 0;PR5 = pr;break;
+        case 2: T4CON = (preescaler_bits << 4);TMR4 = 0;PR4 = pr;break;
+        case 3: T2CON = (preescaler_bits << 4);TMR2 = 0;PR2 = pr;break;
+        case 4: T3CON = (preescaler_bits << 4);TMR3 = 0;PR3 = pr;break;
+        case 5: T2CON = (preescaler_bits << 4);TMR2 = 0;PR2 = pr;break;
+        case 6: T6CON = (preescaler_bits << 4);TMR6 = 0;PR6 = pr;break;
+        case 7: T7CON = (preescaler_bits << 4);TMR7 = 0;PR7 = pr;break;
+        case 8: T6CON = (preescaler_bits << 4);TMR6 = 0;PR6 = pr;break;
+    }    
 }
 
 static int pwm_timer_pr(int unit) {
@@ -319,6 +313,20 @@ static int pwm_timer_pr(int unit) {
         case 6: return PR6;
         case 7: return PR7;
         case 8: return PR6;
+    }
+}
+
+static int pwm_timer_num(int unit) {
+    switch (unit) {
+        case 0: return 4;
+        case 1: return 5;
+        case 2: return 4;
+        case 3: return 2;
+        case 4: return 3;
+        case 5: return 2;
+        case 6: return 6;
+        case 7: return 7;
+        case 8: return 6;
     }
 }
 
@@ -422,8 +430,8 @@ void pwm_init_freq(int unit, int pwmhz, double duty) {
     
     pwm_setup_freq(unit, pwmhz, duty);
     
-    syslog(LOG_INFO,"pwm%d, at pin %c%d, %d hz", unit + 1, 
-           gpio_portname(pin), gpio_pinno(pin), pwm_freq(unit + 1));
+    syslog(LOG_INFO,"pwm%d, at pin %c%d using timer%d, %d hz", unit + 1, 
+           gpio_portname(pin), gpio_pinno(pin), pwm_timer_num(unit), pwm_freq(unit + 1));
 }
 
 void pwm_init_res(int unit, int res, int val) {

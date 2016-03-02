@@ -60,7 +60,7 @@ static int lpwm_setup(lua_State* L) {
     int mode = luaL_checkinteger(L, 2); 
     
     if (!platform_pwm_exists(id)) {
-        return luaL_error(L, "pwm %d does not exist", id);
+        return luaL_error(L, "pwm%d does not exist", id);
     }
     
     switch (mode) {
@@ -116,11 +116,11 @@ static int lpwm_start(lua_State* L) {
     int id = luaL_checkinteger(L, 1); 
 
     if (!platform_pwm_exists(id)) {
-        return luaL_error(L, "pwm %d does not exist", id);
+        return luaL_error(L, "pwm%d does not exist", id);
     }
     
     if (!pwm[id - 1].configured) {
-        return luaL_error(L, "pwm %d is not setup", id);
+        return luaL_error(L, "pwm%d is not setup", id);
     }
     
     platform_pwm_start(id);
@@ -134,11 +134,11 @@ static int lpwm_stop(lua_State* L) {
     int id = luaL_checkinteger(L, 1); 
 
     if (!platform_pwm_exists(id)) {
-        return luaL_error(L, "pwm %d does not exist", id);
+        return luaL_error(L, "pwm%d does not exist", id);
     }
 
     if (!pwm[id - 1].configured) {
-        return luaL_error(L, "pwm %d is not setup", id);
+        return luaL_error(L, "pwm%d is not setup", id);
     }
 
     platform_pwm_stop(id);
@@ -153,19 +153,19 @@ static int lpwm_setduty(lua_State* L) {
     double duty = luaL_checknumber(L, 2); 
 
     if (!platform_pwm_exists(id)) {
-        return luaL_error(L, "pwm %d does not exist", id);
+        return luaL_error(L, "pwm%d does not exist", id);
     }
     
     if (pwm[id - 1].mode != 0) {
-        return luaL_error(L, "pwm %d isn't setup in DEFAULT mode, function not allowed", id);
+        return luaL_error(L, "pwm%d isn't setup in DEFAULT mode, function not allowed", id);
     }
 
     if (!pwm[id - 1].configured) {
-        return luaL_error(L, "pwm %d is not setup", id);
+        return luaL_error(L, "pwm%d is not setup", id);
     }
 
     if (!pwm[id - 1].started) {
-        return luaL_error(L, "pwm %d is not started", id);
+        return luaL_error(L, "pwm%d is not started", id);
     }
 
     platform_pwm_set_duty(id, duty);
@@ -178,19 +178,19 @@ static int lpwm_write(lua_State* L) {
     int val = luaL_checknumber(L, 2); 
 
     if (!platform_pwm_exists(id)) {
-        return luaL_error(L, "pwm %d does not exist", id);
+        return luaL_error(L, "pwm%d does not exist", id);
     }
     
     if (pwm[id - 1].mode != 1) {
-        return luaL_error(L, "pwm %d isn't setup in DAC mode, function not allowed", id);
+        return luaL_error(L, "pwm%d isn't setup in DAC mode, function not allowed", id);
     }
 
     if (!pwm[id - 1].configured) {
-        return luaL_error(L, "pwm %d is not setup", id);
+        return luaL_error(L, "pwm%d is not setup", id);
     }
 
     if (!pwm[id - 1].started) {
-        return luaL_error(L, "pwm %d is not started", id);
+        return luaL_error(L, "pwm%d is not started", id);
     }
 
     platform_pwm_write(id, pwm[id - 1].res, val);
@@ -222,9 +222,11 @@ int luaopen_pwm(lua_State* L)
     char buff[5];
 
     for(i=1;i<=NOC;i++) {
-        sprintf(buff,"PWM%d",i);
-        lua_pushinteger(L, i);
-        lua_setfield(L, -2, buff);
+        if (platform_pwm_exists(i)) {
+            sprintf(buff,"PWM%d",i);
+            lua_pushinteger(L, i);
+            lua_setfield(L, -2, buff);
+        }
     }
 
     for(i=0;i<NOC;i++) {
