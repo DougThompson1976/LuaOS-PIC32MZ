@@ -7,13 +7,17 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/sys/dirent.h</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/sys/syscalls/ops/fat_ops.c</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/modules/loslib_adds.inc</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/common/y.tab.c</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/common/lex.yy.c</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/lib/libc/gen/readdir.c</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/sys/syscalls/fs.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/cpu/cpu.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/FreeRTOS/port/port.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/pwm/pwm.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/uart/uart.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/main/machdev.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Samples/pwm/led-freq.lua</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Samples/pwm/servo.lua</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/machine/pic32mz.h</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/main/machdep.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/uart/uart.h</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/uart.c</file>
         </group>
     </open-files>
 </project-private>

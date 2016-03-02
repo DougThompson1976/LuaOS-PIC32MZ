@@ -67,7 +67,7 @@ static int output_map1 (unsigned channel) {
 
 static int output_map2 (unsigned channel) {
     switch (channel) {
-        case 5: return 0b1011;   // OC4
+        case 3: return 0b1011;   // OC4
         case 6: return 0b1100;   // OC7
     }
 
@@ -155,31 +155,19 @@ static void assign_oc_pin(int channel, int pin) {
 }
 
 // Calculate PR value for timer for desired pwm frequency
-unsigned int pwm_pr_freq(int pwmhz) {
-    return ((PBCLK3_HZ - (pwmhz * (TMR2_PREESCALER + 1))) / pwmhz);
+unsigned int pwm_pr_freq(int pwmhz, int preescaler) {
+    return (unsigned int)((((double)1.0 / (double)pwmhz) / (((double)1.0 / (double)PBCLK3_HZ) * (double)preescaler)) - (double)1.0);
 }
 
 // Calculate PR value for timer for desired pwm resolution
-unsigned int pwm_pr_res(int res) {
-    return pwm_pr_freq(PBCLK3_HZ / ((2 << res) * (TMR2_PREESCALER + 1)));
-}
-
-// Calculate pwm resolution for desired pwm frequency
-unsigned int pwm_res(int pwmhz) {
-    return log10(PBCLK3_HZ / (pwmhz * (TMR2_PREESCALER + 1))) / log10(2);
-}
-
-// Calculate real pwm frequency
-unsigned int pwm_freq(int unit) {
-    unit--;
-        
-    return (PBCLK3_HZ / PR2 + (TMR2_PREESCALER + 1));
+unsigned int pwm_pr_res(int res, int preescaler) {
+    return pwm_pr_freq(PBCLK3_HZ / ((2 << (res - 1)) * preescaler), preescaler);    
 }
 
 void pwm_start(int unit) {
     unit--;
     
-    *(&OC1CONSET + unit * 0x80) = (1 << 5) | (1 << 15);
+    *(&OC1CONSET + unit * 0x80) = (1 << 15);
 }
 
 void pwm_stop(int unit) {
@@ -188,11 +176,184 @@ void pwm_stop(int unit) {
     *(&OC1CONCLR + unit * 0x80) = (1 << 15);    
 }
 
+static void pwm_enable_timer_module(int unit) {    
+    switch (unit) {
+        case 0: PMD4CLR = T4MD; break;
+        case 1: PMD4CLR = T5MD; break;
+        case 2: PMD4CLR = T4MD; break;
+        case 3: PMD4CLR = T2MD; break;
+        case 4: PMD4CLR = T3MD; break;
+        case 5: PMD4CLR = T2MD; break;
+        case 6: PMD4CLR = T6MD; break;
+        case 7: PMD4CLR = T7MD; break;
+        case 8: PMD4CLR = T6MD; break;
+    }
+}
+
+static void pwm_disable_timer_module(int unit) {    
+    switch (unit) {
+        case 0: PMD4SET = T4MD; break;
+        case 1: PMD4SET = T5MD; break;
+        case 2: PMD4SET = T4MD; break;
+        case 3: PMD4SET = T2MD; break;
+        case 4: PMD4SET = T3MD; break;
+        case 5: PMD4SET = T2MD; break;
+        case 6: PMD4SET = T6MD; break;
+        case 7: PMD4SET = T7MD; break;
+        case 8: PMD4SET = T6MD; break;
+    }
+}
+
+static void pwm_enable_timer(int unit) {    
+    switch (unit) {
+        case 0: T4CONSET = (1 << 15); break;
+        case 1: T5CONSET = (1 << 15); break;
+        case 2: T4CONSET = (1 << 15); break;
+        case 3: T2CONSET = (1 << 15); break;
+        case 4: T3CONSET = (1 << 15); break;
+        case 5: T2CONSET = (1 << 15); break;
+        case 6: T6CONSET = (1 << 15); break;
+        case 7: T7CONSET = (1 << 15); break;
+        case 8: T6CONSET = (1 << 15); break;
+    }
+}
+
+static void pwm_disable_timer(int unit) {
+    switch (unit) {
+        case 0: T4CON = 0; break;
+        case 1: T5CON = 0; break;
+        case 2: T4CON = 0; break;
+        case 3: T2CON = 0; break;
+        case 4: T3CON = 0; break;
+        case 5: T2CON = 0; break;
+        case 6: T6CON = 0; break;
+        case 7: T7CON = 0; break;
+        case 8: T6CON = 0; break;
+    }
+}
+
+static void pwm_configure_timer_freq(int unit, int pwmhz) {
+    unsigned int pr;
+    unsigned int preescaler;
+    unsigned int preescaler_bits;
+    char timery = 0;
+        
+    preescaler_bits = 0;
+    for(preescaler=1;preescaler <= 256;preescaler = preescaler * 2) {
+        if (preescaler != 128) {
+            pr = pwm_pr_freq(pwmhz, preescaler);
+        
+            if (pr <= 0xffff) {
+                break;
+            }
+            
+            preescaler_bits++;
+        }
+    }
+    
+    switch (unit) {
+        case 0: T4CON = (preescaler_bits << 4);TMR4 = 0;PR4 = pr;timery=0; break;
+        case 1: T5CON = (preescaler_bits << 4);TMR5 = 0;PR5 = pr;timery=1; break;
+        case 2: T4CON = (preescaler_bits << 4);TMR4 = 0;PR4 = pr;timery=0; break;
+        case 3: T2CON = (preescaler_bits << 4);TMR2 = 0;PR2 = pr;timery=0; break;
+        case 4: T3CON = (preescaler_bits << 4);TMR3 = 0;PR3 = pr;timery=1; break;
+        case 5: T2CON = (preescaler_bits << 4);TMR2 = 0;PR2 = pr;timery=0; break;
+        case 6: T6CON = (preescaler_bits << 4);TMR6 = 0;PR6 = pr;timery=0; break;
+        case 7: T7CON = (preescaler_bits << 4);TMR7 = 0;PR7 = pr;timery=1; break;
+        case 8: T6CON = (preescaler_bits << 4);TMR6 = 0;PR6 = pr;timery=0; break;
+    }
+    
+    if (timery) {
+        *(&OC1CONSET + unit * 0x80) = (1 << 3);
+    } else {
+        *(&OC1CONCLR + unit * 0x80) = (1 << 3);
+    }
+}
+
+static void pwm_configure_timer_res(int unit, int res) {
+    unsigned int pr;
+    unsigned int preescaler;
+    unsigned int preescaler_bits;
+    char timery = 0;
+        
+    preescaler_bits = 0;
+    for(preescaler=1;preescaler <= 256;preescaler = preescaler * 2) {
+        if (preescaler != 128) {
+            pr = pwm_pr_res(res, preescaler);
+        
+            if (pr <= 0xffff) {
+                break;
+            }
+            
+            preescaler_bits++;
+        }
+    }
+    
+    switch (unit) {
+        case 0: T4CON = (preescaler_bits << 4);TMR4 = 0;PR4 = pr;timery=0; break;
+        case 1: T5CON = (preescaler_bits << 4);TMR5 = 0;PR5 = pr;timery=1; break;
+        case 2: T4CON = (preescaler_bits << 4);TMR4 = 0;PR4 = pr;timery=0; break;
+        case 3: T2CON = (preescaler_bits << 4);TMR2 = 0;PR2 = pr;timery=0; break;
+        case 4: T3CON = (preescaler_bits << 4);TMR3 = 0;PR3 = pr;timery=1; break;
+        case 5: T2CON = (preescaler_bits << 4);TMR2 = 0;PR2 = pr;timery=0; break;
+        case 6: T6CON = (preescaler_bits << 4);TMR6 = 0;PR6 = pr;timery=0; break;
+        case 7: T7CON = (preescaler_bits << 4);TMR7 = 0;PR7 = pr;timery=1; break;
+        case 8: T6CON = (preescaler_bits << 4);TMR6 = 0;PR6 = pr;timery=0; break;
+    }
+    
+    if (timery) {
+        *(&OC1CONSET + unit * 0x80) = (1 << 3);
+    } else {
+        *(&OC1CONCLR + unit * 0x80) = (1 << 3);
+    }
+}
+
+static int pwm_timer_pr(int unit) {
+    switch (unit) {
+        case 0: return PR4;
+        case 1: return PR5;
+        case 2: return PR4;
+        case 3: return PR2;
+        case 4: return PR3;
+        case 5: return PR2;
+        case 6: return PR6;
+        case 7: return PR7;
+        case 8: return PR6;
+    }
+}
+
+static int pwm_timer_preescaler(int unit) {
+    unsigned int preescaler_bits;
+    
+    switch (unit) {
+        case 0: preescaler_bits = ((T4CON >> 4) & 0b111);break;
+        case 1: preescaler_bits = ((T5CON >> 4) & 0b111);break; 
+        case 2: preescaler_bits = ((T4CON >> 4) & 0b111);break; 
+        case 3: preescaler_bits = ((T2CON >> 4) & 0b111);break; 
+        case 4: preescaler_bits = ((T3CON >> 4) & 0b111);break; 
+        case 5: preescaler_bits = ((T2CON >> 4) & 0b111);break; 
+        case 6: preescaler_bits = ((T6CON >> 4) & 0b111);break; 
+        case 7: preescaler_bits = ((T7CON >> 4) & 0b111);break; 
+        case 8: preescaler_bits = ((T6CON >> 4) & 0b111);break; 
+    }
+    
+    switch (preescaler_bits) {
+        case 0: return 1;
+        case 1: return 2;
+        case 2: return 4;
+        case 3: return 8;
+        case 4: return 16;
+        case 5: return 32;
+        case 6: return 64;
+        case 7: return 256;
+    }
+}
+
 void pwm_set_duty(int unit, double duty) {
     unit--;
     
-    *(&OC1R  + unit * 0x80) = PR2 * duty;
-    *(&OC1RS + unit * 0x80) = PR2 * duty;    
+    *(&OC1R  + unit * 0x80) = pwm_timer_pr(unit) * duty;
+    *(&OC1RS + unit * 0x80) = pwm_timer_pr(unit) * duty;    
 }
 
 void pwm_write(int unit, int res, int value) {
@@ -200,38 +361,45 @@ void pwm_write(int unit, int res, int value) {
 
     unit--;
         
-    *(&OC1R  + unit * 0x80) = PR2 * duty;
-    *(&OC1RS + unit * 0x80) = PR2 * duty;
+    *(&OC1R  + unit * 0x80) = pwm_timer_pr(unit) * duty;
+    *(&OC1RS + unit * 0x80) = pwm_timer_pr(unit) * duty;
+}
+
+// Calculate real pwm frequency
+unsigned int pwm_freq(int unit) {
+    unit--;
+    
+    return (PBCLK3_HZ / ((pwm_timer_pr(unit) + 1) *  pwm_timer_preescaler(unit)));
 }
 
 void pwm_setup_freq(int unit, int pwmhz, double duty) {
-    PMD4CLR = T2MD;
-    
-    T2CON = 0;                       // Disable timer
-    *(&OC1CONSET + unit * 0x80) = 0; // Disable OC module
-    *(&OC1R  + unit * 0x80)     = pwm_pr_freq(pwmhz) * duty;
-    *(&OC1RS + unit * 0x80)     = pwm_pr_freq(pwmhz) * duty;
-    *(&OC1CON + unit * 0x80)    = 0x0006;
+    pwm_enable_timer_module(unit);
 
-    T2CON = (1 << 3); // 32 bit timer
-    PR2 = pwm_pr_freq(pwmhz);
-    T2CONSET =  (1 << 15); // Enable timer    
+    pwm_disable_timer(unit);
+    pwm_configure_timer_freq(unit, pwmhz);
+    
+    *(&OC1CON + unit * 0x80) = 0; // Disable OC module
+    *(&OC1R  + unit * 0x80)  = pwm_timer_pr(unit) * duty;
+    *(&OC1RS + unit * 0x80)  = pwm_timer_pr(unit) * duty;
+    *(&OC1CON + unit * 0x80) = 0x0006;
+    
+    pwm_enable_timer(unit);
 }
 
 void pwm_setup_res(int unit, int res, int value) {
     double duty = (double)value / (double)(2 << (res - 1));
     
-    PMD4CLR = T2MD;
-    
-    T2CON = 0;                       // Disable timer
-    *(&OC1CONSET + unit * 0x80) = 0; // Disable OC module
-    *(&OC1R  + unit * 0x80)     = pwm_pr_res(res) * duty;
-    *(&OC1RS + unit * 0x80)     = pwm_pr_res(res) * duty;
-    *(&OC1CON + unit * 0x80)    = 0x0006;
+    pwm_enable_timer_module(unit);
 
-    T2CON = (1 << 3); // 32 bit timer
-    PR2 = pwm_pr_res(res);
-    T2CONSET =  (1 << 15); // Enable timer    
+    pwm_disable_timer(unit);
+    pwm_configure_timer_res(unit, res);
+    
+    *(&OC1CON + unit * 0x80) = 0; // Disable OC module
+    *(&OC1R  + unit * 0x80)  = pwm_timer_pr(unit) * duty;
+    *(&OC1RS + unit * 0x80)  = pwm_timer_pr(unit) * duty;
+    *(&OC1CON + unit * 0x80) = 0x0006;
+    
+    pwm_enable_timer(unit);
 }
 
 void pwm_init_freq(int unit, int pwmhz, double duty) {

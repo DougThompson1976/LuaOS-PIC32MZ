@@ -40,7 +40,7 @@
 #define CPU_HZ    200000000L
 
 #define PBCLK2_HZ 100000000L // PMP/I2C/UART/SPI
-#define PBCLK3_HZ  40000000L // TIMERS
+#define PBCLK3_HZ  10000000L // TIMERS
 #define PBCLK4_HZ 200000000L // PORTS
 #define PBCLK5_HZ  40000000L // CAN
 
@@ -48,8 +48,6 @@
 #define PBCLK3_DIV ((CPU_HZ / PBCLK3_HZ) - 1)
 #define PBCLK4_DIV ((CPU_HZ / PBCLK4_HZ) - 1)
 #define PBCLK5_DIV ((CPU_HZ / PBCLK5_HZ) - 1)
-
-#define TMR2_PREESCALER 0
 
 // ---------------------------------------------------------------------------
 // Leds
