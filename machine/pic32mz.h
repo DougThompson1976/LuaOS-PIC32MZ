@@ -1346,6 +1346,21 @@
 #define PR9SET          PIC32_R (0x41028)
 #define PR9INV          PIC32_R (0x4102C)
 
+#define TCON(n)         *(&T1CON + (n - 1) * (&T2CON - &T1CON))
+#define TCONCLR(n)      *(&T1CONCLR + (n - 1) * (&T2CONCLR - &T1CONCLR))
+#define TCONSET(n)      *(&T1CONSET + (n - 1) * (&T2CONSET - &T1CONSET))
+#define TCONINV(n)      *(&T1CONINV + (n - 1) * (&T2CONINV - &T1CONINV))
+
+#define TMR(n)         *(&TMR1 + (n - 1) * (&TMR2 - &TMR1))
+#define TMRCLR(n)      *(&TMR1CLR + (n - 1) * (&TMR2CLR - &TMR1CLR))
+#define TMRSET(n)      *(&TMR1SET + (n - 1) * (&TMR2SET - &TMR1SET))
+#define TMRINV(n)      *(&TMR1INV + (n - 1) * (&TMR2INV - &TMR1INV))
+
+#define PR(n)         *(&PR1 + (n - 1) * (&PR2 - &PR1))
+#define PRCLR(n)      *(&PR1CLR + (n - 1) * (&PR2CLR - &PR1CLR))
+#define PRSET(n)      *(&PR1SET + (n - 1) * (&PR2SET - &PR1SET))
+#define PRINV(n)      *(&PR1INV + (n - 1) * (&PR2INV - &PR1INV))
+
 /*--------------------------------------
  * Parallel master port registers.
  */

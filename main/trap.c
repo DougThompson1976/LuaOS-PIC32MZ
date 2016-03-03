@@ -30,6 +30,7 @@
 #include "whitecat.h"
 
 #include <machine/pic32mz.h>
+#include <drivers/gpio/gpio.h>
 
 extern void vPortIncrementTick();
 
@@ -95,6 +96,12 @@ void interrupt() {
     // Call to related interrupt handler
     switch (irq) {
         case PIC32_IRQ_T1:    vPortIncrementTick();break;		
+        case PIC32_IRQ_T4:    gpio_pin_inv(0x77);pwm_intr(0, 3);break;		
+        case PIC32_IRQ_T5:    pwm_intr(1, 4);break;		
+        case PIC32_IRQ_T2:    pwm_intr(3, 1);break;		
+        case PIC32_IRQ_T3:    pwm_intr(4, 2);break;		
+        case PIC32_IRQ_T6:    pwm_intr(6, 5);break;		
+        case PIC32_IRQ_T7:    pwm_intr(7, 6);break;		
 
         /* UART */
         case PIC32_IRQ_U1RX:  uart_intr_rx(0); break;

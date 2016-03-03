@@ -32,6 +32,8 @@
 
 #define NOC 9
 
+#include <unistd.h>
+
 unsigned int pwm_pr_freq(int pwmhz, int presscaler);
 unsigned int pwm_pr_res(int res, int presscaler);
 unsigned int pwm_res(int pwmhz);
@@ -45,6 +47,7 @@ void pwm_setup_res(int unit, int res, int value);
 void pwm_init_freq(int unit, int pwmhz, double duty); 
 void pwm_init_res(int unit, int res, int val);
 void pwm_pins(int unit, unsigned char *pin);
+void pwm_intr(u8_t unit, u8_t timer);
 
 #endif	/* PWM_H */
 

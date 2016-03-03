@@ -154,6 +154,20 @@ static void assign_oc_pin(int channel, int pin) {
     }
 }
 
+static int pwm_timer_num(int unit) {
+    switch (unit) {
+        case 0: return 4;
+        case 1: return 5;
+        case 2: return 4;
+        case 3: return 2;
+        case 4: return 3;
+        case 5: return 2;
+        case 6: return 6;
+        case 7: return 7;
+        case 8: return 6;
+    }
+}
+
 // Calculate PR value for timer for desired pwm frequency
 unsigned int pwm_pr_freq(int pwmhz, int preescaler) {
     return (unsigned int)((((double)1.0 / (double)pwmhz) / (((double)1.0 / (double)PBCLK3_HZ) * (double)preescaler)) - (double)1.0);
@@ -174,34 +188,6 @@ void pwm_stop(int unit) {
     unit--;
     
     *(&OC1CONCLR + unit * 0x80) = (1 << 15);    
-}
-
-static void pwm_enable_timer_module(int unit) {    
-    switch (unit) {
-        case 0: PMD4CLR = T4MD; break;
-        case 1: PMD4CLR = T5MD; break;
-        case 2: PMD4CLR = T4MD; break;
-        case 3: PMD4CLR = T2MD; break;
-        case 4: PMD4CLR = T3MD; break;
-        case 5: PMD4CLR = T2MD; break;
-        case 6: PMD4CLR = T6MD; break;
-        case 7: PMD4CLR = T7MD; break;
-        case 8: PMD4CLR = T6MD; break;
-    }
-}
-
-static void pwm_disable_timer_module(int unit) {    
-    switch (unit) {
-        case 0: PMD4SET = T4MD; break;
-        case 1: PMD4SET = T5MD; break;
-        case 2: PMD4SET = T4MD; break;
-        case 3: PMD4SET = T2MD; break;
-        case 4: PMD4SET = T3MD; break;
-        case 5: PMD4SET = T2MD; break;
-        case 6: PMD4SET = T6MD; break;
-        case 7: PMD4SET = T7MD; break;
-        case 8: PMD4SET = T6MD; break;
-    }
 }
 
 static void pwm_enable_timer(int unit) {    
@@ -226,25 +212,13 @@ static void pwm_enable_timer(int unit) {
     }
 }
 
-static void pwm_disable_timer(int unit) {
-    switch (unit) {
-        case 0: T4CON = 0; break;
-        case 1: T5CON = 0; break;
-        case 2: T4CON = 0; break;
-        case 3: T2CON = 0; break;
-        case 4: T3CON = 0; break;
-        case 5: T2CON = 0; break;
-        case 6: T6CON = 0; break;
-        case 7: T7CON = 0; break;
-        case 8: T6CON = 0; break;
-    }
-}
-
 static void pwm_configure_timer_freq(int unit, int pwmhz) {
     unsigned int pr;
     unsigned int preescaler;
     unsigned int preescaler_bits;
         
+    unsigned int timer = pwm_timer_num(unit);
+
     preescaler_bits = 0;
     for(preescaler=1;preescaler <= 256;preescaler = preescaler * 2) {
         if (preescaler != 128) {
@@ -258,24 +232,35 @@ static void pwm_configure_timer_freq(int unit, int pwmhz) {
         }
     }
     
-    switch (unit) {
-        case 0: T4CON = (preescaler_bits << 4);TMR4 = 0;PR4 = pr;break;
-        case 1: T5CON = (preescaler_bits << 4);TMR5 = 0;PR5 = pr;break;
-        case 2: T4CON = (preescaler_bits << 4);TMR4 = 0;PR4 = pr;break;
-        case 3: T2CON = (preescaler_bits << 4);TMR2 = 0;PR2 = pr;break;
-        case 4: T3CON = (preescaler_bits << 4);TMR3 = 0;PR3 = pr;break;
-        case 5: T2CON = (preescaler_bits << 4);TMR2 = 0;PR2 = pr;break;
-        case 6: T6CON = (preescaler_bits << 4);TMR6 = 0;PR6 = pr;break;
-        case 7: T7CON = (preescaler_bits << 4);TMR7 = 0;PR7 = pr;break;
-        case 8: T6CON = (preescaler_bits << 4);TMR6 = 0;PR6 = pr;break;
-    }
+    TCON(timer) = (preescaler_bits << 4);
+    TMR(timer) = 0;
+    PR(timer) = pr;    
+
+    int irq = PIC32_IRQ_T1 + (timer - 1) * 5;
+    
+    // Disable timer interrupts
+    IECCLR(irq >> 5) = 1 << (irq  & 31); 
+    
+    // Clear timer flag
+    IFSCLR(irq >> 5) = 1 << (irq & 31); 
+    
+    // Clear the timer priority and sub-priority
+    IPCCLR(irq >> 2) = 0x1f << (5 * (irq & 0x03));
+
+    // Set timer IPL 3, sub-priority 1
+    IPCSET(irq >> 2) = (0x1f << (8 * (irq & 0x03))) & 0x0d0d0d0d;
+
+    // Enable timer interrupts
+    IECSET(irq >> 5) = 1 << (irq & 31); 
 }
 
 static void pwm_configure_timer_res(int unit, int res) {
     unsigned int pr;
     unsigned int preescaler;
     unsigned int preescaler_bits;
-        
+
+    unsigned int timer = pwm_timer_num(unit);
+
     preescaler_bits = 0;
     for(preescaler=1;preescaler <= 256;preescaler = preescaler * 2) {
         if (preescaler != 128) {
@@ -288,62 +273,33 @@ static void pwm_configure_timer_res(int unit, int res) {
             preescaler_bits++;
         }
     }
+
+    TCON(timer) = (preescaler_bits << 4);
+    TMR(timer) = 0;
+    PR(timer) = pr;    
+
+    int irq = PIC32_IRQ_T1 + (timer - 1) * 5;
     
-    switch (unit) {
-        case 0: T4CON = (preescaler_bits << 4);TMR4 = 0;PR4 = pr;break;
-        case 1: T5CON = (preescaler_bits << 4);TMR5 = 0;PR5 = pr;break;
-        case 2: T4CON = (preescaler_bits << 4);TMR4 = 0;PR4 = pr;break;
-        case 3: T2CON = (preescaler_bits << 4);TMR2 = 0;PR2 = pr;break;
-        case 4: T3CON = (preescaler_bits << 4);TMR3 = 0;PR3 = pr;break;
-        case 5: T2CON = (preescaler_bits << 4);TMR2 = 0;PR2 = pr;break;
-        case 6: T6CON = (preescaler_bits << 4);TMR6 = 0;PR6 = pr;break;
-        case 7: T7CON = (preescaler_bits << 4);TMR7 = 0;PR7 = pr;break;
-        case 8: T6CON = (preescaler_bits << 4);TMR6 = 0;PR6 = pr;break;
-    }    
-}
+    // Disable timer interrupts
+    IECCLR(irq >> 5) = 1 << (irq  & 31); 
+    
+    // Clear timer flag
+    IFSCLR(irq >> 5) = 1 << (irq & 31); 
+    
+    // Clear the timer priority and sub-priority
+    IPCCLR(irq >> 2) = 0x1f << (5 * (irq & 0x03));
 
-static int pwm_timer_pr(int unit) {
-    switch (unit) {
-        case 0: return PR4;
-        case 1: return PR5;
-        case 2: return PR4;
-        case 3: return PR2;
-        case 4: return PR3;
-        case 5: return PR2;
-        case 6: return PR6;
-        case 7: return PR7;
-        case 8: return PR6;
-    }
-}
+    // Set timer IPL 3, sub-priority 1
+    IPCSET(irq >> 2) = (0x1f << (8 * (irq & 0x03))) & 0x0d0d0d0d;
 
-static int pwm_timer_num(int unit) {
-    switch (unit) {
-        case 0: return 4;
-        case 1: return 5;
-        case 2: return 4;
-        case 3: return 2;
-        case 4: return 3;
-        case 5: return 2;
-        case 6: return 6;
-        case 7: return 7;
-        case 8: return 6;
-    }
+    // Enable timer interrupts
+    IECSET(irq >> 5) = 1 << (irq & 31);
 }
 
 static int pwm_timer_preescaler(int unit) {
-    unsigned int preescaler_bits;
-    
-    switch (unit) {
-        case 0: preescaler_bits = ((T4CON >> 4) & 0b111);break;
-        case 1: preescaler_bits = ((T5CON >> 4) & 0b111);break; 
-        case 2: preescaler_bits = ((T4CON >> 4) & 0b111);break; 
-        case 3: preescaler_bits = ((T2CON >> 4) & 0b111);break; 
-        case 4: preescaler_bits = ((T3CON >> 4) & 0b111);break; 
-        case 5: preescaler_bits = ((T2CON >> 4) & 0b111);break; 
-        case 6: preescaler_bits = ((T6CON >> 4) & 0b111);break; 
-        case 7: preescaler_bits = ((T7CON >> 4) & 0b111);break; 
-        case 8: preescaler_bits = ((T6CON >> 4) & 0b111);break; 
-    }
+    unsigned int timer = pwm_timer_num(unit);
+
+    unsigned int preescaler_bits = ((TCON(timer) >> 4) & 0b111);
     
     switch (preescaler_bits) {
         case 0: return 1;
@@ -359,52 +315,62 @@ static int pwm_timer_preescaler(int unit) {
 
 void pwm_set_duty(int unit, double duty) {
     unit--;
-    
-    *(&OC1R  + unit * 0x80) = pwm_timer_pr(unit) * duty;
-    *(&OC1RS + unit * 0x80) = pwm_timer_pr(unit) * duty;    
+
+    unsigned int timer = pwm_timer_num(unit);
+
+    *(&OC1R  + unit * 0x80) = PR(timer) * duty;
+    *(&OC1RS + unit * 0x80) = PR(timer) * duty;    
 }
 
 void pwm_write(int unit, int res, int value) {
-    double duty = (double)value / (double)(2 << (res - 1));
-
     unit--;
-        
-    *(&OC1R  + unit * 0x80) = pwm_timer_pr(unit) * duty;
-    *(&OC1RS + unit * 0x80) = pwm_timer_pr(unit) * duty;
+
+    unsigned int timer = pwm_timer_num(unit);
+    double duty = (double)value / (double)(2 << (res - 1));
+    
+    *(&OC1R  + unit * 0x80) = PR(timer) * duty;
+    *(&OC1RS + unit * 0x80) = PR(timer) * duty;
 }
 
 // Calculate real pwm frequency
 unsigned int pwm_freq(int unit) {
     unit--;
     
-    return (PBCLK3_HZ / ((pwm_timer_pr(unit) + 1) *  pwm_timer_preescaler(unit)));
+    unsigned int timer = pwm_timer_num(unit);
+
+    return (PBCLK3_HZ / ((PR(timer) + 1) *  pwm_timer_preescaler(unit)));
 }
 
 void pwm_setup_freq(int unit, int pwmhz, double duty) {
-    pwm_enable_timer_module(unit);
+    unsigned int timer = pwm_timer_num(unit);
 
-    pwm_disable_timer(unit);
+    PMD4CLR = (1 << (timer - 1));
+
+    TCON(timer) = 0; // Disable timer
+    
     pwm_configure_timer_freq(unit, pwmhz);
     
     *(&OC1CON + unit * 0x80) = 0; // Disable OC module
-    *(&OC1R  + unit * 0x80)  = pwm_timer_pr(unit) * duty;
-    *(&OC1RS + unit * 0x80)  = pwm_timer_pr(unit) * duty;
+    *(&OC1R  + unit * 0x80)  = PR(timer) * duty;
+    *(&OC1RS + unit * 0x80)  = PR(timer) * duty;
     *(&OC1CON + unit * 0x80) = 0x0006;
     
     pwm_enable_timer(unit);
 }
 
 void pwm_setup_res(int unit, int res, int value) {
+    unsigned int timer = pwm_timer_num(unit);
     double duty = (double)value / (double)(2 << (res - 1));
     
-    pwm_enable_timer_module(unit);
+    PMD4CLR = (1 << (timer - 1));
 
-    pwm_disable_timer(unit);
+    TCON(timer) = 0; // Disable timer
+
     pwm_configure_timer_res(unit, res);
     
     *(&OC1CON + unit * 0x80) = 0; // Disable OC module
-    *(&OC1R  + unit * 0x80)  = pwm_timer_pr(unit) * duty;
-    *(&OC1RS + unit * 0x80)  = pwm_timer_pr(unit) * duty;
+    *(&OC1R  + unit * 0x80)  = PR(timer) * duty;
+    *(&OC1RS + unit * 0x80)  = PR(timer) * duty;
     *(&OC1CON + unit * 0x80) = 0x0006;
     
     pwm_enable_timer(unit);
@@ -492,4 +458,10 @@ void pwm_pins(int unit, unsigned char *pin) {
             *pin = OC9_PINS & 0xFF;
             break;
     }
+}
+
+void pwm_intr(u8_t unit, u8_t timer) {  
+    int irq = PIC32_IRQ_T1 + timer * 5;
+         
+    IFSCLR(irq >> 5) = 1 << (irq & 31); 
 }
