@@ -154,6 +154,7 @@ static void assign_oc_pin(int channel, int pin) {
     }
 }
 
+// Get timer number assigned to PWM
 static int pwm_timer_num(int unit) {
     switch (unit) {
         case 0: return 4;
@@ -168,6 +169,21 @@ static int pwm_timer_num(int unit) {
     }
 }
 
+// Get timer number assigned to PWM is normal configuration or alternate config
+static int pwm_timer_alternate_clock(int unit) {
+    switch (unit) {
+        case 0: return 0;break;
+        case 1: return 1;break;
+        case 2: return 0;break;
+        case 3: return 0;break;
+        case 4: return 1;break;
+        case 5: return 0;break;
+        case 6: return 0;break;
+        case 7: return 1;break;
+        case 8: return 0;break;
+    }
+}
+
 // Calculate PR value for timer for desired pwm frequency
 unsigned int pwm_pr_freq(int pwmhz, int preescaler) {
     return (unsigned int)((((double)1.0 / (double)pwmhz) / (((double)1.0 / (double)PBCLK3_HZ) * (double)preescaler)) - (double)1.0);
@@ -178,40 +194,29 @@ unsigned int pwm_pr_res(int res, int preescaler) {
     return pwm_pr_freq(PBCLK3_HZ / ((2 << (res - 1)) * preescaler), preescaler);    
 }
 
+// Start pwm
 void pwm_start(int unit) {
     unit--;
+
+    unsigned int timer = pwm_timer_num(unit);
+
+    TMR(timer) = 0;
     
-    *(&OC1CONSET + unit * 0x80) = (1 << 15);
+    *(&OC1CONSET + unit * 0x80) = (1 << 15); // Enable OC module
+    TCONSET(timer) = (1 << 15);              // Enable timer
 }
 
+// Stop pwm
 void pwm_stop(int unit) {
     unit--;
     
-    *(&OC1CONCLR + unit * 0x80) = (1 << 15);    
+    unsigned int timer = pwm_timer_num(unit);
+
+    *(&OC1CONCLR + unit * 0x80) = (1 << 15); // Disable OC module
+    TCONSET(timer) = (1 << 15);              // Disable timer
 }
 
-static void pwm_enable_timer(int unit) {    
-    char timery = 0;
-
-    switch (unit) {
-        case 0: T4CONSET = (1 << 15); timery= 0;break;
-        case 1: T5CONSET = (1 << 15); timery= 1;break;
-        case 2: T4CONSET = (1 << 15); timery= 0;break;
-        case 3: T2CONSET = (1 << 15); timery= 0;break;
-        case 4: T3CONSET = (1 << 15); timery= 1;break;
-        case 5: T2CONSET = (1 << 15); timery= 0;break;
-        case 6: T6CONSET = (1 << 15); timery= 0;break;
-        case 7: T7CONSET = (1 << 15); timery= 1;break;
-        case 8: T6CONSET = (1 << 15); timery= 0;break;
-    }
-
-    if (timery) {
-        *(&OC1CONSET + unit * 0x80) = (1 << 3);
-    } else {
-        *(&OC1CONCLR + unit * 0x80) = (1 << 3);
-    }
-}
-
+// Configura pwm base timer using desired pwm frequency
 static void pwm_configure_timer_freq(int unit, int pwmhz) {
     unsigned int pr;
     unsigned int preescaler;
@@ -254,6 +259,7 @@ static void pwm_configure_timer_freq(int unit, int pwmhz) {
     IECSET(irq >> 5) = 1 << (irq & 31); 
 }
 
+// Configura pwm base timer using desired pwm resolution
 static void pwm_configure_timer_res(int unit, int res) {
     unsigned int pr;
     unsigned int preescaler;
@@ -313,6 +319,7 @@ static int pwm_timer_preescaler(int unit) {
     }
 }
 
+// Set new duty cycle
 void pwm_set_duty(int unit, double duty) {
     unit--;
 
@@ -350,12 +357,17 @@ void pwm_setup_freq(int unit, int pwmhz, double duty) {
     
     pwm_configure_timer_freq(unit, pwmhz);
     
-    *(&OC1CON + unit * 0x80) = 0; // Disable OC module
+    // Configure OC module
+    *(&OC1CON + unit * 0x80) = 0; 
     *(&OC1R  + unit * 0x80)  = PR(timer) * duty;
     *(&OC1RS + unit * 0x80)  = PR(timer) * duty;
     *(&OC1CON + unit * 0x80) = 0x0006;
-    
-    pwm_enable_timer(unit);
+
+    if (pwm_timer_alternate_clock(unit)) {
+        *(&OC1CONSET + unit * 0x80) = (1 << 3);
+    } else {
+        *(&OC1CONCLR + unit * 0x80) = (1 << 3);
+    }
 }
 
 void pwm_setup_res(int unit, int res, int value) {
@@ -368,12 +380,17 @@ void pwm_setup_res(int unit, int res, int value) {
 
     pwm_configure_timer_res(unit, res);
     
-    *(&OC1CON + unit * 0x80) = 0; // Disable OC module
+    // Configure OC module
+    *(&OC1CON + unit * 0x80) = 0;
     *(&OC1R  + unit * 0x80)  = PR(timer) * duty;
     *(&OC1RS + unit * 0x80)  = PR(timer) * duty;
     *(&OC1CON + unit * 0x80) = 0x0006;
     
-    pwm_enable_timer(unit);
+    if (pwm_timer_alternate_clock(unit)) {
+        *(&OC1CONSET + unit * 0x80) = (1 << 3);
+    } else {
+        *(&OC1CONCLR + unit * 0x80) = (1 << 3);
+    }
 }
 
 void pwm_init_freq(int unit, int pwmhz, double duty) {
@@ -460,6 +477,9 @@ void pwm_pins(int unit, unsigned char *pin) {
     }
 }
 
+// PWM interrupt
+//
+// Interrupt is trigger at each PWM end cycle
 void pwm_intr(u8_t unit, u8_t timer) {  
     int irq = PIC32_IRQ_T1 + timer * 5;
          
