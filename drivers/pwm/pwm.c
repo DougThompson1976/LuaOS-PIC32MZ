@@ -34,6 +34,9 @@
 #include <drivers/gpio/gpio.h>
 #include <math.h>
 
+#include "FreeRTOS.h"
+#include "task.h"
+
 /*
  * PBCLK      = peripheripal clock (MHZ)
  * pwm_freq   = pwm frequency hz
@@ -54,6 +57,23 @@
  * pwm_res = ------------------------------------------------
  *                         log10(2) 
  */
+
+struct pwm {
+    int pulses;
+    pwm_pulses_end *end;    
+};
+
+struct pwm pwm[NOC] = {
+    {0, NULL},
+    {0, NULL},
+    {0, NULL},
+    {0, NULL},
+    {0, NULL},
+    {0, NULL},
+    {0, NULL},
+    {0, NULL},
+    {0, NULL},
+};
 
 static int output_map1 (unsigned channel) {
     switch (channel) {
@@ -185,7 +205,7 @@ static int pwm_timer_alternate_clock(int unit) {
 }
 
 // Calculate PR value for timer for desired pwm frequency
-unsigned int pwm_pr_freq(int pwmhz, int preescaler) {
+unsigned int pwm_pr_freq(double pwmhz, int preescaler) {
     return (unsigned int)((((double)1.0 / (double)pwmhz) / (((double)1.0 / (double)PBCLK3_HZ) * (double)preescaler)) - (double)1.0);
 }
 
@@ -195,11 +215,14 @@ unsigned int pwm_pr_res(int res, int preescaler) {
 }
 
 // Start pwm
-void pwm_start(int unit) {
+void pwm_start(int unit, int pulses, pwm_pulses_end *callback) {
     unit--;
 
     unsigned int timer = pwm_timer_num(unit);
 
+    pwm[unit].pulses = pulses;
+    pwm[unit].end = callback;
+    
     TMR(timer) = 0;
     
     *(&OC1CONSET + unit * 0x80) = (1 << 15); // Enable OC module
@@ -217,7 +240,7 @@ void pwm_stop(int unit) {
 }
 
 // Configura pwm base timer using desired pwm frequency
-static void pwm_configure_timer_freq(int unit, int pwmhz) {
+static void pwm_configure_timer_freq(int unit, double pwmhz) {
     unsigned int pr;
     unsigned int preescaler;
     unsigned int preescaler_bits;
@@ -348,7 +371,7 @@ unsigned int pwm_freq(int unit) {
     return (PBCLK3_HZ / ((PR(timer) + 1) *  pwm_timer_preescaler(unit)));
 }
 
-void pwm_setup_freq(int unit, int pwmhz, double duty) {
+void pwm_setup_freq(int unit, double pwmhz, double duty) {
     unsigned int timer = pwm_timer_num(unit);
 
     PMD4CLR = (1 << (timer - 1));
@@ -393,7 +416,7 @@ void pwm_setup_res(int unit, int res, int value) {
     }
 }
 
-void pwm_init_freq(int unit, int pwmhz, double duty) {
+void pwm_init_freq(int unit, double pwmhz, double duty) {
     int pin;
     unit--;
 
@@ -439,8 +462,6 @@ void pwm_init_res(int unit, int res, int val) {
 
     syslog(LOG_INFO,"pwm%d, at pin %c%d, %d hz", unit + 1, 
            gpio_portname(pin), gpio_pinno(pin), pwm_freq(unit + 1));
-
-    pwm_start(unit + 1);    
 }
 
 void pwm_pins(int unit, unsigned char *pin) {
@@ -481,7 +502,23 @@ void pwm_pins(int unit, unsigned char *pin) {
 //
 // Interrupt is trigger at each PWM end cycle
 void pwm_intr(u8_t unit, u8_t timer) {  
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     int irq = PIC32_IRQ_T1 + timer * 5;
+    
+    if (pwm[unit].pulses > 0) {
+        pwm[unit].pulses--;
+        
+        if (pwm[unit].pulses == 0) {
+            pwm_stop(unit + 1);
+            
+            if (pwm[unit].end) {
+                xTimerPendFunctionCallFromISR(pwm[unit].end,NULL,unit,
+                                      &xHigherPriorityTaskWoken);
+            }
+        }
+    }
          
     IFSCLR(irq >> 5) = 1 << (irq & 31); 
+
+    portEND_SWITCHING_ISR(xHigherPriorityTaskWoken);
 }
