@@ -54,7 +54,7 @@ int platform_pwm_freq(int id) {
     return pwm_freq(id);
 }
 
-int platform_pwm_setup_freq(int id, double khz, double duty) {
+int platform_pwm_setup_freq(int id, int khz, double duty) {
     // Setup in base of frequency
     pwm_init_freq(id, khz, duty);
     
@@ -70,8 +70,8 @@ int platform_pwm_setup_res(int id, int res, int val) {
     return pwm_freq(id);
 }
 
-void platform_pwm_start(int id, int pulses, pwm_pulses_end *callback) {
-    pwm_start(id, pulses, callback);
+void platform_pwm_start(int id) {
+    pwm_start(id);
 }
 
 void platform_pwm_stop(int id) {

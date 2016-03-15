@@ -33,6 +33,7 @@
 #include <drivers/gpio/gpio.h>
 
 extern void vPortIncrementTick();
+extern char stepper_timer;
 
 typedef enum {
         EXCEP_IRQ = 0, 	/* interrupt */
@@ -95,13 +96,56 @@ void interrupt() {
 	
     // Call to related interrupt handler
     switch (irq) {
-        case PIC32_IRQ_T1:    vPortIncrementTick();break;		
-        case PIC32_IRQ_T4:    pwm_intr(0, 3);break;		
-        case PIC32_IRQ_T5:    pwm_intr(1, 4);break;		
-        case PIC32_IRQ_T2:    pwm_intr(3, 1);break;		
-        case PIC32_IRQ_T3:    pwm_intr(4, 2);break;		
-        case PIC32_IRQ_T6:    pwm_intr(6, 5);break;		
-        case PIC32_IRQ_T7:    pwm_intr(7, 6);break;		
+        case PIC32_IRQ_T1:
+            vPortIncrementTick();break;	
+
+        case PIC32_IRQ_T2:    
+            if (stepper_timer == 2) {
+                stepper_intr(PIC32_IRQ_T2);
+            }
+            break;
+                
+        case PIC32_IRQ_T3:    
+            if (stepper_timer == 3) {
+                stepper_intr(PIC32_IRQ_T3);
+            }
+            break;
+
+        case PIC32_IRQ_T4: 
+            if (stepper_timer == 4) {
+                stepper_intr(PIC32_IRQ_T4);
+            }
+            break;
+
+        case PIC32_IRQ_T5:    
+            if (stepper_timer == 5) {
+                stepper_intr(PIC32_IRQ_T5);
+            }
+            break;
+
+        case PIC32_IRQ_T6:    
+            if (stepper_timer == 6) {
+                stepper_intr(PIC32_IRQ_T6);
+            }
+            break;
+
+        case PIC32_IRQ_T7:    
+            if (stepper_timer == 7) {
+                stepper_intr(PIC32_IRQ_T7);
+            }
+            break;
+
+        case PIC32_IRQ_T8:    
+            if (stepper_timer == 8) {
+                stepper_intr(PIC32_IRQ_T8);
+            }
+            break;
+
+        case PIC32_IRQ_T9:    
+            if (stepper_timer == 9) {
+                stepper_intr(PIC32_IRQ_T9);
+            }
+            break;
 
         /* UART */
         case PIC32_IRQ_U1RX:  uart_intr_rx(0); break;

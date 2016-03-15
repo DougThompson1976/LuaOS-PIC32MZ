@@ -36,23 +36,20 @@ struct pwm {
     unsigned char configured;
     unsigned char mode;
     unsigned char res;
-    double  khz;
+    unsigned int  khz;
     unsigned int  started;
 };
 
 static struct pwm pwm[NOC];
-
-static void lpwm_pulse_end(void *arg1, uint32_t arg2) {
-}
 
 static int lpwm_pins( lua_State* L ) {
     return platform_pwm_pins();
 }
 
 static int lpwm_setup(lua_State* L) {
-    double duty, khz;
+    double duty;
     
-    int res, val;
+    int res, val, khz;
     
     res = 0;
     khz = 0;
@@ -68,7 +65,7 @@ static int lpwm_setup(lua_State* L) {
     
     switch (mode) {
         case 0:
-            khz = luaL_checknumber(L, 3); 
+            khz = luaL_checkinteger(L, 3); 
             duty = luaL_checknumber(L, 4); 
             break;
             
@@ -117,7 +114,6 @@ static int lpwm_setup(lua_State* L) {
 
 static int lpwm_start(lua_State* L) {
     int id = luaL_checkinteger(L, 1); 
-    int pulses = luaL_optinteger(L, 2, -1);
 
     if (!platform_pwm_exists(id)) {
         return luaL_error(L, "pwm%d does not exist", id);
@@ -127,15 +123,7 @@ static int lpwm_start(lua_State* L) {
         return luaL_error(L, "pwm%d is not setup", id);
     }
     
-    if ((pulses < -1) || (pulses == 0)) {
-        return luaL_error(L, "invalid pulses value");        
-    }
-    
-    if (pulses > 0) {
-        platform_pwm_start(id, pulses, lpwm_pulse_end);
-    } else {
-        platform_pwm_start(id, pulses, NULL);        
-    }
+    platform_pwm_start(id);
     
     pwm[id - 1].started = 1;
     

@@ -469,28 +469,6 @@ static int test_eof (lua_State *L, FILE *f) {
   return (c != EOF);
 }
 
-
-static int read_line (lua_State *L, FILE *f, int chop) {
-  luaL_Buffer b;
-  int c = '\0';
-  luaL_buffinit(L, &b);
-  while (c != EOF && c != '\n') {  /* repeat until end of line */
-    char *buff = luaL_prepbuffer(&b);  /* preallocate buffer */
-    int i = 0;
-    l_lockfile(f);  /* no memory errors can happen inside the lock */
-    while (i < LUAL_BUFFERSIZE && (c = l_getc(f)) != EOF && c != '\n')
-      buff[i++] = c;
-    l_unlockfile(f);
-    luaL_addsize(&b, i);
-  }
-  if (!chop && c == '\n')  /* want a newline and have one? */
-    luaL_addchar(&b, c);  /* add ending newline to result */
-  luaL_pushresult(&b);  /* close buffer */
-  /* return ok if read something (either a newline or something else) */
-  return (c == '\n' || lua_rawlen(L, -1) > 0);
-}
-
-
 static void read_all (lua_State *L, FILE *f) {
   size_t nr;
   luaL_Buffer b;

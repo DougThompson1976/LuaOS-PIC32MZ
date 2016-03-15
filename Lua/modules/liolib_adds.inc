@@ -14,7 +14,7 @@
 #define l_lockfile(f)		((void)0)
 #define l_unlockfile(f)		((void)0)
 
-static int luaos_read_line (lua_State *L, FILE *f, int chop) {
+static int read_line (lua_State *L, FILE *f, int chop) {
   luaL_Buffer b;
   int c = '\0';
   luaL_buffinit(L, &b);

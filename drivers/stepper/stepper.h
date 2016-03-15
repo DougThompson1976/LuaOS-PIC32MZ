@@ -1,5 +1,5 @@
 /*
- * Whitecat, pwm driver
+ * Whitecat, stepper driver
  *
  * Copyright (C) 2015 - 2016
  * IBEROXARXA SERVICIOS INTEGRALES, S.L. & CSS IBÉRICA, S.L.
@@ -27,24 +27,21 @@
  * this software.
  */
 
-#ifndef PWM_H
-#define	PWM_H
+#ifndef STEPPER_H
+#define STEPPER_H
 
-#define NOC 9
+#define NSTEP 8
 
-unsigned int pwm_pr_freq(int pwmhz, int presscaler);
-unsigned int pwm_pr_res(int res, int presscaler);
-unsigned int pwm_res(int pwmhz);
-unsigned int pwm_freq(int unit);
-void pwm_start(int unit);
-void pwm_stop(int unit);
-void pwm_set_duty(int unit, double duty);
-void pwm_write(int unit, int res, int value);
-void pwm_setup_freq(int unit, int pwmhz, double duty);
-void pwm_setup_res(int unit, int res, int value);
-void pwm_init_freq(int unit, int pwmhz, double duty); 
-void pwm_init_res(int unit, int res, int val);
-void pwm_pins(int unit, unsigned char *pin);
+#include <unistd.h>
 
-#endif	/* PWM_H */
+#include <drivers/error.h>
 
+typedef void (stepper_end)(void *, uint32_t);
+
+void stepper_update_frequency(int unit, double freq);
+tdriver_error *stepper_setup(int unit, int step_pin, int dir_pin);
+void stepper_move(int unit, int dir, int steps, int ramp, double ifreq, double efreq, stepper_end *callback);
+void stepper_start(int mask);
+tdriver_error *steppers_setup(int pulse_width);
+
+#endif

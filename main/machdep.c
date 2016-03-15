@@ -55,6 +55,8 @@
 #include <machine/param.h>
 #include <string.h>
 
+#include <drivers/cpu/resource.h>
+
 void conf_performance() {
     SYSKEY = 0;	
     SYSKEY = UNLOCK_KEY_0;
@@ -150,6 +152,7 @@ mach_init()
     
     PMD7 = 0xffffffff;
     
+    resource_init();
     clock_init();
     syscalls_init();
     _pthread_init();

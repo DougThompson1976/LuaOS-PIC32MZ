@@ -85,7 +85,8 @@
   {AUXLIB_UART, luaopen_uart}, \
   {AUXLIB_PWM, luaopen_pwm}, \
   {AUXLIB_GPS, luaopen_gps}, \
-  {AUXLIB_HTTP, luaopen_http},
+  {AUXLIB_HTTP, luaopen_http}, \
+  {AUXLIB_STEPPER, luaopen_stepper},
       
 #define LINIT_OPEN_ADDS
 

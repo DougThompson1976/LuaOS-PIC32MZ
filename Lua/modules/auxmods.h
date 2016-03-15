@@ -52,6 +52,9 @@ LUALIB_API int (luaopen_gps) (lua_State* L);
 #define AUXLIB_HTTP "http"
 LUALIB_API int (luaopen_http) (lua_State* L);
 
+#define AUXLIB_STEPPER "stepper"
+LUALIB_API int (luaopen_stepper) (lua_State* L);
+
 // Helper macros
 #define MOD_CHECK_ID( mod, id )\
   if( !platform_ ## mod ## _exists( id ) )\

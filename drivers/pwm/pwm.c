@@ -34,9 +34,6 @@
 #include <drivers/gpio/gpio.h>
 #include <math.h>
 
-#include "FreeRTOS.h"
-#include "task.h"
-
 /*
  * PBCLK      = peripheripal clock (MHZ)
  * pwm_freq   = pwm frequency hz
@@ -59,20 +56,20 @@
  */
 
 struct pwm {
-    int pulses;
-    pwm_pulses_end *end;    
+    unsigned int timer;      // Timer used by pwm
+    unsigned int alternate;  // Alternate timer config?
 };
 
 struct pwm pwm[NOC] = {
-    {0, NULL},
-    {0, NULL},
-    {0, NULL},
-    {0, NULL},
-    {0, NULL},
-    {0, NULL},
-    {0, NULL},
-    {0, NULL},
-    {0, NULL},
+    {4,0},
+    {5,1},
+    {4,0},
+    {2,0},
+    {3,1,},
+    {2,0},
+    {6,0},
+    {7,1},
+    {6,0},
 };
 
 static int output_map1 (unsigned channel) {
@@ -174,38 +171,8 @@ static void assign_oc_pin(int channel, int pin) {
     }
 }
 
-// Get timer number assigned to PWM
-static int pwm_timer_num(int unit) {
-    switch (unit) {
-        case 0: return 4;
-        case 1: return 5;
-        case 2: return 4;
-        case 3: return 2;
-        case 4: return 3;
-        case 5: return 2;
-        case 6: return 6;
-        case 7: return 7;
-        case 8: return 6;
-    }
-}
-
-// Get timer number assigned to PWM is normal configuration or alternate config
-static int pwm_timer_alternate_clock(int unit) {
-    switch (unit) {
-        case 0: return 0;break;
-        case 1: return 1;break;
-        case 2: return 0;break;
-        case 3: return 0;break;
-        case 4: return 1;break;
-        case 5: return 0;break;
-        case 6: return 0;break;
-        case 7: return 1;break;
-        case 8: return 0;break;
-    }
-}
-
 // Calculate PR value for timer for desired pwm frequency
-unsigned int pwm_pr_freq(double pwmhz, int preescaler) {
+unsigned int pwm_pr_freq(int pwmhz, int preescaler) {
     return (unsigned int)((((double)1.0 / (double)pwmhz) / (((double)1.0 / (double)PBCLK3_HZ) * (double)preescaler)) - (double)1.0);
 }
 
@@ -214,39 +181,11 @@ unsigned int pwm_pr_res(int res, int preescaler) {
     return pwm_pr_freq(PBCLK3_HZ / ((2 << (res - 1)) * preescaler), preescaler);    
 }
 
-// Start pwm
-void pwm_start(int unit, int pulses, pwm_pulses_end *callback) {
-    unit--;
-
-    unsigned int timer = pwm_timer_num(unit);
-
-    pwm[unit].pulses = pulses;
-    pwm[unit].end = callback;
-    
-    TMR(timer) = 0;
-    
-    *(&OC1CONSET + unit * 0x80) = (1 << 15); // Enable OC module
-    TCONSET(timer) = (1 << 15);              // Enable timer
-}
-
-// Stop pwm
-void pwm_stop(int unit) {
-    unit--;
-    
-    unsigned int timer = pwm_timer_num(unit);
-
-    *(&OC1CONCLR + unit * 0x80) = (1 << 15); // Disable OC module
-    TCONSET(timer) = (1 << 15);              // Disable timer
-}
-
-// Configura pwm base timer using desired pwm frequency
-static void pwm_configure_timer_freq(int unit, double pwmhz) {
+static void pwm_configure_timer_freq(int unit, int pwmhz) {
     unsigned int pr;
     unsigned int preescaler;
     unsigned int preescaler_bits;
         
-    unsigned int timer = pwm_timer_num(unit);
-
     preescaler_bits = 0;
     for(preescaler=1;preescaler <= 256;preescaler = preescaler * 2) {
         if (preescaler != 128) {
@@ -260,36 +199,16 @@ static void pwm_configure_timer_freq(int unit, double pwmhz) {
         }
     }
     
-    TCON(timer) = (preescaler_bits << 4);
-    TMR(timer) = 0;
-    PR(timer) = pr;    
-
-    int irq = PIC32_IRQ_T1 + (timer - 1) * 5;
-    
-    // Disable timer interrupts
-    IECCLR(irq >> 5) = 1 << (irq  & 31); 
-    
-    // Clear timer flag
-    IFSCLR(irq >> 5) = 1 << (irq & 31); 
-    
-    // Clear the timer priority and sub-priority
-    IPCCLR(irq >> 2) = 0x1f << (5 * (irq & 0x03));
-
-    // Set timer IPL 3, sub-priority 1
-    IPCSET(irq >> 2) = (0x1f << (8 * (irq & 0x03))) & 0x0d0d0d0d;
-
-    // Enable timer interrupts
-    IECSET(irq >> 5) = 1 << (irq & 31); 
+    TCON(pwm[unit].timer) = (preescaler_bits << 4);
+    TMR(pwm[unit].timer) = 0;
+    PR(pwm[unit].timer) = pr;    
 }
 
-// Configura pwm base timer using desired pwm resolution
 static void pwm_configure_timer_res(int unit, int res) {
     unsigned int pr;
     unsigned int preescaler;
     unsigned int preescaler_bits;
-
-    unsigned int timer = pwm_timer_num(unit);
-
+        
     preescaler_bits = 0;
     for(preescaler=1;preescaler <= 256;preescaler = preescaler * 2) {
         if (preescaler != 128) {
@@ -302,33 +221,14 @@ static void pwm_configure_timer_res(int unit, int res) {
             preescaler_bits++;
         }
     }
-
-    TCON(timer) = (preescaler_bits << 4);
-    TMR(timer) = 0;
-    PR(timer) = pr;    
-
-    int irq = PIC32_IRQ_T1 + (timer - 1) * 5;
     
-    // Disable timer interrupts
-    IECCLR(irq >> 5) = 1 << (irq  & 31); 
-    
-    // Clear timer flag
-    IFSCLR(irq >> 5) = 1 << (irq & 31); 
-    
-    // Clear the timer priority and sub-priority
-    IPCCLR(irq >> 2) = 0x1f << (5 * (irq & 0x03));
-
-    // Set timer IPL 3, sub-priority 1
-    IPCSET(irq >> 2) = (0x1f << (8 * (irq & 0x03))) & 0x0d0d0d0d;
-
-    // Enable timer interrupts
-    IECSET(irq >> 5) = 1 << (irq & 31);
+    TCON(pwm[unit].timer) = (preescaler_bits << 4);
+    TMR(pwm[unit].timer) = 0;
+    PR(pwm[unit].timer) = pr;    
 }
 
 static int pwm_timer_preescaler(int unit) {
-    unsigned int timer = pwm_timer_num(unit);
-
-    unsigned int preescaler_bits = ((TCON(timer) >> 4) & 0b111);
+    unsigned int preescaler_bits = ((TCON(pwm[unit].timer) >> 4) & 0b111);
     
     switch (preescaler_bits) {
         case 0: return 1;
@@ -342,81 +242,92 @@ static int pwm_timer_preescaler(int unit) {
     }
 }
 
+void pwm_start(int unit) {
+    unit--;
+    
+    *(&OC1CONSET + unit * 0x80) = (1 << 15); // Enable OC module
+    TCONSET(pwm[unit].timer) = (1 << 15);    // Start timer
+}
+
+void pwm_stop(int unit) {
+    unit--;
+    
+    *(&OC1CONCLR + unit * 0x80) = (1 << 15); // Disable OC module
+    TCONCLR(pwm[unit].timer) = (1 << 15);    // Stop timer
+}
+
+
 // Set new duty cycle
 void pwm_set_duty(int unit, double duty) {
     unit--;
 
-    unsigned int timer = pwm_timer_num(unit);
-
-    *(&OC1R  + unit * 0x80) = PR(timer) * duty;
-    *(&OC1RS + unit * 0x80) = PR(timer) * duty;    
+    *(&OC1R  + unit * 0x80) = PR(pwm[unit].timer) * duty;
+    *(&OC1RS + unit * 0x80) = PR(pwm[unit].timer) * duty;    
 }
 
 void pwm_write(int unit, int res, int value) {
     unit--;
 
-    unsigned int timer = pwm_timer_num(unit);
     double duty = (double)value / (double)(2 << (res - 1));
     
-    *(&OC1R  + unit * 0x80) = PR(timer) * duty;
-    *(&OC1RS + unit * 0x80) = PR(timer) * duty;
+    *(&OC1R  + unit * 0x80) = PR(pwm[unit].timer) * duty;
+    *(&OC1RS + unit * 0x80) = PR(pwm[unit].timer) * duty;
 }
 
 // Calculate real pwm frequency
 unsigned int pwm_freq(int unit) {
     unit--;
     
-    unsigned int timer = pwm_timer_num(unit);
-
-    return (PBCLK3_HZ / ((PR(timer) + 1) *  pwm_timer_preescaler(unit)));
+    return (PBCLK3_HZ / (PR(pwm[unit].timer) *  pwm_timer_preescaler(unit)));
 }
 
-void pwm_setup_freq(int unit, double pwmhz, double duty) {
-    unsigned int timer = pwm_timer_num(unit);
+void pwm_setup_freq(int unit, int pwmhz, double duty) {
+    // Enable timer
+    PMD4CLR = (1 << (pwm[unit].timer - 1));
 
-    PMD4CLR = (1 << (timer - 1));
-
-    TCON(timer) = 0; // Disable timer
+    // Stop timer
+    TCONCLR(pwm[unit].timer) = (1 << 15);
     
     pwm_configure_timer_freq(unit, pwmhz);
     
     // Configure OC module
-    *(&OC1CON + unit * 0x80) = 0; 
-    *(&OC1R  + unit * 0x80)  = PR(timer) * duty;
-    *(&OC1RS + unit * 0x80)  = PR(timer) * duty;
-    *(&OC1CON + unit * 0x80) = 0x0006;
-
-    if (pwm_timer_alternate_clock(unit)) {
+    *(&OC1CON + unit * 0x80) = 0;
+    *(&OC1R  + unit * 0x80)  = PR(pwm[unit].timer) * duty;
+    *(&OC1RS + unit * 0x80)  = PR(pwm[unit].timer) * duty;
+    *(&OC1CON + unit * 0x80) = 0x0006;   
+    
+    if (pwm[unit].alternate) {
         *(&OC1CONSET + unit * 0x80) = (1 << 3);
     } else {
         *(&OC1CONCLR + unit * 0x80) = (1 << 3);
-    }
+    }    
 }
 
 void pwm_setup_res(int unit, int res, int value) {
-    unsigned int timer = pwm_timer_num(unit);
     double duty = (double)value / (double)(2 << (res - 1));
     
-    PMD4CLR = (1 << (timer - 1));
+    // Enable timer
+    PMD4CLR = (1 << (pwm[unit].timer - 1));
 
-    TCON(timer) = 0; // Disable timer
+    // Stop timer
+    TCONCLR(pwm[unit].timer) = (1 << 15);
 
     pwm_configure_timer_res(unit, res);
     
     // Configure OC module
     *(&OC1CON + unit * 0x80) = 0;
-    *(&OC1R  + unit * 0x80)  = PR(timer) * duty;
-    *(&OC1RS + unit * 0x80)  = PR(timer) * duty;
+    *(&OC1R  + unit * 0x80)  = PR(pwm[unit].timer) * duty;
+    *(&OC1RS + unit * 0x80)  = PR(pwm[unit].timer) * duty;
     *(&OC1CON + unit * 0x80) = 0x0006;
     
-    if (pwm_timer_alternate_clock(unit)) {
+    if (pwm[unit].alternate) {
         *(&OC1CONSET + unit * 0x80) = (1 << 3);
     } else {
         *(&OC1CONCLR + unit * 0x80) = (1 << 3);
-    }
+    }    
 }
 
-void pwm_init_freq(int unit, double pwmhz, double duty) {
+void pwm_init_freq(int unit, int pwmhz, double duty) {
     int pin;
     unit--;
 
@@ -437,7 +348,7 @@ void pwm_init_freq(int unit, double pwmhz, double duty) {
     pwm_setup_freq(unit, pwmhz, duty);
     
     syslog(LOG_INFO,"pwm%d, at pin %c%d using timer%d, %d hz", unit + 1, 
-           gpio_portname(pin), gpio_pinno(pin), pwm_timer_num(unit), pwm_freq(unit + 1));
+           gpio_portname(pin), gpio_pinno(pin), pwm[unit].timer, pwm_freq(unit + 1));
 }
 
 void pwm_init_res(int unit, int res, int val) {
@@ -462,6 +373,8 @@ void pwm_init_res(int unit, int res, int val) {
 
     syslog(LOG_INFO,"pwm%d, at pin %c%d, %d hz", unit + 1, 
            gpio_portname(pin), gpio_pinno(pin), pwm_freq(unit + 1));
+
+    pwm_start(unit + 1);    
 }
 
 void pwm_pins(int unit, unsigned char *pin) {
@@ -496,29 +409,4 @@ void pwm_pins(int unit, unsigned char *pin) {
             *pin = OC9_PINS & 0xFF;
             break;
     }
-}
-
-// PWM interrupt
-//
-// Interrupt is trigger at each PWM end cycle
-void pwm_intr(u8_t unit, u8_t timer) {  
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    int irq = PIC32_IRQ_T1 + timer * 5;
-    
-    if (pwm[unit].pulses > 0) {
-        pwm[unit].pulses--;
-        
-        if (pwm[unit].pulses == 0) {
-            pwm_stop(unit + 1);
-            
-            if (pwm[unit].end) {
-                xTimerPendFunctionCallFromISR(pwm[unit].end,NULL,unit,
-                                      &xHigherPriorityTaskWoken);
-            }
-        }
-    }
-         
-    IFSCLR(irq >> 5) = 1 << (irq & 31); 
-
-    portEND_SWITCHING_ISR(xHigherPriorityTaskWoken);
 }

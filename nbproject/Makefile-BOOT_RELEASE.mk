@@ -49,6 +49,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/Lua/common/y.tab.o \
 	${OBJECTDIR}/Lua/modules/adc.o \
 	${OBJECTDIR}/Lua/modules/can.o \
+	${OBJECTDIR}/Lua/modules/error.o \
 	${OBJECTDIR}/Lua/modules/gps.o \
 	${OBJECTDIR}/Lua/modules/http.o \
 	${OBJECTDIR}/Lua/modules/lbaselib_adds.o \
@@ -63,6 +64,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/Lua/modules/screen/endian.o \
 	${OBJECTDIR}/Lua/modules/screen/screen.o \
 	${OBJECTDIR}/Lua/modules/spi.o \
+	${OBJECTDIR}/Lua/modules/stepper.o \
 	${OBJECTDIR}/Lua/modules/tmr.o \
 	${OBJECTDIR}/Lua/modules/uart.o \
 	${OBJECTDIR}/Lua/platform/adc.o \
@@ -114,6 +116,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/drivers/clock/clock.o \
 	${OBJECTDIR}/drivers/console/console.o \
 	${OBJECTDIR}/drivers/cpu/cpu.o \
+	${OBJECTDIR}/drivers/cpu/resource.o \
 	${OBJECTDIR}/drivers/display/ST7735S/ST7735S.o \
 	${OBJECTDIR}/drivers/display/display.o \
 	${OBJECTDIR}/drivers/display/font.o \
@@ -131,6 +134,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/drivers/sd/sd.o \
 	${OBJECTDIR}/drivers/sim908/sim908.o \
 	${OBJECTDIR}/drivers/spi/spi.o \
+	${OBJECTDIR}/drivers/stepper/stepper.o \
 	${OBJECTDIR}/drivers/uart/uart.o \
 	${OBJECTDIR}/http/httpsrv.o \
 	${OBJECTDIR}/lib/libc/gen/assert.o \
@@ -662,6 +666,11 @@ ${OBJECTDIR}/Lua/modules/can.o: Lua/modules/can.c
 	${RM} "$@.d"
 	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/src -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/modules/can.o Lua/modules/can.c
 
+${OBJECTDIR}/Lua/modules/error.o: Lua/modules/error.c 
+	${MKDIR} -p ${OBJECTDIR}/Lua/modules
+	${RM} "$@.d"
+	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/src -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/modules/error.o Lua/modules/error.c
+
 ${OBJECTDIR}/Lua/modules/gps.o: Lua/modules/gps.c 
 	${MKDIR} -p ${OBJECTDIR}/Lua/modules
 	${RM} "$@.d"
@@ -731,6 +740,11 @@ ${OBJECTDIR}/Lua/modules/spi.o: Lua/modules/spi.c
 	${MKDIR} -p ${OBJECTDIR}/Lua/modules
 	${RM} "$@.d"
 	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/src -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/modules/spi.o Lua/modules/spi.c
+
+${OBJECTDIR}/Lua/modules/stepper.o: Lua/modules/stepper.c 
+	${MKDIR} -p ${OBJECTDIR}/Lua/modules
+	${RM} "$@.d"
+	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/src -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/modules/stepper.o Lua/modules/stepper.c
 
 ${OBJECTDIR}/Lua/modules/tmr.o: Lua/modules/tmr.c 
 	${MKDIR} -p ${OBJECTDIR}/Lua/modules
@@ -987,6 +1001,11 @@ ${OBJECTDIR}/drivers/cpu/cpu.o: drivers/cpu/cpu.c
 	${RM} "$@.d"
 	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/src -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/drivers/cpu/cpu.o drivers/cpu/cpu.c
 
+${OBJECTDIR}/drivers/cpu/resource.o: drivers/cpu/resource.c 
+	${MKDIR} -p ${OBJECTDIR}/drivers/cpu
+	${RM} "$@.d"
+	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/src -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/drivers/cpu/resource.o drivers/cpu/resource.c
+
 ${OBJECTDIR}/drivers/display/ST7735S/ST7735S.o: drivers/display/ST7735S/ST7735S.c 
 	${MKDIR} -p ${OBJECTDIR}/drivers/display/ST7735S
 	${RM} "$@.d"
@@ -1071,6 +1090,11 @@ ${OBJECTDIR}/drivers/spi/spi.o: drivers/spi/spi.c
 	${MKDIR} -p ${OBJECTDIR}/drivers/spi
 	${RM} "$@.d"
 	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/src -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/drivers/spi/spi.o drivers/spi/spi.c
+
+${OBJECTDIR}/drivers/stepper/stepper.o: drivers/stepper/stepper.c 
+	${MKDIR} -p ${OBJECTDIR}/drivers/stepper
+	${RM} "$@.d"
+	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/src -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/drivers/stepper/stepper.o drivers/stepper/stepper.c
 
 ${OBJECTDIR}/drivers/uart/uart.o: drivers/uart/uart.c 
 	${MKDIR} -p ${OBJECTDIR}/drivers/uart
