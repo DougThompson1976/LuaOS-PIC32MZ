@@ -40,7 +40,7 @@
 #include "task.h"
 
 // Stepper base timer frequency
-#define STEPPER_HZ 100000
+#define STEPPER_HZ 300000
 
 static char clock_pulse = 10;  // Width of clock pulse in usecs
 char stepper_timer = 0;        // Timer used by steppers
@@ -48,37 +48,17 @@ static char setup;             // Set up stepper mask (1 = setup, 2 = not setup)
 static char clock_port;        // Port used for clock signal
 static char dir_port;          // Port used for dir signal
 
-struct stepper {
-    char move;              // If = 1 stepper is configured for move
-    stepper_end *end;       // Call-back function to execute when executed steps
-    
-    char clock_pin;         // Clock pin number
-    char dir_pin;           // Dir pin number
-    
-
-    int steps;              // Number of steps to do
-    int steps_up;           // Number of ramp-up steps to do
-    int steps_down;         // Number of ramp-down steps to do
-    
-    double target_freq;     // Target stepper clock frequency
-    double current_freq;    // Current stepper clock frequency
-    double freq_inc;        // Increment of current clock frequency
-    
-    unsigned int ticks;     // Number of ticks to do for each clock pulse
-    unsigned int cticks;    // Number of ticks since last clock pulse
-    char dir;               // Pin direction value
-    char start;             // If = 1 start stepper at next timer interrupt
-};
+static stepper_end *end_callback = NULL;
 
 struct stepper stepper[NSTEP] = {
-    {0, NULL},
-    {0, NULL},
-    {0, NULL},
-    {0, NULL},
-    {0, NULL},
-    {0, NULL},
-    {0, NULL},
-    {0, NULL},
+    {0,0},
+    {0,0},
+    {0,0},
+    {0,0},
+    {0,0},
+    {0,0},
+    {0,0},
+    {0,0},
 };
 
 void stepper_setup_timer() {
@@ -96,7 +76,7 @@ void stepper_setup_timer() {
     preescaler_bits = 0;
     for(preescaler=1;preescaler <= 256;preescaler = preescaler * 2) {
         if (preescaler != 128) {
-            pr = (unsigned int)((((double)1.0 / (double)STEPPER_HZ) / (((double)1.0 / (double)PBCLK3_HZ) * (double)preescaler)) - (double)1.0);
+            pr = (unsigned int)floor(((((double)1.0 / (double)STEPPER_HZ) / (((double)1.0 / (double)PBCLK3_HZ) * (double)preescaler)) - (double)1.0));
             if (pr <= 0xffff) {
                 break;
             }
@@ -104,6 +84,9 @@ void stepper_setup_timer() {
             preescaler_bits++;
         }
     }
+            
+    printf("pr = %d\n", pr);
+    printf("preescaler_bits = %d\n", preescaler_bits);
     
     // Configure timer
     TCON(stepper_timer) = (preescaler_bits << 4);
@@ -112,11 +95,10 @@ void stepper_setup_timer() {
     
     // Configure timer interrupts
     int irq = PIC32_IRQ_T1 + (stepper_timer - 1) * 5;
-    
-    IECCLR(irq >> 5) = 1 << (irq  & 31); 
-    IFSCLR(irq >> 5) = 1 << (irq & 31); 
+
     IPCCLR(irq >> 2) = 0x1f << (5 * (irq & 0x03));
     IPCSET(irq >> 2) = (0x1f << (8 * (irq & 0x03))) & 0x0d0d0d0d;
+    IFSCLR(irq >> 5) = 1 << (irq & 31); 
     IECSET(irq >> 5) = 1 << (irq & 31); 
 
     // Start timer
@@ -126,12 +108,13 @@ void stepper_setup_timer() {
 }
 
 void stepper_update_frequency(int unit, double freq) {  
-    stepper[unit].ticks = (((double)1 / freq) / ((double)1 / (double)STEPPER_HZ));
+    stepper[unit].ticks = (int)floor((((double)1 / freq) / ((double)1 / (double)STEPPER_HZ)));
     stepper[unit].cticks = 0;
 }
 
-tdriver_error *steppers_setup(int pulse_width) {
+tdriver_error *steppers_setup(int pulse_width, stepper_end *callback) {
     clock_pulse = pulse_width;
+    end_callback = callback;
     
     return NULL;
 }
@@ -204,11 +187,10 @@ tdriver_error *stepper_setup(int unit, int step_pin, int dir_pin) {
     return NULL;
 }
 
-void stepper_move(int unit, int dir, int steps, int ramp, double ifreq, double efreq, stepper_end *callback) {
+void stepper_move(int unit, int dir, int steps, int ramp, double ifreq, double efreq) {
     unit--;
     
     stepper[unit].steps = steps;
-    stepper[unit].end = callback;
 
     stepper[unit].steps_up = steps - ramp + 1;
     stepper[unit].steps_down = ramp;
@@ -221,6 +203,15 @@ void stepper_move(int unit, int dir, int steps, int ramp, double ifreq, double e
     } else {
         stepper[unit].freq_inc = 0;
     } 
+    
+    printf("\n\nmove unit %d\n", unit);
+    printf("steps %d\n",stepper[unit].steps);
+    printf("steps up %d\n",stepper[unit].steps_up);
+    printf("steps down %d\n",stepper[unit].steps_down);
+    printf("target freq %f\n",stepper[unit].target_freq);
+    printf("current freq %f\n",stepper[unit].current_freq);
+    printf("freq inc %f\n",stepper[unit].freq_inc);
+    printf("ticks %d\n", (int)floor((((double)1 / stepper[unit].current_freq) / ((double)1 / (double)STEPPER_HZ))));
     
     stepper[unit].move = 1;
     stepper[unit].dir = dir;
@@ -243,10 +234,10 @@ void stepper_start(int mask) {
 void stepper_intr(u8_t irq) {  
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     
-    int clock = 0;      // Generate a clock pulse?
     int clock_mask = 0; // Clock mask to generate
     int dirs_mask = 0;  // Direction set mask
     int dirc_mask = 0;  // Direction clear mask
+    int stop_mask = 0;  // Stopped steppers in this cycle
     
     int unit;
     struct stepper *pstepper;
@@ -266,14 +257,9 @@ void stepper_intr(u8_t irq) {
             // Is this timer tick for the stepper?
             pstepper->cticks++;
             if (pstepper->cticks == pstepper->ticks) {
-                pstepper->steps--;                
-
                 // Init ticks
                 pstepper->cticks = 0;
-                
-                // A clock pulse must be generated
-                clock = 1;
-                
+                                
                 // Update clock mask
                 clock_mask |= (1 << pstepper->clock_pin);
                 
@@ -285,14 +271,11 @@ void stepper_intr(u8_t irq) {
                 }
                 
                 // Stop condition
-                if (pstepper->steps == 0) {
-                    if (pstepper->end) {
-                        pstepper->move = 0;
-                        pstepper->start = 0;
-                        
-                        xTimerPendFunctionCallFromISR(pstepper->end,NULL,unit,
-                                              &xHigherPriorityTaskWoken);
-                    }
+                if (pstepper->steps == 1) {
+                    pstepper->move = 0;
+                    pstepper->start = 0;
+
+                    stop_mask |= (1 << unit);                        
                     
                     continue;
                 }
@@ -307,12 +290,14 @@ void stepper_intr(u8_t irq) {
                         pstepper->current_freq -= pstepper->freq_inc;
                         stepper_update_frequency(unit, pstepper->current_freq);
                     }
-                }                
+                }  
+                
+                pstepper->steps--;
             }
         }
     }
     
-    if (clock) {
+    if (clock_mask) {
         // Update direction
         LATSET(dir_port) = dirs_mask;
         LATCLR(dir_port) = dirc_mask;
@@ -322,8 +307,15 @@ void stepper_intr(u8_t irq) {
         udelay(clock_pulse);
         LATINV(clock_port) = clock_mask;
     }
+    
+    if (stop_mask) {
+        xTimerPendFunctionCallFromISR(end_callback,stepper,stop_mask,
+                              &xHigherPriorityTaskWoken);        
+    }
 
     IFSCLR(irq >> 5) = 1 << (irq & 31); 
 
-    portEND_SWITCHING_ISR(xHigherPriorityTaskWoken);
+    if (stop_mask) {
+       portEND_SWITCHING_ISR(xHigherPriorityTaskWoken);
+    }
 }

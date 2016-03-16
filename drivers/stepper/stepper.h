@@ -38,10 +38,30 @@
 
 typedef void (stepper_end)(void *, uint32_t);
 
+struct stepper {
+    char move;              // If = 1 stepper is configured for move
+    char start;             // If = 1 start stepper at next timer interrupt
+    
+    char clock_pin;         // Clock pin number
+    char dir_pin;           // Dir pin number
+    
+    int steps;              // Number of steps to do
+    int steps_up;           // Number of ramp-up steps to do
+    int steps_down;         // Number of ramp-down steps to do
+    
+    double target_freq;     // Target stepper clock frequency
+    double current_freq;    // Current stepper clock frequency
+    double freq_inc;        // Increment of current clock frequency
+    
+    unsigned int ticks;     // Number of ticks to do for each clock pulse
+    unsigned int cticks;    // Number of ticks since last clock pulse
+    char dir;               // Pin direction value
+};
+
 void stepper_update_frequency(int unit, double freq);
 tdriver_error *stepper_setup(int unit, int step_pin, int dir_pin);
-void stepper_move(int unit, int dir, int steps, int ramp, double ifreq, double efreq, stepper_end *callback);
+void stepper_move(int unit, int dir, int steps, int ramp, double ifreq, double efreq);
 void stepper_start(int mask);
-tdriver_error *steppers_setup(int pulse_width);
+tdriver_error *steppers_setup(int pulse_width, stepper_end *callback);
 
 #endif

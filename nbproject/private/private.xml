@@ -7,10 +7,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/gpio/gpio.h</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/main/trap.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/stepper/stepper.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/machine/pic32mz.h</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/drivers/stepper/stepper.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/modules/stepper.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/utils/delay.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/drivers/stepper/stepper.h</file>
         </group>
     </open-files>
 </project-private>
