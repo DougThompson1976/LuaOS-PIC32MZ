@@ -49,28 +49,13 @@ struct lstepp lstepp[NSTEP];
 
 static void lstepper_end(void *arg1, uint32_t mask) {
     int unit;
-    unsigned int when;
     struct stepper *p = (struct stepper *)arg1;
-    
-    when = ReadCoreTimer();    
     
     for(unit=0;unit < NSTEP; unit++, mask = (mask >> 1)) {
         if (mask & 0b1) {
-            lstepp[unit].done = 1;
-            
-            printf("step %d end at %u\n", unit, when);
+            lstepp[unit].done = 1;            
         }
     }    
-    
-    for(unit=0;unit < NSTEP; unit++) {
-        printf("%u ", p->steps);
-        printf("%u ", p->ticks);
-        printf("%u, ", p->cticks);
-        
-        p = (struct stepper *)((char *)p + sizeof(struct stepper));
-    }
-    
-    printf("\n");    
 }
 
 static int lstepper_unit() {
@@ -144,7 +129,6 @@ static int lstepper_move( lua_State* L ){
     double ifreq = luaL_checknumber(L, 5);
     double efreq = luaL_checknumber(L, 6);
         
-    printf("lspe move %d\n",lstepper->unit + 1);
     stepper_move(lstepper->unit + 1, dir, steps, ramp, ifreq, efreq);
     
     return 0;

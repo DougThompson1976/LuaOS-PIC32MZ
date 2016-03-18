@@ -46,6 +46,8 @@
 
 /* from: Utah $Hdr: machdep.c 1.63 91/04/24$ */
 
+#include "FreeRTOS.h"
+
 #include "whitecat.h"
 
 #include <machine/machConst.h>
@@ -56,6 +58,44 @@
 #include <string.h>
 
 #include <drivers/cpu/resource.h>
+
+void vApplicationSetupTickTimerInterrupt(void) {
+    unsigned int pr;
+    unsigned int preescaler;
+    unsigned int preescaler_bits;
+
+    // Disable timer
+    T1CON = 0;
+    
+    // Computes most lower preescaler for current frequency and period value
+    preescaler_bits = 0;
+    for(preescaler=1;preescaler <= 256;preescaler = preescaler * 2) {
+        if ((preescaler != 2) && (preescaler != 4) && (preescaler !=16) && (preescaler != 32) && (preescaler != 128)) {
+            pr = ( (configPERIPHERAL_CLOCK_HZ / preescaler) / configTICK_RATE_HZ ) - 1;
+            if (pr <= 0xffff) {
+                break;
+            }
+            
+            preescaler_bits++;
+        }
+    }
+            
+    // Configure timer
+    T1CON = (preescaler_bits << 4);
+    PR1 = pr;   
+    
+    IPCCLR(PIC32_IRQ_T1 >> 2) = 0xf << (8 * (PIC32_IRQ_T1 & 0x03));
+    IPCSET(PIC32_IRQ_T1 >> 2) = (configKERNEL_INTERRUPT_PRIORITY << 2) << (8 * (PIC32_IRQ_T1 & 0x03));
+
+    /* Clear the interrupt as a starting condition. */
+    IFSCLR(PIC32_IRQ_T1 >> 5) = 1 << (PIC32_IRQ_T1 & 31);
+
+    /* Enable the interrupt. */
+    IECSET(PIC32_IRQ_T1 >> 5) = 1 << (PIC32_IRQ_T1 & 31);    
+
+    /* Start the timer. */
+    T1CONSET = (1 << 15);	
+}
 
 void conf_performance() {
     SYSKEY = 0;	

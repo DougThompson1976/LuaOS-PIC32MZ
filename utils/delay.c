@@ -29,7 +29,7 @@
 
 #include "whitecat.h"
 
-unsigned int ReadCoreTimer(void) {
+inline unsigned int ReadCoreTimer(void) {
     unsigned int timer;
 
     // get the count reg
@@ -38,14 +38,14 @@ unsigned int ReadCoreTimer(void) {
     return timer;
 }
 
-void delay(unsigned int msec) {
+inline void delay(unsigned int msec) {
     unsigned int tWait, tStart;
     tWait = (CPU_HZ / 2000) * msec;
     tStart = ReadCoreTimer();
     while((ReadCoreTimer() - tStart) < tWait);
 }
 
-void udelay(unsigned int usec) {
+inline void udelay(unsigned int usec) {
     unsigned int tWait, tStart;
     tWait = (CPU_HZ / 2000000) * usec;
     tStart = ReadCoreTimer();
