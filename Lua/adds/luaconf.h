@@ -110,7 +110,8 @@
   {"idle",      os_idle}, \
   {"loglevel",  os_loglevel}, \
   {"logcons",   os_logcons}, \
-  {"stats",     os_stats},
+  {"stats",     os_stats}, \
+  {"version",   os_version},
         
 #define LOSLIB_OPEN_ADDS \
   os_constants(L);

@@ -9,9 +9,14 @@
         <group>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/cpu/cpu.c</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/cpu/resource.h</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/error.h</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/cpu/cpu.h</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/error.c</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/cpu/resource.c</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/stepper/stepper.c</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/stepper.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/gpio/gpio.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/loslib_adds.inc</file>
         </group>
     </open-files>
 </project-private>

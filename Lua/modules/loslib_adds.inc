@@ -376,6 +376,13 @@ static int os_stats(lua_State *L) {
     return 0;
 }
 
+static int os_version(lua_State *L) {
+   lua_pushstring(L, "LuaOS");   
+   lua_pushstring(L, LUA_OS_VER);   
+     
+   return 2;
+}
+
 void os_constants(lua_State *L) {  
     lua_pushinteger(L, LOG_EMERG);
     lua_setfield(L, -2, "LOG_EMERG");
