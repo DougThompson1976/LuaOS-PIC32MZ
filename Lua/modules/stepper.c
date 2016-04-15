@@ -143,6 +143,10 @@ static int lstepper_move( lua_State* L ){
       return luaL_error(L, "stepper module is not setup. Setup first.");        
     }
 
+    if (!setup) {
+      return luaL_error(L, "stepper module is not setup. Setup first.");        
+    }
+
     int dir =  luaL_checkinteger(L, 2);
     int steps = luaL_checkinteger(L, 3);
     int ramp = luaL_checkinteger(L, 4);
@@ -187,6 +191,10 @@ static int lstepper_start( lua_State* L ){
 
 static int lstepper_done( lua_State* L ){
     stepper_userdata *lstepper = NULL;
+
+    if (!setup) {
+      return luaL_error(L, "stepper module is not setup. Setup first.");        
+    }
 
     if (!setup) {
       return luaL_error(L, "stepper module is not setup. Setup first.");        
