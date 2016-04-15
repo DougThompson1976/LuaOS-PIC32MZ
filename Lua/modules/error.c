@@ -1,4 +1,5 @@
 #include <drivers/error.h>
+#include <drivers/cpu/cpu.h>
 #include <drivers/cpu/resource.h>
 
 #include <Lua/src/lstate.h>
@@ -16,10 +17,9 @@ int luaL_driver_error(lua_State* L, const char *msg, tdriver_error *error) {
             );                        
         } else {
             ret_val = luaL_error(L,
-                "%s: %s%d is used by %s%d", 
+                "%s: %s is used by %s%d", 
                 msg,
-                resource_name(error->resource),
-                error->resource_unit + 1,
+                resource_unit_name(error->resource, error->resource_unit),
                 owner_name(error->owner),
                 error->owner_unit + 1
             );            

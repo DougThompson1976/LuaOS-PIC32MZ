@@ -166,12 +166,47 @@ tdriver_error *steppers_setup(int pulse_width, stepper_end *callback) {
 }
 
 tdriver_error *stepper_setup(int unit, int step_pin, int dir_pin) {
-    
+    tresource_lock *lock;
+
     unit--;
 
+    // Lock for step_pin
+    lock = resource_lock(GPIO, cpu_pin_number(step_pin) - 1, STEPPER, unit);
+    if (lock && !lock->granted) {
+        tdriver_error *error;
 
+        error = (tdriver_error *)malloc(sizeof(tdriver_error));
+        if (error) {
+            error->type = LOCK;
+            error->resource = GPIO;
+            error->resource_unit = cpu_pin_number(step_pin) - 1;            
+            error->owner = lock->owner;
+            error->owner_unit = lock->unit;
+        }
 
-    // TO DO: lock needed resources, step and dir pins
+        free(lock);
+        return error;
+    }        
+    free(lock);
+
+    // Lock for dir_pin
+    lock = resource_lock(GPIO, cpu_pin_number(dir_pin) - 1, STEPPER, unit);
+    if (lock && !lock->granted) {
+        tdriver_error *error;
+
+        error = (tdriver_error *)malloc(sizeof(tdriver_error));
+        if (error) {
+            error->type = LOCK;
+            error->resource = GPIO;
+            error->resource_unit = cpu_pin_number(dir_pin) - 1;            
+            error->owner = lock->owner;
+            error->owner_unit = lock->unit;
+        }
+
+        free(lock);
+        return error;
+    }        
+    free(lock);
 
     mips_di();
     

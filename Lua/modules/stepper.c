@@ -34,6 +34,7 @@
 #include <drivers/error.h>
 #include <drivers/stepper/stepper.h>
 
+static int setup = 0;
 static int lstepper_id = 0;
 
 typedef struct {
@@ -74,6 +75,8 @@ static int lstepper_setup( lua_State* L ) {
         return luaL_driver_error(L, "steppers can't setup", error);
     }
     
+    setup = 1;
+    
     return 0;
 }
 
@@ -82,6 +85,10 @@ static int lstepper_new( lua_State* L ){
     stepper_userdata *lstepper;
     int port, pin;
     int unit;
+    
+    if (!setup) {
+        return luaL_error(L, "stepper module is not setup");
+    }
     
     int step_pin = luaL_checkinteger(L, 1); 
     int dir_pin = luaL_checkinteger(L, 2); 
@@ -120,6 +127,10 @@ static int lstepper_new( lua_State* L ){
 static int lstepper_move( lua_State* L ){
     stepper_userdata *lstepper = NULL;
 
+    if (!setup) {
+        return luaL_error(L, "stepper module is not setup");
+    }
+
     lstepper = (stepper_userdata *)luaL_checkudata(L, 1, "stepper");
     luaL_argcheck(L, lstepper, 1, "stepper expected");
 
@@ -136,6 +147,10 @@ static int lstepper_move( lua_State* L ){
 
 static int lstepper_start( lua_State* L ){
     stepper_userdata *lstepper = NULL;
+
+    if (!setup) {
+        return luaL_error(L, "stepper module is not setup");
+    }
 
     int total = lua_gettop(L);
     int mask = 0;
@@ -159,6 +174,10 @@ static int lstepper_start( lua_State* L ){
 
 static int lstepper_done( lua_State* L ){
     stepper_userdata *lstepper = NULL;
+
+    if (!setup) {
+        return luaL_error(L, "stepper module is not setup");
+    }
 
     lstepper = (stepper_userdata *)luaL_checkudata(L, 1, "stepper");
     luaL_argcheck(L, lstepper, 1, "stepper expected");

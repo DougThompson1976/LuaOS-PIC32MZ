@@ -13,6 +13,7 @@ typedef struct {
     int resource_unit;
     tresource_owner owner;
     int owner_unit;
+    int id;
 } tdriver_error;
 
 #endif
