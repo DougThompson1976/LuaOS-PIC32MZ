@@ -207,26 +207,42 @@ static int thread_list(lua_State *L) {
     char status[5];
 
     init();
+    
+    const char *format = luaL_optstring(L, 1, "");
 
-    printf("THID\tNAME\t\tSTATUS\tTIME\n");
-            
-    // For each lthread in list ...
-    idx = list_first(&lthread_list);
-    while (idx >= 0) {
-        list_get(&lthread_list, idx, &thread);
-        
-        // Get status
-        switch (thread->status) {
-            case LTHREAD_STATUS_RUNNING: strcpy(status,"run "); break;
-            case LTHREAD_STATUS_SUSPENDED: strcpy(status,"susp"); break;
-            default:
-                strcpy(status,"----");
-                
-        }
+    if (strcmp(format,"*n") == 0) {
+        // List only number of current threads
+        int n= 0;
 
-        printf("%d\t%s\t\t%s\t%d\n", idx, "", status, 0);
+        idx = list_first(&lthread_list);
+        while (idx >= 0) {
+            n++;
+            idx = list_next(&lthread_list, idx);
+        }       
         
-        idx = list_next(&lthread_list, idx);
+        lua_pushinteger(L, n);
+        return 1;
+    } else {
+        printf("THID\tNAME\t\tSTATUS\tTIME\n");
+
+        // For each lthread in list ...
+        idx = list_first(&lthread_list);
+        while (idx >= 0) {
+            list_get(&lthread_list, idx, &thread);
+
+            // Get status
+            switch (thread->status) {
+                case LTHREAD_STATUS_RUNNING: strcpy(status,"run "); break;
+                case LTHREAD_STATUS_SUSPENDED: strcpy(status,"susp"); break;
+                default:
+                    strcpy(status,"----");
+
+            }
+
+            printf("%d\t%s\t\t%s\t%d\n", idx, "", status, 0);
+
+            idx = list_next(&lthread_list, idx);
+        }        
     }
     
     return 0;
