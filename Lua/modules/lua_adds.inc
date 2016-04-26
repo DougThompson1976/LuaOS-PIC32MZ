@@ -125,40 +125,54 @@ static int luaos_pushline (lua_State *L, int firstline) {
 
 // Execute system.lua and autorun.lua at boot time
 static void luaos_boot_scripts(lua_State *L) {
-    int  boot;
+    int  system, autorun;
     FILE *fp;
     int i;
+
+    char *system_order[] = {
+        "/sd/system.lua",
+        "/sd/system.lc",
+        "system.lua",
+        "system.lc",
+    };
     
-    char *boot_order[] = {
-        "autorun.lua",
-        "autorun.lc",
+    char *autorun_order[] = {
         "/sd/autorun.lua",
         "/sd/autorun.lc",
+        "autorun.lua",
+        "autorun.lc",
     };
 
     printf("\n");
-    
-    // Execute system.lua, if exists
-    if (fp = fopen("system.lua", "r" )) {
-        fclose(fp);
 
-        printf("Executing system.lua ...\n");
-        dofile(L, "system.lua");
-    }  
-
-    // Ecexute boot script
-    boot = -1;
-    for(i = 0; i < sizeof(boot_order) / sizeof(*boot_order); i++) {
-        if (fp = fopen(boot_order[i], "r" )) {
+    // Ecexute system script
+    system = -1;
+    for(i = 0; i < sizeof(system_order) / sizeof(*system_order); i++) {
+        if (fp = fopen(system_order[i], "r" )) {
             fclose(fp);
-            boot = i;
+            system = i;
             break;
         }
     }
         
-    if (boot >=0) {
-        printf("Executing %s ...\n", boot_order[i]);
-        dofile(L, boot_order[i]);
+    if (system >=0) {
+        printf("Executing %s ...\n", system_order[system]);
+        dofile(L, system_order[system]);
+    }
+    
+    // Ecexute autorun script
+    autorun = -1;
+    for(i = 0; i < sizeof(autorun_order) / sizeof(*autorun_order); i++) {
+        if (fp = fopen(autorun_order[i], "r" )) {
+            fclose(fp);
+            autorun = i;
+            break;
+        }
+    }
+        
+    if (autorun >=0) {
+        printf("Executing %s ...\n", autorun_order[autorun]);
+        dofile(L, autorun_order[autorun]);
     }
     
     printf("\n");
