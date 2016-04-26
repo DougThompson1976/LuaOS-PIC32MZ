@@ -30,6 +30,14 @@
 #include "lua.h"
 #include "lauxlib.h"
 
+static int tmr_delay( lua_State* L ) {
+    unsigned long long period;
+
+    period = luaL_checkinteger( L, 1 );
+    delay(period * 1000);
+    return 0;
+}
+
 static int tmr_delay_ms( lua_State* L ) {
     unsigned long long period;
 
@@ -44,6 +52,14 @@ static int tmr_delay_us( lua_State* L ) {
     period = luaL_checkinteger( L, 1 );
     udelay(period);
     
+    return 0;
+}
+
+static int tmr_sleep( lua_State* L ) {
+    unsigned long long period;
+
+    period = luaL_checkinteger( L, 1 );
+    sleep(period);
     return 0;
 }
 
@@ -65,8 +81,10 @@ static int tmr_sleep_us( lua_State* L ) {
 }
 
 const luaL_Reg tmr_map[] = {
+    {"delay", tmr_delay},
     {"delayms", tmr_delay_ms},
     {"delayus", tmr_delay_us},
+    {"sleep", tmr_sleep},
     {"sleepms", tmr_sleep_ms},
     {"sleepus", tmr_sleep_us},
     {NULL, NULL}
