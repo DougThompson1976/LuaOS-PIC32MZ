@@ -1,5 +1,6 @@
 #include <sys/mutex.h>
 
+#include <drivers/cpu/cpu.h>
 #include <drivers/cpu/resource.h>
 
 static struct mtx resource_mtx;

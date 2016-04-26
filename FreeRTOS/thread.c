@@ -333,7 +333,20 @@ static int thread_sleep(lua_State* L) {
     return 0;
 }
 
-static int thread_usleep(lua_State* L) {
+static int thread_sleepms(lua_State* L) {
+    int milliseconds;
+    
+    init();
+    
+    // Check argument (seconds)
+    milliseconds = luaL_checkinteger(L, 1);
+    
+    usleep(milliseconds * 1000);
+    
+    return 0;
+}
+
+static int thread_sleepus(lua_State* L) {
     int useconds;
     
     init();
@@ -398,7 +411,9 @@ static const luaL_Reg thread[] = {
     {"stop", thread_stop},
     {"list", thread_list},
     {"sleep", thread_sleep},
-    {"usleep", thread_usleep},
+    {"sleepms", thread_sleepms},
+    {"sleepus", thread_sleepus},
+    {"usleep", thread_sleepus},
     {NULL, NULL}
 };
 
