@@ -76,6 +76,9 @@ static int f_receive (lua_State *L) {
         // Lock tty, avoid other threads to write to console
         tty_lock();
         
+        // Clear received buffer
+        uart_consume(CONSOLE_UART);
+        
         // Send 'C' for start
         uart_write(CONSOLE_UART, 'C');
         uart_write(CONSOLE_UART, '\n');

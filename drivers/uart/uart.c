@@ -487,7 +487,9 @@ u8_t uart_read(u8_t unit, char *c, uint32_t timeout) {
 
 // Consume all received bytes, and do not nothing with them
 void uart_consume(u8_t unit) {
-    xQueueReset(uart[unit].q);
+    char tmp;
+    
+    while(uart_read(unit,&tmp,1));
 } 
 
 // Reads a string from the UART, ended by the CR + LF character

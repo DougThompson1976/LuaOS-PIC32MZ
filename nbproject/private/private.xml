@@ -7,14 +7,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/adds/luaconf.h</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/cpu/cpu.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Samples/adc/tmp36-lcd.lua</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/adc.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/lua_adds.inc</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/adc/adc.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/loslib_adds.inc</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Samples/adc/tmp36-con.lua</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/FreeRTOS/thread.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/liolib_adds.inc</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/uart.c</file>
         </group>
     </open-files>
 </project-private>
