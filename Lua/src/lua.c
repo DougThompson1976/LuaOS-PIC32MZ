@@ -108,6 +108,7 @@ static const char *progname = LUA_PROGNAME;
 */
 static void lstop (lua_State *L, lua_Debug *ar) {
   (void)ar;  /* unused arg. */
+
   lua_sethook(L, NULL, 0, 0);  /* reset hook */
   luaL_error(L, "interrupted!");
 }
@@ -120,8 +121,11 @@ static void lstop (lua_State *L, lua_Debug *ar) {
 ** interpreter.
 */
 static void laction (int i) {
-  signal(i, SIG_DFL); /* if another SIGINT happens, terminate process */
-  lua_sethook(globalL, lstop, LUA_MASKCALL | LUA_MASKRET | LUA_MASKCOUNT, 1);
+    // WHITECAT BEGIN
+    // signal(i, SIG_DFL); /* if another SIGINT happens, terminate process */
+    // WHITECAT END
+
+    lua_sethook(globalL, lstop, LUA_MASKCALL | LUA_MASKRET | LUA_MASKCOUNT, 1);
 }
 
 
@@ -596,3 +600,8 @@ int lua_main (int argc, char **argv) {
   return (result && status == LUA_OK) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
+// WHITECAT BEGIN
+lua_State *lua_global() {
+    return globalL;
+}
+// WHITECAT END

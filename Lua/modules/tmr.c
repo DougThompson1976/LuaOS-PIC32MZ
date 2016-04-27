@@ -30,11 +30,15 @@
 #include "lua.h"
 #include "lauxlib.h"
 
+#include <signal.h>
+
 static int tmr_delay( lua_State* L ) {
     unsigned long long period;
 
     period = luaL_checkinteger( L, 1 );
+    
     delay(period * 1000);
+    
     return 0;
 }
 
@@ -42,7 +46,9 @@ static int tmr_delay_ms( lua_State* L ) {
     unsigned long long period;
 
     period = luaL_checkinteger( L, 1 );
+
     delay(period);
+        
     return 0;
 }
 

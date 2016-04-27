@@ -108,16 +108,17 @@ int list_get(struct list *list, int index, void **item) {
     struct list_index *cindex = NULL;
     int iindex;
 
+    mtx_lock(&list->mutex);
+
     // Check index
     if (index < list->first_index) {
+        mtx_unlock(&list->mutex);
         return EINVAL;
     }
 
     // Get new internal index
     iindex = index - list->first_index;
     
-    mtx_lock(&list->mutex);
-
     // Test for a valid index
     if (iindex > list->indexes) {
         mtx_unlock(&list->mutex);
@@ -142,16 +143,17 @@ int list_remove(struct list *list, int index) {
     struct list_index *cindex = NULL;
     int iindex;
 
+    mtx_lock(&list->mutex);
+
     // Check index
     if (index < list->first_index) {
+        mtx_unlock(&list->mutex);
         return EINVAL;
     }
     
     // Get new internal index
     iindex = index - list->first_index;
     
-    mtx_lock(&list->mutex);
-
     // Test for a valid index
     if ((iindex < 0) || (iindex > list->indexes)) {
         mtx_unlock(&list->mutex);
@@ -193,8 +195,11 @@ int list_next(struct list *list, int index) {
     int res = -1;
     int iindex;
     
+    mtx_lock(&list->mutex);
+
     // Check index
     if (index < list->first_index) {
+        mtx_unlock(&list->mutex);    
         return -1;
     }
     
@@ -202,8 +207,6 @@ int list_next(struct list *list, int index) {
     iindex = index - list->first_index + 1;
 
     // Get next non deleted item on list
-    mtx_lock(&list->mutex);
-    
     for(;iindex < list->indexes;iindex++) {
         if (!list->index[iindex].deleted) {
            res = iindex + list->first_index;

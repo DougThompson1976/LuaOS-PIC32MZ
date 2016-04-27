@@ -29,15 +29,10 @@
 
 #include <unistd.h>
 #include <signal.h>
-
-typedef void(*sig_t)(int);
+#include <pthread.h>
 
 sig_t signal(int s, sig_t h) {
-    if (_pthread_signal(s, h)) {
-        return NULL;
-    }
-    
-    return h;
+    return _pthread_signal(s, h);
 }
 
 int __do_signal(int s) {

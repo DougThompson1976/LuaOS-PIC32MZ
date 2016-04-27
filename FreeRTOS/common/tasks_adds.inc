@@ -29,22 +29,58 @@
 
 static int _____errno; // Errno variable if scheluder is not started
 
-void *GetErrnoRef (void) {
-    if (pxCurrentTCB) {
-        return &(pxCurrentTCB->errno);        
+void enter_critical_section() {
+    if (uxInterruptNesting > 0) {
+        mips_di();
     } else {
-        return &_____errno;
+        taskENTER_CRITICAL();            
+    }        
+}
+
+void exit_critical_section() {
+    if (uxInterruptNesting > 0) {
+        mips_ei();
+    } else {
+        taskEXIT_CRITICAL();            
+    }        
+}
+
+void *GetErrnoRef (void) {
+    void *ref;
+    
+    enter_critical_section();
+    if (pxCurrentTCB) {
+        ref = &(pxCurrentTCB->errno);        
+    } else {
+        ref = &_____errno;
     }
+    exit_critical_section();
+
+    return ref;
 }
 
 UBaseType_t uxGetTaskId() {
-    return pxCurrentTCB->uxTaskNumber;
+    UBaseType_t uxTaskNumber;
+    
+    enter_critical_section();
+    uxTaskNumber = pxCurrentTCB->uxTaskNumber;
+    exit_critical_section();
+
+    return uxTaskNumber;
 }
 
 UBaseType_t uxGetThreadId() {
-    return pxCurrentTCB->threadid;
+    int threadid;
+
+    enter_critical_section();
+    threadid = pxCurrentTCB->threadid;
+    exit_critical_section();
+    
+    return threadid;
 }
 
 void uxSetThreadId(UBaseType_t id) {
+    enter_critical_section();
     pxCurrentTCB->threadid = id;
+    exit_critical_section();
 }

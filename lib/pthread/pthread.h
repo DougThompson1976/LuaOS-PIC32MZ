@@ -176,6 +176,7 @@ void pthread_cleanup_push(void (*routine)(void *), void *arg);
 #define PTHREAD_ONCE_INIT          {NULL}
 #define PTHREAD_COND_INITIALIZER   {NULL}
 
+sig_t _pthread_signal(int s, sig_t h);
         
 #endif	/* PTHREAD_H */
 

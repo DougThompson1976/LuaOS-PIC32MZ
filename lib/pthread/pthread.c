@@ -71,7 +71,7 @@ int _pthread_create(pthread_t *id, int stacksize,
     struct pthread *thread;
     struct pthread *parent_thread;
     char name[configMAX_TASK_NAME_LEN];
-    int current_thread;
+    int current_thread, i;
     
     // Set pthread arguments for creation
     taskArgs = (struct pthreadTaskArg *)malloc(sizeof(struct pthreadTaskArg));
@@ -91,7 +91,9 @@ int _pthread_create(pthread_t *id, int stacksize,
         return EAGAIN;
     }
     
-    bzero(thread->signals, sizeof(sig_t) * NSIG);
+    for(i=0; i < NSIG; i++) {
+        thread->signals[i] = SIG_DFL;
+    }
     
     current_thread = pthread_self();
     if (current_thread > 0) {
@@ -227,21 +229,23 @@ int _pthread_free(pthread_t id) {
     return 0;
 }
 
-int _pthread_signal(int s, sig_t h) {
-    struct pthread *thread;      // Current thread
+sig_t _pthread_signal(int s, sig_t h) {
+    struct pthread *thread; // Current thread
+    sig_t prev_h;           // Previous handler
     
     if (s > NSIG) {
         errno = EINVAL;
-        return EINVAL;
+        return SIG_ERR;
     }
     
     // Get thread
     list_get(&thread_list, pthread_self(), &thread);
     
     // Add handler
+    prev_h = thread->signals[s];
     thread->signals[s] = h;
     
-    return 0;
+    return prev_h;
 }
 
 int _pthread_do_signal(int s) {
@@ -253,12 +257,12 @@ int _pthread_do_signal(int s) {
     while (index >= 0) {
         list_get(&thread_list, index, &thread);
         
-        //if (thread->thread == 1) {
-            if (thread->signals[s]) {
+        if (thread->thread == 1) {
+            if ((thread->signals[s] != SIG_DFL) && (thread->signals[s] != SIG_IGN)) {
                 thread->signals[s](s);
                 done = 1;
             }            
-        //}
+        }
         
         index = list_next(&thread_list, index);
     }    
