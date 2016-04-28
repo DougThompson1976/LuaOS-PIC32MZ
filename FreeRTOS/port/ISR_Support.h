@@ -76,6 +76,8 @@
 #define portTASK_HAS_FPU_STACK_LOCATION 0
 #define portFPU_CONTEXT_SIZE            264
 
+#define TCBSignaledOffset               100
+
 /******************************************************************/
 .macro  portSAVE_FPU_REGS    offset, base
     /* Macro to assist with saving just the FPU registers to the
@@ -328,7 +330,7 @@
 	nesting count is 1. */
 	la			s6, uxInterruptNesting
 	lw			s6, (s6)
-	addiu		s6, s6, -1
+	addiu                   s6, s6, -1
 	bne			s6, zero, 1f
 	nop
 	la			s6, uxSavedTaskStackPointer
@@ -464,8 +466,50 @@
 
 	#endif // ( __mips_hard_float == 1 ) && ( configUSE_TASK_FPU_SUPPORT == 1 )
 
+        /*
+         * If task is signaled resume task execution to sigContext.
+         * sigContext push EPC to the stack, process signals, and returns the
+         * execution to pushed EPC.
+         */
+        addiu           sp, sp, -24  // Make room in stack
+        sw              k0, 20(sp)   // Push STATUS
+        sw              k1, 16(sp)   // Push EPC
+
+        // Test for signaled task
+        la              k0, pxCurrentTCB
+        lw              k0, (k0)
+        lw              k1, TCBSignaledOffset(k0)
+                       
+        bgtz            k1, 1f
+                
+        // Task is not signaled                
+        lw              k0, 20(sp)  // Restore STATUS
+        lw              k1, 16(sp)  // Restore EPC
+        addiu           sp, sp, 24  // Leave stack in its original state
+    
 	mtc0		k0, _CP0_STATUS
 	mtc0 		k1, _CP0_EPC
+                        
+	ehb
+	eret
+	nop
+                                
+    1:            
+        // Task is signaled
+            
+        // Decrement signaled count
+        addi            k1, k1, -1
+        la              k0, pxCurrentTCB
+        lw              k0, (k0)
+        sw              k1, TCBSignaledOffset(k0)
+                    
+        lw              k0, 20(sp)
+                
+        la              k1, sigContext
+                        
+	mtc0		k0, _CP0_STATUS
+	mtc0 		k1, _CP0_EPC
+                        
 	ehb
 	eret
 	nop

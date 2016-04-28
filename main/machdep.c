@@ -196,6 +196,7 @@ mach_init()
     clock_init();
     syscalls_init();
     _pthread_init();
+    _signal_init();
 
     mach_dev();
 }

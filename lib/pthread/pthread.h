@@ -117,6 +117,7 @@ struct pthread {
     sig_t signals[NSIG];
     pthread_t thread;
     xTaskHandle task;
+    QueueHandle_t signal_q;
 };
 
 struct pthread_attr {

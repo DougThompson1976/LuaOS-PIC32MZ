@@ -27,14 +27,33 @@
  * this software.
  */
 
+#include "FreeRTOS.h"
+#include "task.h"
+
 #include <unistd.h>
 #include <signal.h>
 #include <pthread.h>
 
-sig_t signal(int s, sig_t h) {
-    return _pthread_signal(s, h);
+QueueHandle_t signal_q;
+
+void signalTask(void *pvParameters) {
+    int s;
+    
+    while (1) {
+         if (xQueueReceive(signal_q, &s, portMAX_DELAY) == pdTRUE) {
+             _pthread_queue_signal(s);
+         }
+    }
 }
 
-int __do_signal(int s) {
-    return _pthread_do_signal(s);
+void _signal_init() {
+    // Create signal queue
+    signal_q = xQueueCreate(10, sizeof(int));
+    
+    // Create signal task dispatcher
+    xTaskCreate(signalTask, "signal", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+}
+
+sig_t signal(int s, sig_t h) {
+    return _pthread_signal(s, h);
 }

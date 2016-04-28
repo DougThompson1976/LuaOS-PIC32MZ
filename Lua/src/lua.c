@@ -113,6 +113,7 @@ static void lstop (lua_State *L, lua_Debug *ar) {
   luaL_error(L, "interrupted!");
 }
 
+lua_State*  pvGetLuaState();
 
 /*
 ** Function to be called at a C signal. Because a C signal cannot
@@ -123,9 +124,9 @@ static void lstop (lua_State *L, lua_Debug *ar) {
 static void laction (int i) {
     // WHITECAT BEGIN
     // signal(i, SIG_DFL); /* if another SIGINT happens, terminate process */
+    //lua_sethook(globalL, lstop, LUA_MASKCALL | LUA_MASKRET | LUA_MASKCOUNT, 1);
+    luaL_error(pvGetLuaState(), "interrupted!");
     // WHITECAT END
-
-    lua_sethook(globalL, lstop, LUA_MASKCALL | LUA_MASKRET | LUA_MASKCOUNT, 1);
 }
 
 

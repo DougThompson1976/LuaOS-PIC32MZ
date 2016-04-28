@@ -84,3 +84,25 @@ void uxSetThreadId(UBaseType_t id) {
     pxCurrentTCB->threadid = id;
     exit_critical_section();
 }
+
+void uxSetLuaState(lua_State* L) {
+    enter_critical_section();
+    pxCurrentTCB->L = L;
+    exit_critical_section();
+}
+
+lua_State*  pvGetLuaState() {
+    lua_State* L;
+    
+    enter_critical_section();
+    L = pxCurrentTCB->L;
+    exit_critical_section();
+    
+    return L;
+}
+
+void uxIncSignaled(xTaskHandle h, int s) {
+    enter_critical_section();
+    ((TCB_t *)h)->signaled++;
+    exit_critical_section();
+}

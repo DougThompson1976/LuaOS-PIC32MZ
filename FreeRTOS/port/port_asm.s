@@ -726,6 +726,75 @@ vPortFPUReadback:
 
 #endif /* ( __mips_hard_float == 1 ) && ( configUSE_TASK_FPU_SUPPORT == 1 ) */
 
+	.set  nomips16
+	.set  nomicromips
+	.set  noreorder
+	.set  noat
 
+	.ent  sigContext
+        .global sigContext
 
+sigContext:
+        addiu           sp,sp,-112
 
+        sw              s0, 0(sp)
+        sw              s1, 4(sp)
+        sw              s2, 8(sp)
+        sw              s3, 12(sp)
+        sw              s4, 16(sp)
+        sw              s5, 20(sp)
+        sw              s6, 24(sp)
+        sw              s7, 28(sp)
+        sw              gp, 32(sp)
+        sw              sp, 36(sp)
+        sw              s8, 40(sp)
+        sw              ra, 44(sp)
+
+#if ( __mips_hard_float == 1 )
+        sdc1            $f24, 48(sp)
+        sdc1            $f25, 56(sp)
+        sdc1            $f26, 64(sp)
+        sdc1            $f27, 72(sp)
+        sdc1            $f28, 80(sp)
+        sdc1            $f29, 88(sp)
+        sdc1            $f30, 96(sp)
+        sdc1            $f31, 104(sp)
+#endif
+
+        jal             _pthread_process_signal
+        nop
+
+        lw              s0, 0(sp)
+        lw              s1, 4(sp)
+        lw              s2, 8(sp)
+        lw              s3, 12(sp)
+        lw              s4, 16(sp)
+        lw              s5, 20(sp)
+        lw              s6, 24(sp)
+        lw              s7, 28(sp)
+        lw              gp, 32(sp)
+        lw              sp, 36(sp)
+        lw              s8, 40(sp)
+        lw              ra, 44(sp)
+
+#if ( __mips_hard_float == 1 )
+        sdc1            $f24, 48(sp)
+        sdc1            $f25, 56(sp)
+        sdc1            $f26, 64(sp)
+        sdc1            $f27, 72(sp)
+        sdc1            $f28, 80(sp)
+        sdc1            $f29, 88(sp)
+        sdc1            $f30, 96(sp)
+        sdc1            $f31, 104(sp)
+#endif
+
+        addiu           sp, sp, 112
+
+        di
+        lw              k0, 16(sp)
+        addiu           sp, sp, 24
+
+        jr              k0
+        ei
+
+        .end sigContext

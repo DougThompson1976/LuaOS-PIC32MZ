@@ -95,6 +95,8 @@ int _pthread_create(pthread_t *id, int stacksize,
         thread->signals[i] = SIG_DFL;
     }
     
+    thread->signal_q = xQueueCreate(4, sizeof(int));
+    
     current_thread = pthread_self();
     if (current_thread > 0) {
         // Get parent thread
@@ -221,7 +223,10 @@ int _pthread_free(pthread_t id) {
     // Free clean list
     list_destroy(&thread->clean_list, 1);
     
+    vQueueDelete(thread->signal_q);
+
     mtx_destroy(&thread->init_mtx);
+    
     
     // Remove thread
     list_remove(&thread_list, id);
@@ -248,10 +253,9 @@ sig_t _pthread_signal(int s, sig_t h) {
     return prev_h;
 }
 
-int _pthread_do_signal(int s) {
-    struct pthread *thread;      // Current thread
+void _pthread_queue_signal(int s) {
+    struct pthread *thread; // Current thread
     int index;
-    int done = 0;
     
     index = list_first(&thread_list);
     while (index >= 0) {
@@ -259,15 +263,46 @@ int _pthread_do_signal(int s) {
         
         if (thread->thread == 1) {
             if ((thread->signals[s] != SIG_DFL) && (thread->signals[s] != SIG_IGN)) {
-                thread->signals[s](s);
-                done = 1;
-            }            
+                uxIncSignaled(thread->task, s);
+                xQueueSend(thread->signal_q, &s, 0);    
+            }         
+        }
+        
+        index = list_next(&thread_list, index);
+    }    
+}
+
+void _pthread_process_signal() {
+    struct pthread *thread; // Current thread
+    int s;
+    
+    list_get(&thread_list, pthread_self(), &thread);
+    
+    if (xQueueReceive(thread->signal_q, &s, 0) == pdTRUE) {
+        if ((thread->signals[s] != SIG_DFL) && (thread->signals[s] != SIG_IGN)) {
+            thread->signals[s](s);
+        }
+    }
+}
+
+int _pthread_has_signal(int s) {
+    struct pthread *thread; // Current thread
+    int index;
+    
+    index = list_first(&thread_list);
+    while (index >= 0) {
+        list_get(&thread_list, index, &thread);
+        
+        if (thread->thread == 1) {
+            if ((thread->signals[s] != SIG_DFL) && (thread->signals[s] != SIG_IGN)) {
+                return 1;
+            }
         }
         
         index = list_next(&thread_list, index);
     }    
 
-    return done;
+    return 0;
 }
 
 int _pthread_stop(pthread_t id) {

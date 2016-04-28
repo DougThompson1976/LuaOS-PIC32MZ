@@ -111,6 +111,11 @@ asm ("          .text");
 
 extern const char *__progname;
 
+void led_inv() {
+    TRISBCLR = 0xffffff;
+    LATBINV = 0xffffff;
+}
+
 void led_on() {
     TRISBCLR = 0xffffff;
     LATBSET = 0xffffff;
@@ -133,9 +138,6 @@ void *lua_start(void *arg) {
 }
 
 extern char *normalize_path(const char *path);
-
-
-
 extern double nmea_geoloc_to_decimal(char *token);
    
 void initTask(void *pvParameters) {
@@ -150,7 +152,7 @@ void initTask(void *pvParameters) {
     pthread_attr_t attr;
     pthread_t thread;
     int res;
-    
+        
     pthread_attr_init(&attr);
     pthread_attr_setstacksize(&attr, luaTaskStack);
 

@@ -29,7 +29,7 @@
 
 #include "pthread.h"
 
-volatile lua_State *gLuaState;
+lua_State *gLuaState;
 
 pthread_mutex_t lua_mutex;
 
@@ -219,6 +219,7 @@ int luaos_main (int argc, char **argv) {
   }
   
   //WHITECAT BEGIN
+  uxSetLuaState(L);
   gLuaState = L;
   //WHITECAT END
   

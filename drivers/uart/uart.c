@@ -47,6 +47,8 @@
 #include <string.h>
 #include <syslog.h>
 
+extern QueueHandle_t signal_q;
+
 #define DEBUG 0
 
 #define UART_IRQ_INIT(name) { \
@@ -626,6 +628,7 @@ void uart_intr_rx(u8_t unit) {
     BaseType_t xHigherPriorityTaskWoken;
     u8_t byte;
     int queue;
+    int signal;
 
     xHigherPriorityTaskWoken = pdFALSE;
 
@@ -642,7 +645,9 @@ void uart_intr_rx(u8_t unit) {
         // Signal handling
         if (unit == CONSOLE_UART - 1) {
             if (byte == 0x03) {
-                if (__do_signal(SIGINT)) {
+                signal = SIGINT;
+                if (_pthread_has_signal(signal)) {
+                    xQueueSendFromISR(signal_q, &signal, &xHigherPriorityTaskWoken);    
                     queue = 0;
                 }
             }

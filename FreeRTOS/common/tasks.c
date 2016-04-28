@@ -67,6 +67,11 @@
     1 tab == 4 spaces!
 */
 
+/*
+ * WHITECAT
+ */ 
+#include <lua.h>
+
 /* Standard includes. */
 #include <stdlib.h>
 #include <string.h>
@@ -204,6 +209,16 @@ typedef struct tskTaskControlBlock
          * thread id
          */
         int threadid;
+        
+        /*
+         * Lua state of current thread
+         */
+        lua_State *L;
+        
+        /*
+         * Received signal
+         */
+        int signaled;
 } tskTCB;
 
 /* The old tskTCB name is maintained above then typedefed to the new TCB_t name
@@ -2949,6 +2964,11 @@ UBaseType_t x;
 		_REENT_INIT_PTR( ( &( pxTCB->xNewLib_reent ) ) );
 	}
 	#endif /* configUSE_NEWLIB_REENTRANT */
+
+        /*
+         * WHITECAT
+         */
+        pxTCB->signaled = 0;
 }
 /*-----------------------------------------------------------*/
 
