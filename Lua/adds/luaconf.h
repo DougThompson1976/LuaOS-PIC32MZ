@@ -90,7 +90,7 @@
       
 #define LINIT_OPEN_ADDS
 
-#define LIOLIB_REG_ADDS {"receive", f_receive},
+#define LIOLIB_REG_ADDS {"receive", f_receive}, {"send", f_send},
 #define LIOLIB_OPEN_ADDS
 
 #define LOSLIB_REG_ADDS \

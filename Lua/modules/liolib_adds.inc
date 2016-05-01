@@ -143,6 +143,80 @@ static int f_receive (lua_State *L) {
     return 1;
 }
 
+static int f_send (lua_State *L) {
+    const char *filename = luaL_optstring(L, 1, "");
+    int i;
+    int done, readed;
+    char c;
+
+    unsigned char chunk[255];
+    unsigned char *cchunk;
+    unsigned char chunk_size;
+  
+    if (strlen(filename) == 0) return 0;
+
+    FILE *f= fopen(filename, "r");
+    if (f) {
+        // Lock tty, avoid other threads to write to console
+        tty_lock();
+       
+        done = 1;
+        while (!feof(f)) {
+            // Read next chunk
+            chunk_size = 0;
+            cchunk = chunk;
+            for(i=0; i < 255; i++) {
+                if (fread(cchunk++,1,1,f) == 1) {
+                    chunk_size++;
+                }
+            }
+            
+            // Wait for C\n
+            if (!uart_read(CONSOLE_UART, &c, 1000)) {done = 0; break;}
+            if (c != 'C') {done = 0; break;}
+            
+            if (!uart_read(CONSOLE_UART, &c, 1000)) {done = 0; break;}           
+            if (c != '\n') {done = 0; break;}
+            
+            // Send chunk size
+            uart_write(CONSOLE_UART, chunk_size);
+
+            // Send chunk
+            cchunk = chunk;
+            while(chunk_size--) {
+                uart_write(CONSOLE_UART, *cchunk++);
+            }  
+        }
+                
+        fclose(f);
+        
+        if (done){
+            // Send last chunk with size 0
+
+            // Wait for C\n
+            if (!uart_read(CONSOLE_UART, &c, 1000)) {tty_unlock();return luaL_error(L, "timeout1");}
+            if (c != 'C') {tty_unlock();return luaL_error(L, "timeout1");}
+            
+            if (!uart_read(CONSOLE_UART, &c, 1000)) {tty_unlock();return luaL_error(L, "timeout1");}    
+            if (c != '\n') {tty_unlock();return luaL_error(L, "timeout1");}
+            
+            // Send chunk size
+            chunk_size = '\0';
+            uart_write(CONSOLE_UART, chunk_size);
+        } else {
+            tty_unlock();
+            return luaL_error(L, "timeout2");
+        }
+                
+        // Unlock tty, permit other threads to write to console
+        tty_unlock();
+    } else {
+        return luaL_error(L, strerror(errno));
+    }
+    
+    return 0;
+}
+
 #undef l_getc
 #undef l_lockfile
 #undef l_unlockfile
