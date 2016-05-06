@@ -248,8 +248,7 @@ static int thread_list(lua_State *L) {
     return 0;
 }
 
-// Start a new thread    
-static int thread_start(lua_State* L) {
+static int new_thread(lua_State* L, int run) {
     struct lthread *thread;
     pthread_attr_t attr;
     int res, idx;
@@ -291,6 +290,12 @@ static int thread_start(lua_State* L) {
     pthread_attr_init(&attr);
     pthread_attr_setstacksize(&attr, configMINIMAL_STACK_SIZE * 20);
 
+    if (run)  {
+        pthread_attr_setinitialstate(&attr, PTHREAD_INITIAL_STATE_RUN);
+    } else {
+        pthread_attr_setinitialstate(&attr, PTHREAD_INITIAL_STATE_SUSPEND);        
+    }
+    
     thread->thid = idx;
     
     retries = 0;
@@ -320,8 +325,18 @@ retry:
     // Return lthread id
     lua_pushinteger(L, idx);
     return 1;
+}
+
+// Create a new thread and run it
+static int thread_start(lua_State* L) {
+    return new_thread(L, 1);
 }    
-     
+
+// Create a new thread in suspended mode
+static int thread_create(lua_State* L) {
+    return new_thread(L, 0);
+}    
+
 static int thread_sleep(lua_State* L) {
     int seconds;
     
@@ -407,6 +422,7 @@ static int thread_status(lua_State* L) {
 
 static const luaL_Reg thread[] = {
     {"status", thread_status},
+    {"create", thread_create},
     {"start", thread_start},
     {"suspend", thread_suspend},
     {"resume", thread_resume},

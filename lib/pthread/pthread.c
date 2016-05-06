@@ -47,6 +47,7 @@ struct pthreadTaskArg {
     void *(*pthread_function) (void *);
     void *args;
     int id;
+    int initial_state;
 };
   
 void pthreadTask(void *task_arguments);
@@ -62,7 +63,7 @@ void _pthread_init() {
     list_init(&key_list, 1);
 }
 
-int _pthread_create(pthread_t *id, int stacksize, 
+int _pthread_create(pthread_t *id, int stacksize, int initial_state,
                     void *(*start_routine)(void *), void *args
 ) {
     xTaskHandle xCreatedTask;              // Related task
@@ -82,7 +83,8 @@ int _pthread_create(pthread_t *id, int stacksize,
                 
     taskArgs->pthread_function = start_routine;
     taskArgs->args = args;
-
+    taskArgs->initial_state = initial_state;
+    
     // Create thread structure
     thread = (struct pthread *)malloc(sizeof(struct pthread));
     if (!thread) {
@@ -225,8 +227,7 @@ int _pthread_free(pthread_t id) {
     
     vQueueDelete(thread->signal_q);
 
-    mtx_destroy(&thread->init_mtx);
-    
+    mtx_destroy(&thread->init_mtx);    
     
     // Remove thread
     list_remove(&thread_list, id);
@@ -373,7 +374,11 @@ void pthreadTask(void *taskArgs) {
     uxSetThreadId(args->id);
 
     mtx_unlock(&thread->init_mtx);
-
+    
+    if (args->initial_state == PTHREAD_INITIAL_STATE_SUSPEND) {
+        vTaskSuspend(NULL);
+    }
+    
     // Call start function
     args->pthread_function(args->args);
 

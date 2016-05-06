@@ -122,9 +122,13 @@ struct pthread {
 
 struct pthread_attr {
     int stack_size;
+    int initial_state;
 };
 
 typedef struct pthread_attr pthread_attr_t;
+
+#define PTHREAD_INITIAL_STATE_RUN 1
+#define PTHREAD_INITIAL_STATE_SUSPEND 2
 
 #define PTHREAD_CREATE_DETACHED 1
 #define PTHREAD_CREATE_JOINABLE 2
@@ -135,6 +139,7 @@ int pthread_attr_setstacksize(pthread_attr_t *attr, size_t stacksize);
 int pthread_attr_getstacksize(const pthread_attr_t *attr, size_t *stacksize);
 int pthread_attr_setdetachstate(pthread_attr_t *attr, int detachstate);
 int pthread_setcancelstate(int state, int *oldstate);
+int pthread_attr_setinitialstate(pthread_attr_t *attr, int initial_state);
 
 int pthread_create(pthread_t *thread, const pthread_attr_t *attr,
                           void *(*start_routine) (void *), void *args);

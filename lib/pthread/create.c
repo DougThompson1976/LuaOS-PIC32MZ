@@ -35,6 +35,7 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr,
                           void *(*start_routine) (void *), void *args) {
     
     int stacksize; // Stack size
+    int initial_state; // Initial state
     int res;
     
     // Get some arguments need for the thread creation
@@ -44,12 +45,14 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr,
             errno = EINVAL;
             return EINVAL;
         }
+        initial_state = attr->initial_state;
     } else {
         stacksize = PTHREAD_STACK_MIN;
+        initial_state = PTHREAD_INITIAL_STATE_RUN;
     }
      
     // Create a new pthread
-    res = _pthread_create(thread, stacksize, start_routine, args);
+    res = _pthread_create(thread, stacksize, initial_state, start_routine, args);
     if (res) {
         errno = res;
         return res;

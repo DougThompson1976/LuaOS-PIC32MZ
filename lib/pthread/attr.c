@@ -33,6 +33,7 @@
 
 int pthread_attr_init(pthread_attr_t *attr) {
     attr->stack_size = PTHREAD_STACK_MIN;
+    attr->initial_state = PTHREAD_INITIAL_STATE_RUN;
     
     return 0;
 }
@@ -52,7 +53,18 @@ int pthread_attr_setstacksize(pthread_attr_t *attr, size_t stacksize) {
     
     return 0;
 }
-      
+
+int pthread_attr_setinitialstate(pthread_attr_t *attr, int initial_state) {
+    if ((initial_state != PTHREAD_INITIAL_STATE_RUN) && (initial_state != PTHREAD_INITIAL_STATE_SUSPEND)) {
+        errno = EINVAL;
+        return EINVAL;
+    }
+    
+    attr->initial_state = initial_state;
+    
+    return 0;
+}
+
 int pthread_attr_getstacksize(const pthread_attr_t *attr, size_t *stacksize) {
     *stacksize = attr->stack_size;
     
