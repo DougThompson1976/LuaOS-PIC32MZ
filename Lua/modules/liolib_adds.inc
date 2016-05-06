@@ -119,20 +119,12 @@ static int f_receive (lua_State *L) {
         fclose(f);
         
         if (!done) {
-            // Send NACK
-            uart_write(CONSOLE_UART, '\x15');
-            uart_write(CONSOLE_UART, '\n');
-
             // Unlock tty, permit other threads to write to console
             tty_unlock();
             
             return luaL_error(L, "timeout");
         }
-        
-        // Send ACK
-        uart_write(CONSOLE_UART, '\x06');
-        uart_write(CONSOLE_UART, '\n');
-        
+
         // Unlock tty, permit other threads to write to console
         tty_unlock();
     } else {

@@ -7,13 +7,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/include/stdio.h</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/drivers/uart/uart.c</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/modules/liolib_adds.inc</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/modules/uart.c</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/liolib.c</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/adds/luaconf.h</file>
-            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/lib/libc/stdio/fread.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/FreeRTOS/common/include/FreeRTOS.h</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/FreeRTOS/common/heap_4.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/FreeRTOS/common/tasks.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/lib/pthread/pthread.c</file>
         </group>
     </open-files>
 </project-private>
