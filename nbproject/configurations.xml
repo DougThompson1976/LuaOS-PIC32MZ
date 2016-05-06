@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="97">
+<configurationDescriptor version="95">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -629,7 +629,7 @@
           <itemPath>Lua/modules/pwm.c</itemPath>
           <itemPath>Lua/modules/spi.c</itemPath>
           <itemPath>Lua/modules/stepper.c</itemPath>
-          <itemPath>FreeRTOS/thread.c</itemPath>
+          <itemPath>Lua/modules/thread.c</itemPath>
           <itemPath>Lua/modules/tmr.c</itemPath>
           <itemPath>Lua/modules/uart.c</itemPath>
         </logicalFolder>
@@ -1493,8 +1493,6 @@
       </item>
       <item path="FreeRTOS/port/portmacro.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="FreeRTOS/thread.c" ex="false" tool="0" flavor2="0">
-      </item>
       <item path="FreeRTOS/xc.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/adds/luaconf.h" ex="false" tool="3" flavor2="0">
@@ -1523,15 +1521,7 @@
       </item>
       <item path="Lua/modules/http.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="Lua/modules/lbaselib_adds.inc" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/modules/liolib_adds.inc" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/modules/loslib_adds.inc" ex="false" tool="0" flavor2="0">
-      </item>
       <item path="Lua/modules/lrodefs.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/modules/lua_adds.inc" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/mqtt.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -1556,6 +1546,8 @@
       <item path="Lua/modules/spi.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/stepper.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/modules/thread.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/tmr.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -3539,8 +3531,6 @@
       </item>
       <item path="FreeRTOS/port/portmacro.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="FreeRTOS/thread.c" ex="false" tool="0" flavor2="0">
-      </item>
       <item path="FreeRTOS/xc.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/adds/luaconf.h" ex="false" tool="3" flavor2="0">
@@ -3594,6 +3584,8 @@
       <item path="Lua/modules/spi.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/stepper.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/modules/thread.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/tmr.c" ex="false" tool="0" flavor2="0">
       </item>

@@ -43,7 +43,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/FreeRTOS/common/tasks.o \
 	${OBJECTDIR}/FreeRTOS/common/timers.o \
 	${OBJECTDIR}/FreeRTOS/port/port.o \
-	${OBJECTDIR}/FreeRTOS/thread.o \
 	${OBJECTDIR}/Lua/common/lex.yy.o \
 	${OBJECTDIR}/Lua/common/linenoise.o \
 	${OBJECTDIR}/Lua/common/y.tab.o \
@@ -61,6 +60,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/Lua/modules/screen/screen.o \
 	${OBJECTDIR}/Lua/modules/spi.o \
 	${OBJECTDIR}/Lua/modules/stepper.o \
+	${OBJECTDIR}/Lua/modules/thread.o \
 	${OBJECTDIR}/Lua/modules/tmr.o \
 	${OBJECTDIR}/Lua/modules/uart.o \
 	${OBJECTDIR}/Lua/platform/adc.o \
@@ -632,11 +632,6 @@ ${OBJECTDIR}/FreeRTOS/port/port.o: FreeRTOS/port/port.c
 	${RM} "$@.d"
 	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/src -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/FreeRTOS/port/port.o FreeRTOS/port/port.c
 
-${OBJECTDIR}/FreeRTOS/thread.o: FreeRTOS/thread.c 
-	${MKDIR} -p ${OBJECTDIR}/FreeRTOS
-	${RM} "$@.d"
-	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/src -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/FreeRTOS/thread.o FreeRTOS/thread.c
-
 ${OBJECTDIR}/Lua/common/lex.yy.o: Lua/common/lex.yy.c 
 	${MKDIR} -p ${OBJECTDIR}/Lua/common
 	${RM} "$@.d"
@@ -721,6 +716,11 @@ ${OBJECTDIR}/Lua/modules/stepper.o: Lua/modules/stepper.c
 	${MKDIR} -p ${OBJECTDIR}/Lua/modules
 	${RM} "$@.d"
 	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/src -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/modules/stepper.o Lua/modules/stepper.c
+
+${OBJECTDIR}/Lua/modules/thread.o: Lua/modules/thread.c 
+	${MKDIR} -p ${OBJECTDIR}/Lua/modules
+	${RM} "$@.d"
+	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/src -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/modules/thread.o Lua/modules/thread.c
 
 ${OBJECTDIR}/Lua/modules/tmr.o: Lua/modules/tmr.c 
 	${MKDIR} -p ${OBJECTDIR}/Lua/modules
