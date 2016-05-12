@@ -51,8 +51,6 @@
         e = (e == -1); }
 
 
-
-
 //#include <Lua/common/linenoise.h>
 //#include "lstate.h"
 
@@ -86,7 +84,8 @@
   {AUXLIB_PWM, luaopen_pwm}, \
   {AUXLIB_GPS, luaopen_gps}, \
   {AUXLIB_HTTP, luaopen_http}, \
-  {AUXLIB_STEPPER, luaopen_stepper},
+  {AUXLIB_STEPPER, luaopen_stepper}, \
+  {AUXLIB_I2C, luaopen_i2c},
       
 #define LINIT_OPEN_ADDS
 

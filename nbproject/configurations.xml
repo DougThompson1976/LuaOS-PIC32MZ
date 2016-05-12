@@ -622,6 +622,7 @@
           <itemPath>Lua/modules/error.c</itemPath>
           <itemPath>Lua/modules/gps.c</itemPath>
           <itemPath>Lua/modules/http.c</itemPath>
+          <itemPath>Lua/modules/i2c.c</itemPath>
           <itemPath>Lua/modules/lbaselib_adds.inc</itemPath>
           <itemPath>Lua/modules/liolib_adds.inc</itemPath>
           <itemPath>Lua/modules/loslib_adds.inc</itemPath>
@@ -641,6 +642,7 @@
           <itemPath>Lua/platform/adc.c</itemPath>
           <itemPath>Lua/platform/can.c</itemPath>
           <itemPath>Lua/platform/gps.c</itemPath>
+          <itemPath>Lua/platform/i2c.c</itemPath>
           <itemPath>Lua/platform/net.c</itemPath>
           <itemPath>Lua/platform/pio.c</itemPath>
           <itemPath>Lua/platform/pwm.c</itemPath>
@@ -1525,6 +1527,8 @@
       </item>
       <item path="Lua/modules/http.c" ex="false" tool="0" flavor2="0">
       </item>
+      <item path="Lua/modules/i2c.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="Lua/modules/lrodefs.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/modules/mqtt.c" ex="false" tool="0" flavor2="0">
@@ -1562,6 +1566,8 @@
       <item path="Lua/platform/can.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/platform/gps.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/platform/i2c.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/platform/net.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -3567,6 +3573,8 @@
       </item>
       <item path="Lua/modules/http.c" ex="false" tool="0" flavor2="0">
       </item>
+      <item path="Lua/modules/i2c.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="Lua/modules/lrodefs.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/modules/mqtt.c" ex="false" tool="0" flavor2="0">
@@ -3604,6 +3612,8 @@
       <item path="Lua/platform/can.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/platform/gps.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/platform/i2c.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/platform/net.c" ex="false" tool="0" flavor2="0">
       </item>

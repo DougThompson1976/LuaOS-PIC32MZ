@@ -51,6 +51,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/Lua/modules/error.o \
 	${OBJECTDIR}/Lua/modules/gps.o \
 	${OBJECTDIR}/Lua/modules/http.o \
+	${OBJECTDIR}/Lua/modules/i2c.o \
 	${OBJECTDIR}/Lua/modules/mqtt.o \
 	${OBJECTDIR}/Lua/modules/net.o \
 	${OBJECTDIR}/Lua/modules/pio.o \
@@ -66,6 +67,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/Lua/platform/adc.o \
 	${OBJECTDIR}/Lua/platform/can.o \
 	${OBJECTDIR}/Lua/platform/gps.o \
+	${OBJECTDIR}/Lua/platform/i2c.o \
 	${OBJECTDIR}/Lua/platform/net.o \
 	${OBJECTDIR}/Lua/platform/pio.o \
 	${OBJECTDIR}/Lua/platform/pwm.o \
@@ -673,6 +675,11 @@ ${OBJECTDIR}/Lua/modules/http.o: Lua/modules/http.c
 	${RM} "$@.d"
 	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/src -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/modules/http.o Lua/modules/http.c
 
+${OBJECTDIR}/Lua/modules/i2c.o: Lua/modules/i2c.c 
+	${MKDIR} -p ${OBJECTDIR}/Lua/modules
+	${RM} "$@.d"
+	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/src -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/modules/i2c.o Lua/modules/i2c.c
+
 ${OBJECTDIR}/Lua/modules/mqtt.o: Lua/modules/mqtt.c 
 	${MKDIR} -p ${OBJECTDIR}/Lua/modules
 	${RM} "$@.d"
@@ -747,6 +754,11 @@ ${OBJECTDIR}/Lua/platform/gps.o: Lua/platform/gps.c
 	${MKDIR} -p ${OBJECTDIR}/Lua/platform
 	${RM} "$@.d"
 	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/src -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/platform/gps.o Lua/platform/gps.c
+
+${OBJECTDIR}/Lua/platform/i2c.o: Lua/platform/i2c.c 
+	${MKDIR} -p ${OBJECTDIR}/Lua/platform
+	${RM} "$@.d"
+	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/src -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/platform/i2c.o Lua/platform/i2c.c
 
 ${OBJECTDIR}/Lua/platform/net.o: Lua/platform/net.c 
 	${MKDIR} -p ${OBJECTDIR}/Lua/platform
