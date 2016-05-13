@@ -37,7 +37,6 @@
 tdriver_error *i2c_setup(int unit, int speed);
 void i2c_start(int unit);
 void i2c_stop(int unit);
-void i2c_send_nack(int unit);
 int i2c_send_address_write(int unit, char address);
 int i2c_send_address_read(int unit, char address);
 void i2c_read(int unit, char *data);
