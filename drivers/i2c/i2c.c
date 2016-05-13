@@ -77,18 +77,21 @@ tdriver_error *i2c_setup(int unit, int speed) {
 void i2c_start(int unit) {    
     unit--;
     
+    // Wait for bus inactive
+    while ((*(&I2C1CON + unit * 0x200) & (0b11111)) || (*(&I2C1STAT + unit * 0x200) & (0b100000000000000)));    
+
     // Set start condition
     *(&I2C1CONSET + unit * 0x200) = (1 << 0);
     
     // Waiting for done
-    while (*(&I2C1CON + unit * 0x200) & (1 << 0));    
+    while (*(&I2C1CON + unit * 0x200) & (1 << 0));      
 }
 
 void i2c_stop(int unit) {
     unit--;
     
-    // Wait for master logic inactive
-    while (*(&I2C1CON + unit * 0x200) & (0b11111));    
+    // Wait for bus inactive
+    while ((*(&I2C1CON + unit * 0x200) & (0b11111)) || (*(&I2C1STAT + unit * 0x200) & (0b100000000000000)));    
 
     // Set stop condition
     *(&I2C1CONSET + unit * 0x200) = (1 << 2);
@@ -100,21 +103,21 @@ void i2c_stop(int unit) {
 void i2c_send_ack(int unit) {
     unit--;
     
-    // Wait for master logic inactive
-    while (*(&I2C1CON + unit * 0x200) & (0b11111));    
+    // Wait for bus inactive
+    while ((*(&I2C1CON + unit * 0x200) & (0b11111)) || (*(&I2C1STAT + unit * 0x200) & (0b100000000000000)));    
 
     // Enable ACK
     *(&I2C1CONSET + unit * 0x200) = (1 << 4);
     
     // Waiting for done
-    while (*(&I2C1CON + unit * 0x200) & (1 << 4));    
+    while (*(&I2C1CON + unit * 0x200) & (1 << 4));   
 }
 
 void i2c_send_nack(int unit) {
     unit--;
     
-    // Wait for master logic inactive
-    while (*(&I2C1CON + unit * 0x200) & (0b11111));    
+    // Wait for bus inactive
+    while ((*(&I2C1CON + unit * 0x200) & (0b11111)) || (*(&I2C1STAT + unit * 0x200) & (0b100000000000000)));    
 
     // Enable NACK
     *(&I2C1CONSET + unit * 0x200) = (1 << 5);
@@ -125,6 +128,9 @@ void i2c_send_nack(int unit) {
 
 int i2c_send_address_write(int unit, char address) {
     unit--;
+
+    // Wait for bus inactive
+    while ((*(&I2C1CON + unit * 0x200) & (0b11111)) || (*(&I2C1STAT + unit * 0x200) & (0b100000000000000)));    
     
     // Send address to slave with a write indication
     *(&I2C1TRN + unit * 0x200) = (address << 1);
@@ -139,6 +145,9 @@ int i2c_send_address_write(int unit, char address) {
 int i2c_send_address_read(int unit, char address) {
     unit--;
     
+    // Wait for bus inactive
+    while ((*(&I2C1CON + unit * 0x200) & (0b11111)) || (*(&I2C1STAT + unit * 0x200) & (0b100000000000000)));    
+
     // Send address to slave with a read indication
     *(&I2C1TRN + unit * 0x200) = (address << 1) | 0x01;
 
@@ -152,6 +161,9 @@ int i2c_send_address_read(int unit, char address) {
 void i2c_read(int unit, char *data) {
     unit--;
     
+    // Wait for bus inactive
+    while ((*(&I2C1CON + unit * 0x200) & (0b11111)) || (*(&I2C1STAT + unit * 0x200) & (0b100000000000000)));    
+
     // Enable receive
     *(&I2C1CONSET + unit * 0x200) = (1 << 3);
 
@@ -169,6 +181,9 @@ void i2c_read(int unit, char *data) {
 
 int i2c_write(int unit, char data) {
     unit--;
+
+    // Wait for bus inactive
+    while ((*(&I2C1CON + unit * 0x200) & (0b11111)) || (*(&I2C1STAT + unit * 0x200) & (0b100000000000000)));    
 
     // Send address to slave with a read indication
     *(&I2C1TRN + unit * 0x200) = data;
