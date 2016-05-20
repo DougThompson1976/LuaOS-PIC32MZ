@@ -72,6 +72,10 @@
         <logicalFolder name="i2c" displayName="i2c" projectFiles="true">
           <itemPath>drivers/i2c/i2c.c</itemPath>
           <itemPath>drivers/i2c/i2c.h</itemPath>
+          <itemPath>drivers/i2c/i2cbb.c</itemPath>
+          <itemPath>drivers/i2c/i2cbb.h</itemPath>
+          <itemPath>drivers/i2c/i2chw.c</itemPath>
+          <itemPath>drivers/i2c/i2chw.h</itemPath>
         </logicalFolder>
         <logicalFolder name="net" displayName="net" projectFiles="true">
           <logicalFolder name="ENC424J600" displayName="ENC424J600" projectFiles="true">
@@ -1770,6 +1774,14 @@
       <item path="drivers/i2c/i2c.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="drivers/i2c/i2c.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="drivers/i2c/i2cbb.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="drivers/i2c/i2cbb.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="drivers/i2c/i2chw.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="drivers/i2c/i2chw.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="drivers/net/ENC424J600/ENC424J600.c"
             ex="false"
@@ -3816,6 +3828,14 @@
       <item path="drivers/i2c/i2c.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="drivers/i2c/i2c.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="drivers/i2c/i2cbb.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="drivers/i2c/i2cbb.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="drivers/i2c/i2chw.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="drivers/i2c/i2chw.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="drivers/net/ENC424J600/ENC424J600.c"
             ex="false"

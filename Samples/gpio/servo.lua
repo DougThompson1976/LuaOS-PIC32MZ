@@ -2,21 +2,22 @@
 --
 --  Moves a servo
 
-pio.pin.setdir(pio.OUTPUT, pio.PB_0)
+pio.pin.setdir(pio.OUTPUT, pio.PD_10)
 
 function setServo(micros, milis)
     start = os.clock()
 	
     while ((os.clock() - start) * 1000 < milis) do
-        pio.pin.sethigh(pio.PB_0)
-        tmr.delayus(micros)
-        pio.pin.setlow(pio.PB_0)
-        tmr.delayus(20000-micros)
+        pio.pin.sethigh(pio.PD_10)
+        tmr.delayus(5)
+        pio.pin.setlow(pio.PD_10)
+        tmr.delayus(5)
     end
 end
 
-// Moves servo first in clockwise direction and then in counter-clockwise
 while true do
-    setServo(500,1000)
-    setServo(1200,1000)
+        pio.pin.sethigh(pio.PD_10)
+        tmr.delayus(100)
+        pio.pin.setlow(pio.PD_10)
+        tmr.delayus(100)
 end

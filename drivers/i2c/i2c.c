@@ -34,44 +34,17 @@
 #include <drivers/error.h>
 #include <drivers/cpu/resource.h>
 #include <drivers/i2c/i2c.h>
+#include <drivers/i2c/i2cbb.h>
+#include <drivers/i2c/i2chw.h>
+#include <drivers/gpio/gpio.h>
 #include <machine/pic32mz.h>
 
-inline static void i2c_idle(int unit) {
-    // Wait for idle state of the I2Cbus
-    // (S = 0 && P = 0) || (S = 0 && P = 1)
-    while (
-        (((*(&I2C1STAT + unit * 0x200)  & (1 << 3)) != 0) || ((*(&I2C1STAT + unit * 0x200)  & (1 << 4)) != 0)) &&
-        (((*(&I2C1STAT + unit * 0x200)  & (1 << 3)) != 0) || ((*(&I2C1STAT + unit * 0x200)  & (1 << 4)) != 1))
-    );    
-}
+static i2c_t i2c[NI2C];
 
-inline static void i2c_send_ack(int unit) {
-    // ACK will be transmited
-     *(&I2C1CONCLR + unit * 0x200) = (1 << 5);
-             
-    // Transmit
-    *(&I2C1CONSET + unit * 0x200) = (1 << 4);
-    
-    // Waiting for done
-    while (*(&I2C1CON + unit * 0x200) & (1 << 4));   
-}
+// Setup driver
+tdriver_error *i2c_setup(int unit, int speed, int sda, int scl) {
+    i2c_t *i2cu = &i2c[--unit];
 
-inline static void i2c_send_nack(int unit) {
-    // NACK will be transmited
-    *(&I2C1CONSET + unit * 0x200) = (1 << 5);
-
-    // Transmit
-    *(&I2C1CONSET + unit * 0x200) = (1 << 4);
-    
-    // Waiting for done
-    while (*(&I2C1CON + unit * 0x200) & (1 << 4));    
-}
-
-tdriver_error *i2c_setup(int unit, int speed) {
-    int scl, sda;
-    
-    unit--;
-    
     // TO DO
     // Lock resources used on sda and scl pins used
     
@@ -83,19 +56,37 @@ tdriver_error *i2c_setup(int unit, int speed) {
         case 4: scl = (I2C5_PINS & 0xff00) >> 8;sda = (I2C5_PINS & 0x00ff);break;
     }
 
-    // Enable I2C peripheripal
-    PMD5CLR = (1 << (16 + unit));
+    i2cu->sda = sda;
+    i2cu->scl = scl;
+    i2cu->speed = speed;
     
-    // Configure module
-    *(&I2C1CON + unit * 0x200) = 0;    
-        
-    *(&I2C1CON + unit * 0x200) = (1 << 15) | // Turn on module
-                                 (1 << 13) | // Stop on idle mode
-                                 (1 << 9);   // Slew rate control disabled
-            
-    // Set BRG
-    *(&I2C1BRG + unit * 0x200) = (unsigned int)(((((double)1.0/(((double)2.0) * ((double)speed))) - ((double)0.00000014)) * ((double)PBCLK2_HZ)) - ((double)2.0));
-
+    // Assign Low-Access Driver functions
+    if (unit > (NI2CHW - 1)) {
+        // Bit bang implementation
+        i2cu->i2c_setup = i2c_bb_setup;
+        i2cu->i2c_idle = i2c_bb_idle;
+        i2cu->i2c_read_ack = i2c_bb_read_ack;
+        i2cu->i2c_read_byte = i2c_bb_read_byte;
+        i2cu->i2c_write_ack = i2c_bb_write_ack;
+        i2cu->i2c_write_byte = i2c_bb_write_byte;
+        i2cu->i2c_write_nack = i2c_bb_write_nack;
+        i2cu->i2c_start = i2c_bb_start;
+        i2cu->i2c_stop = i2c_bb_stop;
+    } else {
+        // Hardware implementation
+        i2cu->i2c_setup = i2c_hw_setup;
+        i2cu->i2c_idle = i2c_hw_idle;
+        i2cu->i2c_read_ack = i2c_hw_read_ack;
+        i2cu->i2c_read_byte = i2c_hw_read_byte;
+        i2cu->i2c_write_ack = i2c_hw_write_ack;
+        i2cu->i2c_write_byte = i2c_hw_write_byte;
+        i2cu->i2c_write_nack = i2c_hw_write_nack;        
+        i2cu->i2c_start = i2c_hw_start;
+        i2cu->i2c_stop = i2c_hw_stop;
+    }
+    
+    i2cu->i2c_setup(i2cu);
+    
     syslog(LOG_INFO,
         "i2c%u at pins scl=%c%d/sdc=%c%d", unit + 1,
         gpio_portname(scl), gpio_pinno(scl),
@@ -105,82 +96,36 @@ tdriver_error *i2c_setup(int unit, int speed) {
     return NULL;
 }
 
-void i2c_start(int unit) {    
-    unit--;
-    
-    // Wait for idle
-    i2c_idle(unit);
-
-    // Set start condition
-    *(&I2C1CONSET + unit * 0x200) = (1 << 0);
-    
-    // Waiting for done
-    while (*(&I2C1CON + unit * 0x200) & (1 << 0));      
+// Start condition
+void i2c_start(int unit) {  
+    i2c_t *i2cu = &i2c[--unit];
+    i2cu->i2c_start(i2cu);
 }
 
+// Stop condition
 void i2c_stop(int unit) {
-    unit--;
-    
-    // Set stop condition
-    *(&I2C1CONSET + unit * 0x200) = (1 << 2);
+    i2c_t *i2cu = &i2c[--unit];
 
-    // Waiting for done
-    while (*(&I2C1CON + unit * 0x200) & (1 << 2));
+    i2cu->i2c_stop(i2cu);
 }
 
-int i2c_send_address_write(int unit, char address) {
-    unit--;
+// Write address to slave with a read / write indication
+int i2c_write_address(int unit, char address, int read) {
+    i2c_t *i2cu = &i2c[--unit];
 
-    // Send address to slave with a write indication
-    *(&I2C1TRN + unit * 0x200) = (address << 1);
-
-    // Waiting for done
-    while (*(&I2C1STAT + unit * 0x200) & (1 << 0));
-
-    // Return 1 if ACK
-    return !(*(&I2C1STAT + unit * 0x200) & (1 << 15));
+    return i2cu->i2c_write_byte(i2cu, (address << 1) | read);        
 }
 
-int i2c_send_address_read(int unit, char address) {
-    unit--;
-    
-    // Send address to slave with a read indication
-    *(&I2C1TRN + unit * 0x200) = (address << 1) | 0x01;
+// Read byte from slave
+char i2c_read(int unit) {
+    i2c_t *i2cu = &i2c[--unit];
 
-    // Waiting for done
-    while (*(&I2C1STAT + unit * 0x200) & (1 << 0));
- 
-    // Return 1 if ACK
-    return !(*(&I2C1STAT + unit * 0x200) & (1 << 15));
+    return i2cu->i2c_read_byte(i2cu);
 }
 
-void i2c_read(int unit, char *data) {
-    unit--;
-    
-    // Enable receive
-    *(&I2C1CONSET + unit * 0x200) = (1 << 3);
-
-    // Waiting for done
-    while (*(&I2C1CON + unit * 0x200) & (1 << 3));    
-    
-    // Waiting for data
-    while (!(*(&I2C1STAT + unit * 0x200) & (1 << 1)));    
-
-    *data = (char)(*(&I2C1RCV + unit * 0x200) & 0x00ff);  
-    
-    // Send ACK
-    i2c_send_ack(unit);
-}
-
+// Write byte to slave
 int i2c_write(int unit, char data) {
-    unit--;
+    i2c_t *i2cu = &i2c[--unit];
 
-    // Send address to slave with a read indication
-    *(&I2C1TRN + unit * 0x200) = data;
-
-    // Waiting for done
-    while (*(&I2C1STAT + unit * 0x200) & (1 << 0));
-    
-    // Return 1 if ACK
-    return !(*(&I2C1STAT + unit * 0x200) & (1 << 15));
+    return i2cu->i2c_write_byte(i2cu, data);
 }

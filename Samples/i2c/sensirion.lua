@@ -1,6 +1,5 @@
-i2c.setup(i2c.I2C1, 100)
+i2c.setup(i2c.I2C1, 1000)
 while true do
-    i2c.setup(i2c.I2C1, 100)
     i2c.start(i2c.I2C1)
     i2c.address(i2c.I2C1, 0x45, i2c.WRITE)
     i2c.write(i2c.I2C1, 0x24)
@@ -30,14 +29,30 @@ while true do
 end
 
 
+    -- Write byte
+    i2c.setup(i2c.I2CBB1, 1000, pio.PE_0, pio.PD_10)
+    i2c.start(i2c.I2CBB1)
+    i2c.address(i2c.I2CBB1, 0x51, i2c.WRITE)
+    i2c.write(i2c.I2CBB1,0x00)
+    i2c.write(i2c.I2CBB1,0x40)
+    i2c.write(i2c.I2CBB1,65)
+    i2c.stop(i2c.I2CBB1)
 
-i2c.setup(i2c.I2C1, 100)
-i2c.start(i2c.I2C1)
-i2c.address(i2c.I2C1, 0x45, i2c.WRITE)
-i2c.write(i2c.I2C1, 0x24)
-i2c.write(i2c.I2C1, 0x0b)
-i2c.stop(i2c.I2C1)
+    -- Immediate Address Read
+    i2c.setup(i2c.I2CBB1, 1000, pio.PE_0, pio.PD_10)
+    i2c.start(i2c.I2CBB1)
+    i2c.address(i2c.I2CBB1, 0x51, i2c.READ)
+    i2c.read(i2c.I2CBB1)
+    i2c.stop(i2c.I2CBB1)
 
-i2c.start(i2c.I2C1)
-i2c.address(i2c.I2C1, 0x45, i2c.READ)
-i2c.stop(i2c.I2C1)
+    -- Selective Read
+    i2c.setup(i2c.I2CBB1, 1000, pio.PE_0, pio.PD_10)
+    i2c.start(i2c.I2CBB1)
+    i2c.address(i2c.I2CBB1, 0x51, i2c.WRITE)
+    i2c.write(i2c.I2CBB1,0x00)
+    i2c.write(i2c.I2CBB1,0x40)
+    i2c.start(i2c.I2CBB1)
+    i2c.address(i2c.I2CBB1, 0x51, i2c.READ)
+    print(i2c.read(i2c.I2CBB1))
+    i2c.stop(i2c.I2CBB1)
+

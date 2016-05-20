@@ -148,7 +148,7 @@ void initTask(void *pvParameters) {
     gpio_pin_clr(LED_ACT);
 
     gpio_pin_output(0x20);
-            
+                     
     pthread_attr_t attr;
     pthread_t thread;
     int res;

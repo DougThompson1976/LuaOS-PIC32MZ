@@ -33,15 +33,14 @@
 #include <drivers/error.h>
 #include <drivers/i2c/i2c.h>
 
-struct i2c {
-    
-};
-
 static int li2c_setup( lua_State* L ) {
     tdriver_error *error;
 
+    int total = lua_gettop(L);
     int id = luaL_checkinteger(L, 1);
     int speed = luaL_checkinteger(L, 2);
+    int sda;
+    int scl;
 
     // Some integrity checks
     if (!platform_i2c_exists(id)) {
@@ -51,12 +50,22 @@ static int li2c_setup( lua_State* L ) {
     if ((speed <= 0) || (speed > 1000)) {
         return luaL_error(L, "Invalid speed", id);        
     }
-
-    // Setup
-    if ((error = i2c_setup(id, speed))) {
-        return luaL_driver_error(L, "I2C can't setup", error);
+    
+    if (id == NI2C) {
+        // SDA and SCL is needed
+        if (total != 4) {
+            return luaL_error(L, "Missing SDA / SCL arguments", id);                    
+        }
+        
+        sda = luaL_checkinteger(L, 3);
+        scl = luaL_checkinteger(L, 4);
     }
     
+    // Setup
+    if ((error = i2c_setup(id, speed, sda, scl))) {
+        return luaL_driver_error(L, "I2C can't setup", error);
+    }
+
     return 0;
 }
 
@@ -104,11 +113,7 @@ static int li2c_address( lua_State* L ) {
         return luaL_error(L, "Ivalid direction", id);
     }
 
-    if (direction == 0) {
-        lua_pushboolean(L, i2c_send_address_write(id, address));
-    } else {
-        lua_pushboolean(L, i2c_send_address_read(id, address));      
-    }
+    lua_pushboolean(L, i2c_write_address(id, address, direction));
     
     return 1;
 }
@@ -122,7 +127,7 @@ static int li2c_read( lua_State* L ) {
         return luaL_error(L, "I2C%d does not exist", id);
     }
 
-    i2c_read(id, &data);
+    data = i2c_read(id);
     
     lua_pushinteger(L, data & 0x000000ff);
    
@@ -132,7 +137,6 @@ static int li2c_read( lua_State* L ) {
 static int li2c_write(lua_State* L) {
     int id = luaL_checkinteger(L, 1);
     int data = luaL_checkinteger(L, 2);
-    char d;
     
     // Some integrity checks
     if (!platform_i2c_exists(id)) {
@@ -158,14 +162,20 @@ int luaopen_i2c(lua_State* L) {
     luaL_newlib(L, li2c);
 
     int i;
-    char buff[6];
+    char buff[7];
 
-    for(i=1;i<=NI2C;i++) {
+    for(i=1;i<=NI2CHW;i++) {
         sprintf(buff,"I2C%d",i);
         lua_pushinteger(L, i);
         lua_setfield(L, -2, buff);
     }
-    
+
+    for(i=1;i<=NI2CBB;i++) {
+        sprintf(buff,"I2CBB%d",i);
+        lua_pushinteger(L, i + NI2CHW);
+        lua_setfield(L, -2, buff);
+    }
+
     lua_pushinteger(L, 0);
     lua_setfield(L, -2, "WRITE");
     
