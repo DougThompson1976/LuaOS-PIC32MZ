@@ -13,6 +13,8 @@
 #include <sys/syscalls/mount.h>
 #include <sys/syscalls/device.h>
 
+#include <main/build.h>
+
 extern const char *__progname;
 
 int lua_shell_on = SHELL_DEFAULT_STATE;
@@ -379,8 +381,9 @@ static int os_stats(lua_State *L) {
 static int os_version(lua_State *L) {
    lua_pushstring(L, "LuaOS");   
    lua_pushstring(L, LUA_OS_VER);   
-     
-   return 2;
+   lua_pushinteger(L, BUILD_TIME); 
+   
+   return 3;
 }
 
 void os_constants(lua_State *L) {  

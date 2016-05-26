@@ -20,6 +20,10 @@ if [ "$response" == "y" ]; then
 	if [ "$response" == "y" ]; then
 		echo $filename > releases/current
 		cp -f LuaOS_V1.hex releases/$filename
+
+		git add -f releases/$filename
+		git commit -m "Added release $filename"
+		git push origin master
 	else
 	        if [ "$response" != "n" ]; then
         	        echo "Invalid response";
