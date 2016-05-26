@@ -22,6 +22,8 @@ if [ "$response" == "y" ]; then
 		cp -f LuaOS_V1.hex releases/$filename
 
 		git add -f releases/$filename
+		git add -f releases/current
+
 		git commit -m "Added release $filename"
 		git push origin master
 	else
