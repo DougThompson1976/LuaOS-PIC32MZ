@@ -68,6 +68,8 @@ build: .build-post
 # Add your post 'build' code here...
 	make -f Makefile.hex hex
 	make -f Makefile.doc FOLDER=doc doc
+	
+	
 
 # clean
 clean: .clean-post
