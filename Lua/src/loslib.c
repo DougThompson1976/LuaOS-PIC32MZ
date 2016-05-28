@@ -6,8 +6,8 @@
 
 #define loslib_c
 #define LUA_LIB
-
-#include "lprefix.h"
+   
+#include "lprefix.h"      
 
 
 #include <errno.h>
@@ -20,7 +20,7 @@
 
 #include "lauxlib.h"
 #include "lualib.h"
- 
+   
 
 /*
 ** {==================================================================

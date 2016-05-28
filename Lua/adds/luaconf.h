@@ -110,7 +110,8 @@
   {"loglevel",  os_loglevel}, \
   {"logcons",   os_logcons}, \
   {"stats",     os_stats}, \
-  {"version",   os_version},
+  {"version",   os_version}, \
+  {"cpu",   os_cpu},
         
 #define LOSLIB_OPEN_ADDS \
   os_constants(L);

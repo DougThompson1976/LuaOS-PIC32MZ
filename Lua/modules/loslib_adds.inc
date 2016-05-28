@@ -386,6 +386,19 @@ static int os_version(lua_State *L) {
    return 3;
 }
 
+static int os_cpu(lua_State *L) {
+    char model[18];
+    char cpuInfo[26];
+    
+    cpu_model(model);
+
+    sprintf(cpuInfo, "%s rev A%d", model, cpu_revission());
+    
+    lua_pushstring(L, cpuInfo);
+    
+    return 1;
+}
+
 void os_constants(lua_State *L) {  
     lua_pushinteger(L, LOG_EMERG);
     lua_setfield(L, -2, "LOG_EMERG");

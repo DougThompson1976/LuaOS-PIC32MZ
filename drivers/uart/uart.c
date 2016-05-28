@@ -48,6 +48,7 @@
 #include <syslog.h>
 
 extern QueueHandle_t signal_q;
+extern int lua_running;
 
 #define DEBUG 0
 
@@ -644,6 +645,14 @@ void uart_intr_rx(u8_t unit) {
                       
         // Signal handling
         if (unit == CONSOLE_UART - 1) {
+            if ((byte == 0x04) && (lua_running)) {
+                tty_lock();
+                uart_writes(CONSOLE_UART, "LuaOS");
+                tty_unlock();
+                
+                queue = 0;
+            }
+            
             if (byte == 0x03) {
                 signal = SIGINT;
                 if (_pthread_has_signal(signal)) {

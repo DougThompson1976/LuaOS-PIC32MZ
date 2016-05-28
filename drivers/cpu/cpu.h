@@ -31,8 +31,8 @@
 #define	CPU_H
 
 void cpu_init();
-unsigned cpu_revission();
- void cpu_model(char *buffer);
+int cpu_revission();
+void cpu_model(char *buffer);
 void cpu_reset();
 void cpu_show_info();
 unsigned int cpu_pins();

@@ -37,7 +37,7 @@ static int dofile (lua_State *L, const char *name);
 
 extern int threadInited;
 extern int lua_shell_on;
-
+extern int lua_running;
 
 
 inline void LuaLockInit(lua_State *L) {
@@ -193,6 +193,8 @@ static int luaos_pmain (lua_State *L) {
 
   luaL_openlibs(L);  /* open standard libraries */
   createargtable(L, argv, argc, script);  /* create table 'arg' */
+  
+  lua_running = 1;
   
   print_version();
   luaos_boot_scripts(L);

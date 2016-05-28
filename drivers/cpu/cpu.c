@@ -294,7 +294,7 @@ void cpu_init() {
             family, keyfeat, pins);
 }
 
-unsigned cpu_revission() {
+int cpu_revission() {
     return cpu_rev;
 }
 
