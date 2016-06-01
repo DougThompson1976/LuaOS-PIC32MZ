@@ -645,15 +645,15 @@ void uart_intr_rx(u8_t unit) {
                       
         // Signal handling
         if (unit == CONSOLE_UART - 1) {
-            if ((byte == 0x04) && (lua_running)) {
-                tty_lock();
-                uart_writes(CONSOLE_UART, "LuaOS");
-                tty_unlock();
+            if (byte == 0x04) {
+                if (!lua_running) {
+                    uart_writes(CONSOLE_UART, "LuaOS-booting\r\n");                   
+                } else {
+                    uart_writes(CONSOLE_UART, "LuaOS-running\r\n");
+                }
                 
                 queue = 0;
-            }
-            
-            if (byte == 0x03) {
+            } else if (byte == 0x03) {
                 signal = SIGINT;
                 if (_pthread_has_signal(signal)) {
                     xQueueSendFromISR(signal_q, &signal, &xHigherPriorityTaskWoken);    

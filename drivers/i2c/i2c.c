@@ -47,7 +47,6 @@ tdriver_error *i2c_setup(int unit, int speed, int sda, int scl) {
 
     // TO DO
     // Lock resources used on sda and scl pins used
-    
     switch (unit) {
         case 0: scl = (I2C1_PINS & 0xff00) >> 8;sda = (I2C1_PINS & 0x00ff);break;
         case 1: scl = (I2C2_PINS & 0xff00) >> 8;sda = (I2C2_PINS & 0x00ff);break;
@@ -62,6 +61,7 @@ tdriver_error *i2c_setup(int unit, int speed, int sda, int scl) {
     
     // Assign Low-Access Driver functions
     if (unit > (NI2CHW - 1)) {
+        printf("bb\r\n");
         // Bit bang implementation
         i2cu->i2c_setup = i2c_bb_setup;
         i2cu->i2c_idle = i2c_bb_idle;

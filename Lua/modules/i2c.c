@@ -51,7 +51,7 @@ static int li2c_setup( lua_State* L ) {
         return luaL_error(L, "Invalid speed", id);        
     }
     
-    if (id == NI2C) {
+    if (id > NI2CHW) {
         // SDA and SCL is needed
         if (total != 4) {
             return luaL_error(L, "Missing SDA / SCL arguments", id);                    

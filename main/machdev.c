@@ -67,6 +67,8 @@ static int create_folder(char *path) {
 }
 
 void mach_dev() {    
+    mips_ei();
+
     console_init();
     console_clear();
     cpu_init();

@@ -173,14 +173,11 @@ int main(void) {
     //  * clock sources initialized
     //	* console initilized
     //  * standard streams retirect to console
-    //	* interrupts disabled
+    //	* interrupts enabled
 
     // Create init task
     xTaskCreate(initTask, "init", initTaskStack, NULL, tskIDLE_PRIORITY, NULL);
-        
-    // Enable interrupts
-    mips_ei();
-    
+            
     // Start scheluder
     vTaskStartScheduler();
 
