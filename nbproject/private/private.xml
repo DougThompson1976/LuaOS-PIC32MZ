@@ -7,18 +7,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/console/console.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/cpu/cpu.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/uart/uart.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/main/main.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/main/machdev.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/i2c/i2c.h</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/i2c/i2c.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/machine/cpu.h</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/i2c.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/main/machdep.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/syscalls/prot.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Samples/i2c/sensirion.lua</file>
         </group>
     </open-files>
 </project-private>

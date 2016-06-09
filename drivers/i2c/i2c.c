@@ -61,7 +61,6 @@ tdriver_error *i2c_setup(int unit, int speed, int sda, int scl) {
     
     // Assign Low-Access Driver functions
     if (unit > (NI2CHW - 1)) {
-        printf("bb\r\n");
         // Bit bang implementation
         i2cu->i2c_setup = i2c_bb_setup;
         i2cu->i2c_idle = i2c_bb_idle;

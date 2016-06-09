@@ -48,17 +48,21 @@ static int li2c_setup( lua_State* L ) {
     }
 
     if ((speed <= 0) || (speed > 1000)) {
-        return luaL_error(L, "Invalid speed", id);        
+        return luaL_error(L, "Invalid speed");        
     }
     
     if (id > NI2CHW) {
         // SDA and SCL is needed
         if (total != 4) {
-            return luaL_error(L, "Missing SDA / SCL arguments", id);                    
+            return luaL_error(L, "Missing SDA / SCL arguments");                    
         }
         
         sda = luaL_checkinteger(L, 3);
         scl = luaL_checkinteger(L, 4);
+        
+        if (sda == scl) {
+            return luaL_error(L, "SDA / SCL must be different");      
+        }
     }
     
     // Setup
@@ -106,11 +110,11 @@ static int li2c_address( lua_State* L ) {
     }
 
     if (address >= 0b10000000000) {
-        return luaL_error(L, "Ivalid address", id);        
+        return luaL_error(L, "Ivalid address");        
     }
     
     if ((direction != 0) && (direction != 1)) {
-        return luaL_error(L, "Ivalid direction", id);
+        return luaL_error(L, "Ivalid direction");
     }
 
     lua_pushboolean(L, i2c_write_address(id, address, direction));
