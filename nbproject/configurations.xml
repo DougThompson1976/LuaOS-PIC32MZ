@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="97">
+<configurationDescriptor version="95">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -639,6 +639,7 @@
           <itemPath>Lua/modules/spi.c</itemPath>
           <itemPath>Lua/modules/stepper.c</itemPath>
           <itemPath>Lua/modules/thread.c</itemPath>
+          <itemPath>Lua/modules/thread.h</itemPath>
           <itemPath>Lua/modules/tmr.c</itemPath>
           <itemPath>Lua/modules/uart.c</itemPath>
         </logicalFolder>
@@ -1560,6 +1561,8 @@
       <item path="Lua/modules/stepper.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/thread.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/modules/thread.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/modules/tmr.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -3614,6 +3617,8 @@
       <item path="Lua/modules/stepper.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/thread.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/modules/thread.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/modules/tmr.c" ex="false" tool="0" flavor2="0">
       </item>

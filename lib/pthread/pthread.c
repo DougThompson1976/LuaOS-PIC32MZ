@@ -27,13 +27,15 @@
  * this software.
  */
 
+#include "lauxlib.h"
 #include "pthread.h"
 
 #include <sys/mutex.h>
 #include <errno.h>
 
 #include <sys/queue.h>
-
+#include <Lua/modules/thread.h>
+ 
 extern void uxSetThreadId(UBaseType_t id);
 
 struct list key_list;
@@ -380,8 +382,20 @@ void pthreadTask(void *taskArgs) {
     }
     
     // Call start function
-    args->pthread_function(args->args);
+    int *status = args->pthread_function(args->args);
+    if (status) {
+        if (*status != LUA_OK) {
+            struct lthread *thread;
+            thread = (struct lthread *)args->args;
 
+            const char *msg = lua_tostring(thread->L, -1);
+            lua_writestringerror("%s\n", msg);
+            lua_pop(thread->L, 1);               
+        }
+        
+        free(status);
+    }
+    
     // Inform from thread end to joined threads
     index = list_first(&thread->join_list);
     while (index >= 0) {

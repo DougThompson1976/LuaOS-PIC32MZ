@@ -39,22 +39,14 @@
 #include "lmem.h"
 #include "ldo.h"
 
-#include "pthread.h"
+#include <lib/pthread/pthread.h>
+#include <Lua/modules/thread.h>
 
 #define LTHREAD_STATUS_RUNNING   1
 #define LTHREAD_STATUS_SUSPENDED 2
 
 int threadInited = 0; // Module threadInited?
 
-struct lthread {
-    lua_State *PL; // Parent thread
-    lua_State *L;  // Thread state
-    int function_ref;
-    int thread_ref;
-    int status;
-    int thid;
-    pthread_t thread;
-};
 
 // List of threads
 static struct list lthread_list;
@@ -91,8 +83,15 @@ void *thread_start_task(void *arg) {
     *thid = thread->thid;
     pthread_cleanup_push(thread_terminated, thid);
 
-    lua_pcall(thread->L, 0, 0, 0);
-
+    int status = lua_pcall(thread->L, 0, 0, 0);
+    if (status != LUA_OK) {
+        int *tmp;
+        
+        tmp = malloc(sizeof(int));
+        *tmp = status;
+        
+        return tmp;
+    }
     return NULL;
 }
 
