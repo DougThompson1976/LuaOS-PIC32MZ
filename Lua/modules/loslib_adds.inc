@@ -101,6 +101,8 @@ static int os_ls (lua_State *L) {
         return luaL_fileresult(L, 0, path);
     }
 
+    tty_lock();
+    
     // Read entries
     while ((ent = readdir(dir)) != NULL) {
         strcpy(tpath, path);
@@ -135,6 +137,8 @@ static int os_ls (lua_State *L) {
             ent->d_name
         );
     }
+
+    tty_unlock();
     
     closedir(dir);
 

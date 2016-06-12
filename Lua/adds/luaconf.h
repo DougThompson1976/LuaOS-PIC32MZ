@@ -144,6 +144,23 @@ static void print_usage (const char *badoption);
 static int collectargs (char **argv, int *first);
 static void createargtable (lua_State *L, char **argv, int argc, int script);
 
+/* print a string */
+#if !defined(lua_writestring)
+#define lua_writestring(s,l)   (tty_lock(), fwrite((s), sizeof(char), (l), stdout), tty_unlock())
+#endif
+
+/* print a newline and flush the output */
+#if !defined(lua_writeline)
+#define lua_writeline()        (lua_writestring("\n", 1), tty_lock(), fflush(stdout), tty_unlock())
+#endif
+
+/* print an error message */
+#if !defined(lua_writestringerror)
+#define lua_writestringerror(s,p) \
+        (tty_lock(), fprintf(stderr, (s), (p)), fflush(stderr), tty_unlock())
+#endif
+
+
 #include "lauxlib.h"
 #include "lualib.h"
 #include <Lua/modules/lua_adds.inc>

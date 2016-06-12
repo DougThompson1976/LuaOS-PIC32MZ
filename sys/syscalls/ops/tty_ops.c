@@ -36,8 +36,11 @@
 
 #include <drivers/uart/uart.h>
 
-static struct mtx tty_mtx;  /* tty mutex */
+static struct mtx tty_mtx1;  /* tty mutex */
+static struct mtx tty_mtx2;  /* tty mutex */
+
 static int mtx_inited;
+
 static int redirect_to_display;
 
 int tty_redirect_to_display() {
@@ -80,11 +83,12 @@ int tty_write(struct file *fp, struct uio *uio, struct ucred *cred) {
     dbuf[1] = '\0';
     
     if (!mtx_inited) {
-        mtx_init(&tty_mtx, NULL, NULL, 0);
+        mtx_init(&tty_mtx1, NULL, NULL, 0);
+        mtx_init(&tty_mtx2, NULL, NULL, 0);
         mtx_inited = 1;
     }
     
-    mtx_lock(&tty_mtx);
+    mtx_lock(&tty_mtx2);
 
     while (uio->uio_iov->iov_len) {
         if (*buf == '\n') {
@@ -103,7 +107,7 @@ int tty_write(struct file *fp, struct uio *uio, struct ucred *cred) {
         buf++;
     }
 
-    mtx_unlock(&tty_mtx);
+    mtx_unlock(&tty_mtx2);
     
     return 0;
 }
@@ -118,20 +122,22 @@ int tty_stat(struct file *fp, struct stat *sb) {
 
 void tty_lock() {
     if (!mtx_inited) {
-        mtx_init(&tty_mtx, NULL, NULL, 0);
+        mtx_init(&tty_mtx1, NULL, NULL, 0);
+        mtx_init(&tty_mtx2, NULL, NULL, 0);
         mtx_inited = 1;
     }
 
-    mtx_lock(&tty_mtx);
+    mtx_lock(&tty_mtx1);
 }
 
 void tty_unlock() {
     if (!mtx_inited) {
-        mtx_init(&tty_mtx, NULL, NULL, 0);
+        mtx_init(&tty_mtx1, NULL, NULL, 0);
+        mtx_init(&tty_mtx2, NULL, NULL, 0);
         mtx_inited = 1;
     }
 
-    mtx_unlock(&tty_mtx);
+    mtx_unlock(&tty_mtx1);
 }
 
 /*
