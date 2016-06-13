@@ -32,13 +32,11 @@
 #include <sys/filedesc.h>
 #include <sys/file.h>
 #include <sys/uio.h>
-#include <sys/mutex.h>
+#include <lib/pthread/pthread.h>
 
 #include <drivers/uart/uart.h>
 
-static struct mtx tty_mtx1;  /* tty mutex */
-static struct mtx tty_mtx2;  /* tty mutex */
-
+static pthread_mutex_t tty_mutex;                
 static int mtx_inited;
 
 static int redirect_to_display;
@@ -83,12 +81,16 @@ int tty_write(struct file *fp, struct uio *uio, struct ucred *cred) {
     dbuf[1] = '\0';
     
     if (!mtx_inited) {
-        mtx_init(&tty_mtx1, NULL, NULL, 0);
-        mtx_init(&tty_mtx2, NULL, NULL, 0);
+        pthread_mutexattr_t attr;
+
+        pthread_mutexattr_init(&attr);
+        pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+
+        pthread_mutex_init(&tty_mutex, &attr);
         mtx_inited = 1;
     }
     
-    mtx_lock(&tty_mtx2);
+    pthread_mutex_lock(&tty_mutex);
 
     while (uio->uio_iov->iov_len) {
         if (*buf == '\n') {
@@ -107,7 +109,7 @@ int tty_write(struct file *fp, struct uio *uio, struct ucred *cred) {
         buf++;
     }
 
-    mtx_unlock(&tty_mtx2);
+    pthread_mutex_unlock(&tty_mutex);
     
     return 0;
 }
@@ -122,22 +124,29 @@ int tty_stat(struct file *fp, struct stat *sb) {
 
 void tty_lock() {
     if (!mtx_inited) {
-        mtx_init(&tty_mtx1, NULL, NULL, 0);
-        mtx_init(&tty_mtx2, NULL, NULL, 0);
+        pthread_mutexattr_t attr;
+
+        pthread_mutexattr_init(&attr);
+        pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+
+        pthread_mutex_init(&tty_mutex, &attr);
         mtx_inited = 1;
     }
 
-    mtx_lock(&tty_mtx1);
+    pthread_mutex_lock(&tty_mutex);
 }
 
 void tty_unlock() {
     if (!mtx_inited) {
-        mtx_init(&tty_mtx1, NULL, NULL, 0);
-        mtx_init(&tty_mtx2, NULL, NULL, 0);
-        mtx_inited = 1;
+        pthread_mutexattr_t attr;
+
+        pthread_mutexattr_init(&attr);
+        pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+
+        pthread_mutex_init(&tty_mutex, &attr);
     }
 
-    mtx_unlock(&tty_mtx1);
+    pthread_mutex_unlock(&tty_mutex);
 }
 
 /*
