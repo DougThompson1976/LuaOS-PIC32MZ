@@ -57,6 +57,17 @@
 #define LED_NET LED_1
 
 // ---------------------------------------------------------------------------
+// LORAWAN
+// ---------------------------------------------------------------------------
+#define LORA_TRANSCEIVER_RN2483     1
+#define LORA_TRANSCEIVER_TYPE       LORA_TRANSCEIVER_RN2483
+
+#define USE_LORA                    1
+#define LORA_UART                   2
+#define LORA_UART_BR                57600
+#define LORA_UART_BUFF_SIZE         1024
+
+// ---------------------------------------------------------------------------
 // RTC
 // ---------------------------------------------------------------------------
 #define USE_RTC             1

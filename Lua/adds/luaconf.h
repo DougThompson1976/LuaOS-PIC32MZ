@@ -94,7 +94,8 @@ extern inline void LuaUnlock(lua_State *L);
   {AUXLIB_GPS, luaopen_gps}, \
   {AUXLIB_HTTP, luaopen_http}, \
   {AUXLIB_STEPPER, luaopen_stepper}, \
-  {AUXLIB_I2C, luaopen_i2c},
+  {AUXLIB_I2C, luaopen_i2c}, \
+  {AUXLIB_LORA, luaopen_lora},
       
 #define LINIT_OPEN_ADDS
 

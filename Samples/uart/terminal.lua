@@ -4,10 +4,10 @@
 
 line = ""
 console = 1
-uartid = 4
+uartid = 2
 
--- Setup UART, 115200 bps, 8N1
-uart.setup(uartid, 115200, 8, uart.PARNONE, uart.STOP1)
+-- Setup UART, 57600 bps, 8N1
+uart.setup(uartid, 57600, 8, uart.PARNONE, uart.STOP1)
 
 while true do
     -- Read from console
@@ -51,3 +51,10 @@ net.stop("gprs")
 net.start("gprs")
 gps.start()
 gps.stop()
+
+
+lora.setup()
+lora.setAppEui("70B3D57ED0000187")
+lora.setAppKey("CF584EAC0B9EB216379AF2FC7A9B4AB4")
+
+

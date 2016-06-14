@@ -38,6 +38,7 @@
 #include <drivers/gpio/gpio.h>
 #include <drivers/uart/uart.h>
 #include <drivers/network/network.h>
+#include <drivers/lora/lora.h>
 #include <utils/delay.h>
 
 #include <stdio.h>
@@ -154,7 +155,7 @@ void initTask(void *pvParameters) {
     pthread_attr_t attr;
     pthread_t thread;
     int res;
-        
+            
     pthread_attr_init(&attr);
     pthread_attr_setstacksize(&attr, luaTaskStack);
 

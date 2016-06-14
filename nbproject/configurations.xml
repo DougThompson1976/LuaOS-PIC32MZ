@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="95">
+<configurationDescriptor version="97">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -76,6 +76,10 @@
           <itemPath>drivers/i2c/i2cbb.h</itemPath>
           <itemPath>drivers/i2c/i2chw.c</itemPath>
           <itemPath>drivers/i2c/i2chw.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="lora" displayName="lora" projectFiles="true">
+          <itemPath>drivers/lora/lora.c</itemPath>
+          <itemPath>drivers/lora/lora.h</itemPath>
         </logicalFolder>
         <logicalFolder name="net" displayName="net" projectFiles="true">
           <logicalFolder name="ENC424J600" displayName="ENC424J600" projectFiles="true">
@@ -629,6 +633,7 @@
           <itemPath>Lua/modules/i2c.c</itemPath>
           <itemPath>Lua/modules/lbaselib_adds.inc</itemPath>
           <itemPath>Lua/modules/liolib_adds.inc</itemPath>
+          <itemPath>Lua/modules/lora.c</itemPath>
           <itemPath>Lua/modules/loslib_adds.inc</itemPath>
           <itemPath>Lua/modules/lrodefs.h</itemPath>
           <itemPath>Lua/modules/lua_adds.inc</itemPath>
@@ -1534,6 +1539,8 @@
       </item>
       <item path="Lua/modules/i2c.c" ex="false" tool="0" flavor2="0">
       </item>
+      <item path="Lua/modules/lora.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="Lua/modules/lrodefs.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/modules/mqtt.c" ex="false" tool="0" flavor2="0">
@@ -1785,6 +1792,10 @@
       <item path="drivers/i2c/i2chw.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="drivers/i2c/i2chw.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="drivers/lora/lora.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="drivers/lora/lora.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="drivers/net/ENC424J600/ENC424J600.c"
             ex="false"
@@ -3590,6 +3601,8 @@
       </item>
       <item path="Lua/modules/i2c.c" ex="false" tool="0" flavor2="0">
       </item>
+      <item path="Lua/modules/lora.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="Lua/modules/lrodefs.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/modules/mqtt.c" ex="false" tool="0" flavor2="0">
@@ -3841,6 +3854,10 @@
       <item path="drivers/i2c/i2chw.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="drivers/i2c/i2chw.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="drivers/lora/lora.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="drivers/lora/lora.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="drivers/net/ENC424J600/ENC424J600.c"
             ex="false"

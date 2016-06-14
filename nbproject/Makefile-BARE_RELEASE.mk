@@ -52,6 +52,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/Lua/modules/gps.o \
 	${OBJECTDIR}/Lua/modules/http.o \
 	${OBJECTDIR}/Lua/modules/i2c.o \
+	${OBJECTDIR}/Lua/modules/lora.o \
 	${OBJECTDIR}/Lua/modules/mqtt.o \
 	${OBJECTDIR}/Lua/modules/net.o \
 	${OBJECTDIR}/Lua/modules/pio.o \
@@ -126,6 +127,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/drivers/i2c/i2c.o \
 	${OBJECTDIR}/drivers/i2c/i2cbb.o \
 	${OBJECTDIR}/drivers/i2c/i2chw.o \
+	${OBJECTDIR}/drivers/lora/lora.o \
 	${OBJECTDIR}/drivers/net/ENC424J600/ENC424J600.o \
 	${OBJECTDIR}/drivers/net/ethernetif.o \
 	${OBJECTDIR}/drivers/net/phy/phy.o \
@@ -682,6 +684,11 @@ ${OBJECTDIR}/Lua/modules/i2c.o: Lua/modules/i2c.c
 	${RM} "$@.d"
 	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/src -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/modules/i2c.o Lua/modules/i2c.c
 
+${OBJECTDIR}/Lua/modules/lora.o: Lua/modules/lora.c 
+	${MKDIR} -p ${OBJECTDIR}/Lua/modules
+	${RM} "$@.d"
+	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/src -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lua/modules/lora.o Lua/modules/lora.c
+
 ${OBJECTDIR}/Lua/modules/mqtt.o: Lua/modules/mqtt.c 
 	${MKDIR} -p ${OBJECTDIR}/Lua/modules
 	${RM} "$@.d"
@@ -1051,6 +1058,11 @@ ${OBJECTDIR}/drivers/i2c/i2chw.o: drivers/i2c/i2chw.c
 	${MKDIR} -p ${OBJECTDIR}/drivers/i2c
 	${RM} "$@.d"
 	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/src -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/drivers/i2c/i2chw.o drivers/i2c/i2chw.c
+
+${OBJECTDIR}/drivers/lora/lora.o: drivers/lora/lora.c 
+	${MKDIR} -p ${OBJECTDIR}/drivers/lora
+	${RM} "$@.d"
+	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/src -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/drivers/lora/lora.o drivers/lora/lora.c
 
 ${OBJECTDIR}/drivers/net/ENC424J600/ENC424J600.o: drivers/net/ENC424J600/ENC424J600.c 
 	${MKDIR} -p ${OBJECTDIR}/drivers/net/ENC424J600
