@@ -9,7 +9,7 @@
    
 #include "lprefix.h"      
 
-
+ 
 #include <errno.h>
 #include <locale.h>
 #include <stdlib.h>
@@ -20,7 +20,7 @@
 
 #include "lauxlib.h"
 #include "lualib.h"
-   
+    
 
 /*
 ** {==================================================================
@@ -365,19 +365,19 @@ static int os_exit (lua_State *L) {
 static const luaL_Reg syslib[] = {
   {"clock",     os_clock},
   {"date",      os_date},
-  {"difftime",  os_difftime},
+  {"difftime",  os_difftime},   
   {"execute",   os_execute},
   {"exit",      os_exit},
   {"getenv",    os_getenv},
-  {"remove",    os_remove},
-  {"rename",    os_rename},
+  {"remove",    os_remove}, 
+  {"rename",    os_rename},     
   {"setlocale", os_setlocale},
   {"time",      os_time},
-  {"tmpname",   os_tmpname},
+  {"tmpname",   os_tmpname}, 
   LOSLIB_REG_ADDS
   {NULL, NULL}
 };
-
+ 
 /* }====================================================== */
 
 
@@ -390,3 +390,4 @@ LUAMOD_API int luaopen_os (lua_State *L) {
   return 1;
 }
 
+ 

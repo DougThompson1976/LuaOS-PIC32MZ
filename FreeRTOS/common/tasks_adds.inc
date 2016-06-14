@@ -106,3 +106,7 @@ void uxIncSignaled(xTaskHandle h, int s) {
     ((TCB_t *)h)->signaled++;
     exit_critical_section();
 }
+
+TaskHandle_t xGetCurrentTask() {
+    return (TaskHandle_t)pxCurrentTCB;
+}

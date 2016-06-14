@@ -6,6 +6,15 @@
 #define WLUA_CONF
 
 #include "whitecat.h"
+
+extern inline void LuaLock(lua_State *L);
+extern inline void LuaUnlock(lua_State *L);
+
+#define lua_lock(L)          LuaLock(L)
+#define lua_unlock(L)        LuaUnlock(L)
+#define luai_threadyield(L) {lua_unlock(L); lua_lock(L);}
+
+
 #include "auxmods.h"
 
 #include <unistd.h>
@@ -111,7 +120,8 @@
   {"logcons",   os_logcons}, \
   {"stats",     os_stats}, \
   {"version",   os_version}, \
-  {"cpu",   os_cpu},
+  {"cpu",   os_cpu}, \
+  {"run", os_run}, 
         
 #define LOSLIB_OPEN_ADDS \
   os_constants(L);
@@ -146,24 +156,25 @@ static void createargtable (lua_State *L, char **argv, int argc, int script);
 
 /* print a string */
 #if !defined(lua_writestring)
-#define lua_writestring(s,l)   (tty_lock(), fwrite((s), sizeof(char), (l), stdout), tty_unlock())
+#define lua_writestring(s,l)   (fwrite((s), sizeof(char), (l), stdout))
 #endif
 
 /* print a newline and flush the output */
 #if !defined(lua_writeline)
-#define lua_writeline()        (lua_writestring("\n", 1), tty_lock(), fflush(stdout), tty_unlock())
+#define lua_writeline()        (lua_writestring("\n", 1), fflush(stdout))
 #endif
 
 /* print an error message */
 #if !defined(lua_writestringerror)
 #define lua_writestringerror(s,p) \
-        (tty_lock(), fprintf(stderr, (s), (p)), fflush(stderr), tty_unlock())
+        (fprintf(stderr, (s), (p)), fflush(stderr))
 #endif
 
 
 #include "lauxlib.h"
 #include "lualib.h"
 #include <Lua/modules/lua_adds.inc>
+
 #endif
 
 #endif

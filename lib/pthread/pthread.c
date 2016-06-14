@@ -214,6 +214,8 @@ int _pthread_free(pthread_t id) {
     struct pthread_join *join;  // Current join
     int res;
     
+    _pthread_mutex_free();
+    
     // Get thread
     res = list_get(&thread_list, id, &thread);
     if (res) {
@@ -390,7 +392,7 @@ void pthreadTask(void *taskArgs) {
 
             const char *msg = lua_tostring(thread->L, -1);
             lua_writestringerror("%s\n", msg);
-            lua_pop(thread->L, 1);               
+            lua_pop(thread->L, 1);  
         }
         
         free(status);

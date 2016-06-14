@@ -33,6 +33,7 @@
 #include <lib/list/list.h>
 
 extern struct list mutex_list;
+extern TaskHandle_t xGetCurrentTask();
 
 static int _check_attr(const pthread_mutexattr_t *attr) {
     int type = attr->type;
@@ -193,7 +194,12 @@ int pthread_mutex_destroy(pthread_mutex_t *mut) {
         return res;
     }
 
-    xSemaphoreGive(mutex->sem);        
+    if (mutex->type == PTHREAD_MUTEX_RECURSIVE) {
+        xSemaphoreGiveRecursive(mutex->sem);  
+    } else {
+        xSemaphoreGive(mutex->sem);                
+    }
+    
     vSemaphoreDelete(mutex->sem);
 
     return 0;
@@ -226,4 +232,22 @@ int pthread_mutexattr_init(pthread_mutexattr_t *attr) {
     attr->type = PTHREAD_MUTEX_NORMAL;
     
     return 0;
+}
+
+void _pthread_mutex_free() {
+    struct pthread_mutex *mutex;
+    int index;
+    
+    index = list_first(&mutex_list);
+    while (index >= 0) {
+        list_get(&mutex_list, index, &mutex);
+         
+        if (mutex->type == PTHREAD_MUTEX_RECURSIVE) {
+            while (xSemaphoreGiveRecursive(mutex->sem) == pdTRUE);  
+        } else {
+            xSemaphoreGive(mutex->sem);                
+        }            
+        
+        index = list_next(&mutex_list, index);
+    }    
 }

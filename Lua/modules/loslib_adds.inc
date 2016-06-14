@@ -403,6 +403,113 @@ static int os_cpu(lua_State *L) {
     return 1;
 }
 
+static int os_run (lua_State *L) {
+    const char *argCode = luaL_optstring(L, 1, "");
+    unsigned int i;
+    int done;
+
+    unsigned char *code;
+    unsigned int code_size = 0;
+    
+    unsigned char *cchunk;
+    unsigned char chunk_size;
+
+    // Lock tty, avoid other threads to write to console
+    tty_lock();
+
+    if (*argCode) {
+        code = (unsigned char *)argCode;
+        lua_pop(L, 1);
+
+        
+        goto skip;
+    }
+    
+    lua_pop(L, 1);
+
+    // Clear received buffer
+    uart_consume(CONSOLE_UART);
+
+    // Send 'C' for start
+    uart_write(CONSOLE_UART, 'C');
+    uart_write(CONSOLE_UART, '\n');
+
+    done = 0;
+
+    for(;;) {
+        // Wait for chunk size
+        if (!uart_read(CONSOLE_UART, &chunk_size, 1000)) {
+            break;
+        }
+
+        // More chunks?
+        if (chunk_size == 0) {
+            done = 1;
+            break;
+        }
+        
+        code = realloc(code, code_size + chunk_size + 1);
+
+        // Read chunk
+        cchunk = code + code_size;
+        for(i=0; i < chunk_size; i++) {
+            if (!uart_read(CONSOLE_UART, cchunk++, 1000)) {
+                break;
+            }
+        }
+        
+        *cchunk = 0x00;
+        
+        code_size = code_size + chunk_size;
+
+        // Send 'C' for start
+        uart_write(CONSOLE_UART, 'C');
+        uart_write(CONSOLE_UART, '\n');
+    }
+        
+    if (!done) {
+        // Unlock tty, permit other threads to write to console
+        tty_unlock();
+
+        free(code);
+
+        return luaL_error(L, "timeout");
+    }
+       
+ skip:
+    // Call load
+    lua_getglobal(L, "load"); 
+    lua_pushstring(L, code);
+    lua_pcall(L, 1, 2, 0);
+
+    if (!lua_isnil(L, -1)) {
+        free(code);
+        tty_unlock();
+        return luaL_error(L, lua_tostring(L, -1));
+    }
+    
+    lua_remove(L, -1);
+    
+    lua_getglobal(L, "thread"); 
+    lua_getfield(L, -1, "start");
+
+    lua_remove(L, -2);   // Remove "thread" from the stack
+    lua_insert(L, -2);   // Switch "thread" with parsed function
+    
+    if (lua_pcall(L, 1, 1, 0) != 0) {
+        free(code);
+        tty_unlock();
+        return luaL_error(L, lua_tostring(L, -1));
+    }
+        
+    lua_pop(L, 1);
+    
+    // Unlock tty, permit other threads to write to console
+    tty_unlock();
+
+    return 0;
+}
+
 void os_constants(lua_State *L) {  
     lua_pushinteger(L, LOG_EMERG);
     lua_setfield(L, -2, "LOG_EMERG");

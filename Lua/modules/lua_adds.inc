@@ -41,26 +41,20 @@ extern int lua_running;
 
 
 inline void LuaLockInit(lua_State *L) {
-    if (threadInited) {
-        pthread_mutexattr_t attr;
+    pthread_mutexattr_t attr;
 
-        pthread_mutexattr_init(&attr);
-        pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+    pthread_mutexattr_init(&attr);
+    pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
 
-        pthread_mutex_init(&lua_mutex, &attr);
-    }
+    pthread_mutex_init(&lua_mutex, &attr);
 }
 
 inline void LuaLock(lua_State *L) {
-    if (threadInited) {
-        pthread_mutex_lock(&lua_mutex);
-    }
+    pthread_mutex_lock(&lua_mutex);
 }
 
 inline void LuaUnlock(lua_State *L) {
-    if (threadInited) {
-        pthread_mutex_unlock(&lua_mutex);
-    }
+    pthread_mutex_unlock(&lua_mutex);
 }
 
 static char *get_prompt (lua_State *L, int firstline) { 
@@ -214,6 +208,8 @@ static int luaos_pmain (lua_State *L) {
 int luaos_main (int argc, char **argv) {
   int status, result;
 
+  LuaLockInit(NULL);
+  
   lua_State *L = luaL_newstate();  /* create state */
   if (L == NULL) {
     l_message(argv[0], "cannot create state: not enough memory");
