@@ -30,7 +30,7 @@
 #include "lua.h"
 #include "lauxlib.h"
 
-#include <drivers/error.h>
+#include <drivers/cpu/error.h>
 #include <drivers/lora/lora.h>
 
 static int llora_setup(lua_State* L) {

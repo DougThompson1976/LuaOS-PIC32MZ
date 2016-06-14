@@ -32,6 +32,8 @@
 #include <syslog.h>
 #include <drivers/pwm/pwm.h>
 #include <drivers/gpio/gpio.h>
+#include <drivers/cpu/error.h>
+#include <drivers/cpu/resource.h>
 #include <math.h>
 
 /*
@@ -327,22 +329,43 @@ void pwm_setup_res(int unit, int res, int value) {
     }    
 }
 
-void pwm_init_freq(int unit, int pwmhz, double duty) {
+tdriver_error *pwm_init_freq(int unit, int pwmhz, double duty) {
+    tresource_lock *lock;
     int pin;
     unit--;
 
+    // Lock pwm pin
     switch (unit) {
-        case 0: pin = OC1_PINS; PMD3CLR = OC1MD;break;
-        case 1: pin = OC2_PINS; PMD3CLR = OC2MD;break;
-        case 2: pin = OC3_PINS; PMD3CLR = OC3MD;break;
-        case 3: pin = OC4_PINS; PMD3CLR = OC4MD;break;
-        case 4: pin = OC5_PINS; PMD3CLR = OC5MD;break;
-        case 5: pin = OC6_PINS; PMD3CLR = OC6MD;break;
-        case 6: pin = OC7_PINS; PMD3CLR = OC7MD;break;
-        case 7: pin = OC8_PINS; PMD3CLR = OC8MD;break;
-        case 8: pin = OC9_PINS; PMD3CLR = OC9MD;break;
+        case 0: pin = OC1_PINS;break;
+        case 1: pin = OC2_PINS;break;
+        case 2: pin = OC3_PINS;break;
+        case 3: pin = OC4_PINS;break;
+        case 4: pin = OC5_PINS;break;
+        case 5: pin = OC6_PINS;break;
+        case 6: pin = OC7_PINS;break;
+        case 7: pin = OC8_PINS;break;
+        case 8: pin = OC9_PINS;break;
     }
+    
+    lock = resource_lock(GPIO, cpu_pin_number(pin) - 1, PWM, unit);
+    if (!resource_granted(lock)) {
+        return lock_error(lock);
+    }
+    free(lock);
 
+    // Enable module
+    switch (unit) {
+        case 0: PMD3CLR = OC1MD;break;
+        case 1: PMD3CLR = OC2MD;break;
+        case 2: PMD3CLR = OC3MD;break;
+        case 3: PMD3CLR = OC4MD;break;
+        case 4: PMD3CLR = OC5MD;break;
+        case 5: PMD3CLR = OC6MD;break;
+        case 6: PMD3CLR = OC7MD;break;
+        case 7: PMD3CLR = OC8MD;break;
+        case 8: PMD3CLR = OC9MD;break;
+    }
+    
     assign_oc_pin(unit, pin);
     
     pwm_setup_freq(unit, pwmhz, duty);
@@ -351,21 +374,42 @@ void pwm_init_freq(int unit, int pwmhz, double duty) {
            gpio_portname(pin), gpio_pinno(pin), pwm[unit].timer, pwm_freq(unit + 1));
 }
 
-void pwm_init_res(int unit, int res, int val) {
+tdriver_error *pwm_init_res(int unit, int res, int val) {
+    tresource_lock *lock;
     int pin;
     unit--;
     
+    // Lock pwm pin
     switch (unit) {
-        case 0: pin = OC1_PINS; PMD3CLR = OC1MD;break;
-        case 1: pin = OC2_PINS; PMD3CLR = OC2MD;break;
-        case 2: pin = OC3_PINS; PMD3CLR = OC3MD;break;
-        case 3: pin = OC4_PINS; PMD3CLR = OC4MD;break;
-        case 4: pin = OC5_PINS; PMD3CLR = OC5MD;break;
-        case 5: pin = OC6_PINS; PMD3CLR = OC6MD;break;
-        case 6: pin = OC7_PINS; PMD3CLR = OC7MD;break;
-        case 7: pin = OC8_PINS; PMD3CLR = OC8MD;break;
-        case 8: pin = OC9_PINS; PMD3CLR = OC9MD;break;
+        case 0: pin = OC1_PINS;break;
+        case 1: pin = OC2_PINS;break;
+        case 2: pin = OC3_PINS;break;
+        case 3: pin = OC4_PINS;break;
+        case 4: pin = OC5_PINS;break;
+        case 5: pin = OC6_PINS;break;
+        case 6: pin = OC7_PINS;break;
+        case 7: pin = OC8_PINS;break;
+        case 8: pin = OC9_PINS;break;
     }
+
+    lock = resource_lock(GPIO, cpu_pin_number(pin) - 1, PWM, unit);
+    if (!resource_granted(lock)) {
+        return lock_error(lock);
+    }
+    free(lock);
+
+    // Enable module
+    switch (unit) {
+        case 0: PMD3CLR = OC1MD;break;
+        case 1: PMD3CLR = OC2MD;break;
+        case 2: PMD3CLR = OC3MD;break;
+        case 3: PMD3CLR = OC4MD;break;
+        case 4: PMD3CLR = OC5MD;break;
+        case 5: PMD3CLR = OC6MD;break;
+        case 6: PMD3CLR = OC7MD;break;
+        case 7: PMD3CLR = OC8MD;break;
+        case 8: PMD3CLR = OC9MD;break;
+    }    
 
     assign_oc_pin(unit, pin);
     
@@ -373,8 +417,6 @@ void pwm_init_res(int unit, int res, int val) {
 
     syslog(LOG_INFO,"pwm%d, at pin %c%d, %d hz", unit + 1, 
            gpio_portname(pin), gpio_pinno(pin), pwm_freq(unit + 1));
-
-    pwm_start(unit + 1);    
 }
 
 void pwm_pins(int unit, unsigned char *pin) {

@@ -28,11 +28,13 @@
  */
 #include <drivers/pwm/pwm.h>
 
-int platform_pwm_exists(int id) {
+#include "lua.h"
+
+int platform_pwm_exists(lua_State* L, int id) {
     return ((id > 0) && (id <= NOC) && (id != 6) && (id != 9) && (id != 3));
 }
 
-int platform_pwm_pins() {
+int platform_pwm_pins(lua_State* L) {
     int i;
     unsigned char pin;
     
@@ -50,21 +52,31 @@ int platform_pwm_pins() {
     return 0;
 }
 
-int platform_pwm_freq(int id) {
+int platform_pwm_freq(lua_State* L, int id) {
     return pwm_freq(id);
 }
 
-int platform_pwm_setup_freq(int id, int khz, double duty) {
+int platform_pwm_setup_freq(lua_State* L, int id, int khz, double duty) {
+    tdriver_error *error;
+    
     // Setup in base of frequency
-    pwm_init_freq(id, khz, duty);
+    error = pwm_init_freq(id, khz, duty);
+    if (error) {
+        return luaL_driver_error(L, "pwm can't setup", error);
+    }
     
     // Return real frequency
     return pwm_freq(id);
 }
 
-int platform_pwm_setup_res(int id, int res, int val) {
+int platform_pwm_setup_res(lua_State* L, int id, int res, int val) {
+    tdriver_error *error;
+    
     // Setup in base of resolution
-    pwm_init_res(id, res, val);
+    error = pwm_init_res(id, res, val);
+    if (error) {
+        return luaL_driver_error(L, "pwm can't setup", error);
+    }
     
     // Return real frequency
     return pwm_freq(id);
@@ -74,14 +86,14 @@ void platform_pwm_start(int id) {
     pwm_start(id);
 }
 
-void platform_pwm_stop(int id) {
+void platform_pwm_stop(lua_State* L, int id) {
     pwm_stop(id);
 }
 
-void platform_pwm_set_duty(int id, double duty) {
+void platform_pwm_set_duty(lua_State* L, int id, double duty) {
     pwm_set_duty(id, duty);
 }
 
-void platform_pwm_write(int id, int res, int value) {
+void platform_pwm_write(lua_State* L, int id, int res, int value) {
     pwm_write(id, res, value);
 }

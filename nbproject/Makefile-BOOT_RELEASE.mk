@@ -115,6 +115,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/drivers/clock/clock.o \
 	${OBJECTDIR}/drivers/console/console.o \
 	${OBJECTDIR}/drivers/cpu/cpu.o \
+	${OBJECTDIR}/drivers/cpu/error.o \
 	${OBJECTDIR}/drivers/cpu/resource.o \
 	${OBJECTDIR}/drivers/display/ST7735S/ST7735S.o \
 	${OBJECTDIR}/drivers/display/display.o \
@@ -998,6 +999,11 @@ ${OBJECTDIR}/drivers/cpu/cpu.o: drivers/cpu/cpu.c
 	${MKDIR} -p ${OBJECTDIR}/drivers/cpu
 	${RM} "$@.d"
 	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/src -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/drivers/cpu/cpu.o drivers/cpu/cpu.c
+
+${OBJECTDIR}/drivers/cpu/error.o: drivers/cpu/error.c 
+	${MKDIR} -p ${OBJECTDIR}/drivers/cpu
+	${RM} "$@.d"
+	$(COMPILE.c) -g -I. -IFreeRTOS -IFreeRTOS/common/include -IFreeRTOS/port -Imain -Iinclude -Isys -Isys/fat -Isys/spiffs -Isys/syscalls -Imachine -Ilwip/src/include -Ilwip/src/include/lwip -Imqtt -ILua/src -ILua/elua/inc -ILua/modules -ILua/platform -Ilib/libm/common_source -Ilib/pthread -ILua/exec/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/drivers/cpu/error.o drivers/cpu/error.c
 
 ${OBJECTDIR}/drivers/cpu/resource.o: drivers/cpu/resource.c 
 	${MKDIR} -p ${OBJECTDIR}/drivers/cpu

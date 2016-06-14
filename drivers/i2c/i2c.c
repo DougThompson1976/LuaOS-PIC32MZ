@@ -31,7 +31,7 @@
 
 #include <unistd.h>
 #include <syslog.h>
-#include <drivers/error.h>
+#include <drivers/cpu/error.h>
 #include <drivers/cpu/resource.h>
 #include <drivers/i2c/i2c.h>
 #include <drivers/i2c/i2cbb.h>

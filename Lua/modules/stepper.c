@@ -31,7 +31,7 @@
 #include "lauxlib.h"
 
 #include <drivers/gpio/gpio.h>
-#include <drivers/error.h>
+#include <drivers/cpu/error.h>
 #include <drivers/stepper/stepper.h>
 
 static int setup = 0;

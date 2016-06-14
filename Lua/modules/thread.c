@@ -198,6 +198,11 @@ static int thread_stop_pthreads(lua_State *L, int thid) {
         }
     }  
     
+    if (!thid) {
+        // Unlock all hardware resources locked by not system's owners
+        resource_unlock_all();
+    }
+    
     return 0;
 }
 

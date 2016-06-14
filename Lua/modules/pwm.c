@@ -43,7 +43,7 @@ struct pwm {
 static struct pwm pwm[NOC];
 
 static int lpwm_pins( lua_State* L ) {
-    return platform_pwm_pins();
+    return platform_pwm_pins(L);
 }
 
 static int lpwm_setup(lua_State* L) {
@@ -59,7 +59,7 @@ static int lpwm_setup(lua_State* L) {
     int id = luaL_checkinteger(L, 1); 
     int mode = luaL_checkinteger(L, 2); 
     
-    if (!platform_pwm_exists(id)) {
+    if (!platform_pwm_exists(L, id)) {
         return luaL_error(L, "pwm%d does not exist", id);
     }
     
@@ -81,23 +81,23 @@ static int lpwm_setup(lua_State* L) {
     // Check for setup needed
     if (pwm[id - 1].configured && (pwm[id - 1].mode == mode) && (pwm[id - 1].res == res) && (pwm[id - 1].khz == khz)) {
         // No changes
-        lua_pushinteger(L, platform_pwm_freq(id));
+        lua_pushinteger(L, platform_pwm_freq(L, id));
         return 1;
     }
     
     // Setup is needed, if configured, stop first
     if (pwm[id - 1].configured) {
-        platform_pwm_stop(id);        
+        platform_pwm_stop(L, id);        
     }
 
     // Configure
     switch (mode) {
         case 0:
-            lua_pushinteger(L, platform_pwm_setup_freq(id, khz, duty));
+            lua_pushinteger(L, platform_pwm_setup_freq(L, id, khz, duty));
             break;
             
         case 1:
-            lua_pushinteger(L, platform_pwm_setup_res(id, res, val));
+            lua_pushinteger(L, platform_pwm_setup_res(L, id, res, val));
             break;
             
         default:
@@ -115,7 +115,7 @@ static int lpwm_setup(lua_State* L) {
 static int lpwm_start(lua_State* L) {
     int id = luaL_checkinteger(L, 1); 
 
-    if (!platform_pwm_exists(id)) {
+    if (!platform_pwm_exists(L, id)) {
         return luaL_error(L, "pwm%d does not exist", id);
     }
     
@@ -123,7 +123,7 @@ static int lpwm_start(lua_State* L) {
         return luaL_error(L, "pwm%d is not setup", id);
     }
     
-    platform_pwm_start(id);
+    platform_pwm_start(L, id);
     
     pwm[id - 1].started = 1;
     
@@ -133,7 +133,7 @@ static int lpwm_start(lua_State* L) {
 static int lpwm_stop(lua_State* L) {
     int id = luaL_checkinteger(L, 1); 
 
-    if (!platform_pwm_exists(id)) {
+    if (!platform_pwm_exists(L, id)) {
         return luaL_error(L, "pwm%d does not exist", id);
     }
 
@@ -141,7 +141,7 @@ static int lpwm_stop(lua_State* L) {
         return luaL_error(L, "pwm%d is not setup", id);
     }
 
-    platform_pwm_stop(id);
+    platform_pwm_stop(L, id);
 
     pwm[id - 1].started = 0;
     
@@ -152,7 +152,7 @@ static int lpwm_setduty(lua_State* L) {
     int id = luaL_checkinteger(L, 1); 
     double duty = luaL_checknumber(L, 2); 
 
-    if (!platform_pwm_exists(id)) {
+    if (!platform_pwm_exists(L, id)) {
         return luaL_error(L, "pwm%d does not exist", id);
     }
     
@@ -168,7 +168,7 @@ static int lpwm_setduty(lua_State* L) {
         return luaL_error(L, "pwm%d is not started", id);
     }
 
-    platform_pwm_set_duty(id, duty);
+    platform_pwm_set_duty(L, id, duty);
     
     return 0;
 }
@@ -177,7 +177,7 @@ static int lpwm_write(lua_State* L) {
     int id = luaL_checkinteger(L, 1); 
     int val = luaL_checknumber(L, 2); 
 
-    if (!platform_pwm_exists(id)) {
+    if (!platform_pwm_exists(L, id)) {
         return luaL_error(L, "pwm%d does not exist", id);
     }
     
@@ -193,7 +193,7 @@ static int lpwm_write(lua_State* L) {
         return luaL_error(L, "pwm%d is not started", id);
     }
 
-    platform_pwm_write(id, pwm[id - 1].res, val);
+    platform_pwm_write(L, id, pwm[id - 1].res, val);
     
     return 0;
 }
@@ -222,7 +222,7 @@ int luaopen_pwm(lua_State* L)
     char buff[5];
 
     for(i=1;i<=NOC;i++) {
-        if (platform_pwm_exists(i)) {
+        if (platform_pwm_exists(L, i)) {
             sprintf(buff,"PWM%d",i);
             lua_pushinteger(L, i);
             lua_setfield(L, -2, buff);

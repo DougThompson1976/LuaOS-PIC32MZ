@@ -29,7 +29,7 @@
 
 #include "whitecat.h"
 
-#include <drivers/error.h>
+#include <drivers/cpu/error.h>
 
 #ifndef LORA_H
 #define LORA_H

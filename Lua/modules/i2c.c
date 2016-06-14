@@ -30,7 +30,7 @@
 #include "lua.h"
 #include "lauxlib.h"
 
-#include <drivers/error.h>
+#include <drivers/cpu/error.h>
 #include <drivers/i2c/i2c.h>
 
 static int li2c_setup( lua_State* L ) {

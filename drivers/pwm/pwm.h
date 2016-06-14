@@ -32,6 +32,9 @@
 
 #define NOC 9
 
+#include <drivers/cpu/error.h>
+#include <drivers/cpu/resource.h>
+
 unsigned int pwm_pr_freq(int pwmhz, int presscaler);
 unsigned int pwm_pr_res(int res, int presscaler);
 unsigned int pwm_res(int pwmhz);
@@ -42,8 +45,8 @@ void pwm_set_duty(int unit, double duty);
 void pwm_write(int unit, int res, int value);
 void pwm_setup_freq(int unit, int pwmhz, double duty);
 void pwm_setup_res(int unit, int res, int value);
-void pwm_init_freq(int unit, int pwmhz, double duty); 
-void pwm_init_res(int unit, int res, int val);
+tdriver_error *pwm_init_freq(int unit, int pwmhz, double duty); 
+tdriver_error *pwm_init_res(int unit, int res, int val);
 void pwm_pins(int unit, unsigned char *pin);
 
 #endif	/* PWM_H */

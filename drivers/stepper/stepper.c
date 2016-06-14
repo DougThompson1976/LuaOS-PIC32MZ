@@ -30,7 +30,7 @@
 #include "whitecat.h"
 
 #include <syslog.h>
-#include <drivers/error.h>
+#include <drivers/cpu/error.h>
 #include <drivers/stepper/stepper.h>
 #include <drivers/gpio/gpio.h>
 #include <drivers/cpu/resource.h>

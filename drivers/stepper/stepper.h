@@ -34,7 +34,7 @@
 
 #include <unistd.h>
 
-#include <drivers/error.h>
+#include <drivers/cpu/error.h>
 
 typedef void (stepper_end)(void *, uint32_t);
 

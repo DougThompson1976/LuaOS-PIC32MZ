@@ -38,6 +38,8 @@
         <logicalFolder name="cpu" displayName="cpu" projectFiles="true">
           <itemPath>drivers/cpu/cpu.c</itemPath>
           <itemPath>drivers/cpu/cpu.h</itemPath>
+          <itemPath>drivers/cpu/error.c</itemPath>
+          <itemPath>drivers/cpu/error.h</itemPath>
           <itemPath>drivers/cpu/resource.c</itemPath>
           <itemPath>drivers/cpu/resource.h</itemPath>
         </logicalFolder>
@@ -127,7 +129,6 @@
           <itemPath>drivers/uart/uart.c</itemPath>
           <itemPath>drivers/uart/uart.h</itemPath>
         </logicalFolder>
-        <itemPath>drivers/error.h</itemPath>
       </logicalFolder>
       <logicalFolder name="FreeRTOS" displayName="FreeRTOS" projectFiles="true">
         <logicalFolder name="common" displayName="common" projectFiles="true">
@@ -1743,6 +1744,10 @@
       </item>
       <item path="drivers/cpu/cpu.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="drivers/cpu/error.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="drivers/cpu/error.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="drivers/cpu/resource.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="drivers/cpu/resource.h" ex="false" tool="3" flavor2="0">
@@ -1762,8 +1767,6 @@
       <item path="drivers/dma/dma.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="drivers/dma/dma.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="drivers/error.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="drivers/gpio/gpio.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -3805,6 +3808,10 @@
       </item>
       <item path="drivers/cpu/cpu.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="drivers/cpu/error.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="drivers/cpu/error.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="drivers/cpu/resource.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="drivers/cpu/resource.h" ex="false" tool="3" flavor2="0">
@@ -3824,8 +3831,6 @@
       <item path="drivers/dma/dma.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="drivers/dma/dma.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="drivers/error.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="drivers/gpio/gpio.c" ex="false" tool="0" flavor2="0">
       </item>

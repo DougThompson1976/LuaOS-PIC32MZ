@@ -35,7 +35,7 @@
 
 #define NI2C (NI2CHW + NI2CBB)
 
-#include <drivers/error.h>
+#include <drivers/cpu/error.h>
 
 typedef struct i2c {
     int sda;    // SDA pin

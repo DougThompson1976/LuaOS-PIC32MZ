@@ -1,5 +1,5 @@
 /*
- * Whitecat, hardware resources lock control
+ * Whitecat, hardware error functions
  *
  * Copyright (C) 2015 - 2016
  * IBEROXARXA SERVICIOS INTEGRALES, S.L. & CSS IBÉRICA, S.L.
@@ -26,28 +26,21 @@
  * arising out of or in connection with the use or performance of
  * this software.
  */
+#include <drivers/cpu/error.h>
 
-#ifndef RESOURCE_H
-#define RESOURCE_H
+tdriver_error *lock_error(tresource_lock *lock) {
+    tdriver_error *error;
 
-typedef enum {GPIO, TIMER} tresource_type;
-typedef enum {FREE, SYSTEM, STEPPER, PWM, UART, SPI, I2C} tresource_owner;
+    error = (tdriver_error *)malloc(sizeof(tdriver_error));
+    if (error) {
+        error->type = LOCK;
+        error->resource = lock->type;
+        error->resource_unit = lock->unit;          
+        error->owner = lock->owner;
+        error->owner_unit = lock->owner_unit;
+    }
 
-typedef struct {
-    tresource_type type;
-    tresource_owner owner;
-    int owner_unit;
-    int unit;
-    int granted;
-} tresource_lock;
+    free(lock);
 
-void resource_init();
-tresource_lock *resource_lock(tresource_type type, int resource_unit, tresource_owner owner, int owner_unit);
-
-const char *resource_name(tresource_type type);
-const char *resource_unit_name(tresource_type type, int unit);
-const char *owner_name(tresource_owner owner);
-int resource_granted(tresource_lock *lock);
-
-#endif
-
+    return error;
+}

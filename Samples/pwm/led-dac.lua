@@ -1,7 +1,7 @@
 -- WHITECAT sample code
 
 -- Led is connected to this pwm
-led_pwm = 8
+led_pwm = 7
 
 -- Setup pwm at 8-bit resolution, and initial value 0
 pwm.setup(led_pwm, pwm.DAC, 8, 0)
