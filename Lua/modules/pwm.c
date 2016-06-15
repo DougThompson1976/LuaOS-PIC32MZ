@@ -112,6 +112,21 @@ static int lpwm_setup(lua_State* L) {
     return 1;
 }
 
+static int lpwm_down(lua_State* L) {
+    int i;
+    
+    for(i = 0; i < NOC; i++) {
+        if (pwm[i].configured) {
+            platform_pwm_end(L, i + 1);
+        }
+
+        pwm[i].configured = 0;
+        pwm[i].started = 0;        
+    }
+
+    return 0;
+}
+
 static int lpwm_start(lua_State* L) {
     int id = luaL_checkinteger(L, 1); 
 
@@ -201,6 +216,7 @@ static int lpwm_write(lua_State* L) {
 static const luaL_Reg lpwm[] = {
     {"pins", lpwm_pins},
     {"setup", lpwm_setup}, 
+    {"down", lpwm_down}, 
     {"start", lpwm_start}, 
     {"stop", lpwm_stop}, 
     {"setduty", lpwm_setduty}, 

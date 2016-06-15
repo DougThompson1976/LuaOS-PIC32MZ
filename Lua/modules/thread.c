@@ -199,8 +199,10 @@ static int thread_stop_pthreads(lua_State *L, int thid) {
     }  
     
     if (!thid) {
-        // Unlock all hardware resources locked by not system's owners
-        resource_unlock_all();
+        lua_getglobal(L, "pwm"); 
+        lua_getfield(L, -1, "down");
+        lua_remove(L, -2);
+        lua_pcall(L, 0, 0, 0); 
     }
     
     return 0;

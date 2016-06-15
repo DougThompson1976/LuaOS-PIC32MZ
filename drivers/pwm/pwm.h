@@ -48,6 +48,7 @@ void pwm_setup_res(int unit, int res, int value);
 tdriver_error *pwm_init_freq(int unit, int pwmhz, double duty); 
 tdriver_error *pwm_init_res(int unit, int res, int val);
 void pwm_pins(int unit, unsigned char *pin);
+void pwm_end(int unit);
 
 #endif	/* PWM_H */
 

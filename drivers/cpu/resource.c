@@ -27,6 +27,8 @@
  * this software.
  */
 
+#include "lua.h"
+
 #include <sys/mutex.h>
 
 #include <drivers/cpu/cpu.h>
@@ -130,8 +132,14 @@ tresource_lock *resource_lock(tresource_type type, int resource_unit, tresource_
     return lock;
 }
 
-int resource_unlock(tresource_type type, int unit) {
+void resource_unlock(tresource_type type, int unit) {
+    tresource_lock_e *lock_array = resource_lock_array(type);
+    
     mtx_lock(&resource_mtx);
+    
+    lock_array[unit].owner = FREE;
+    lock_array[unit].unit = 0;
+    
     mtx_unlock(&resource_mtx);    
 }
 
@@ -168,33 +176,4 @@ const char *owner_name(tresource_owner owner) {
 
 int resource_granted(tresource_lock *lock) {
     return (lock && lock->granted);
-}
-
-void resource_unlock_owner(tresource_lock_e lock) {
-    switch (lock.owner) {
-        case SYSTEM:  break;
-        case STEPPER: break;
-        case PWM: 
-            pwm_stop(lock.unit + 1);
-            break;
-        case UART: break;
-        case SPI: break;
-        case I2C: break;
-    }    
-}
-
-void resource_unlock_all() {
-    int i;
-    
-    mtx_lock(&resource_mtx);
- 
-    // Pins
-    for(i=0;i<resource_lock_array_len(GPIO);i++) {
-        if (resource_pin[i].owner != SYSTEM) {
-            resource_unlock_owner(resource_pin[i]);
-            resource_pin[i].owner = FREE;
-        }
-    }
-
-    mtx_unlock(&resource_mtx);
 }

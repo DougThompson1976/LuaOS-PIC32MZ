@@ -82,7 +82,7 @@ int platform_pwm_setup_res(lua_State* L, int id, int res, int val) {
     return pwm_freq(id);
 }
 
-void platform_pwm_start(int id) {
+void platform_pwm_start(lua_State* L, int id) {
     pwm_start(id);
 }
 
@@ -96,4 +96,8 @@ void platform_pwm_set_duty(lua_State* L, int id, double duty) {
 
 void platform_pwm_write(lua_State* L, int id, int res, int value) {
     pwm_write(id, res, value);
+}
+
+void platform_pwm_end(lua_State* L, int id) {
+    pwm_end(id);
 }

@@ -253,7 +253,7 @@ void pwm_start(int unit) {
 
 void pwm_stop(int unit) {
     unit--;
-    
+
     *(&OC1CONCLR + unit * 0x80) = (1 << 15); // Disable OC module
     TCONCLR(pwm[unit].timer) = (1 << 15);    // Stop timer
 }
@@ -281,6 +281,28 @@ unsigned int pwm_freq(int unit) {
     unit--;
     
     return (PBCLK3_HZ / (PR(pwm[unit].timer) *  pwm_timer_preescaler(unit)));
+}
+
+void pwm_end(int unit) {
+    int pin;
+    unit--;
+
+    pwm_stop(unit + 1);
+    
+    // Unlock pwm pin
+    switch (unit) {
+        case 0: pin = OC1_PINS;break;
+        case 1: pin = OC2_PINS;break;
+        case 2: pin = OC3_PINS;break;
+        case 3: pin = OC4_PINS;break;
+        case 4: pin = OC5_PINS;break;
+        case 5: pin = OC6_PINS;break;
+        case 6: pin = OC7_PINS;break;
+        case 7: pin = OC8_PINS;break;
+        case 8: pin = OC9_PINS;break;
+    }
+    
+    resource_unlock(GPIO, cpu_pin_number(pin) - 1);
 }
 
 void pwm_setup_freq(int unit, int pwmhz, double duty) {
