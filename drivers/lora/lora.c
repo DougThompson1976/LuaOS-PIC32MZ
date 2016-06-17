@@ -46,9 +46,12 @@ tdriver_error *lora_setup() {
     // Init the UART where RN2483 is attached
     uart_init(LORA_UART, LORA_UART_BR, PIC32_UMODE_PDSEL_8NPAR, LORA_UART_BUFF_SIZE);
     uart_init_interrupts(LORA_UART);
+    //uart_debug(LORA_UART, 1);
     
-    // Factory reset
-    uart_send_command(LORA_UART, "sys reset", 1,  NULL, 0, 0, 0);    
+    uart_consume(LORA_UART);
+
+    // System reset
+    uart_send_command(LORA_UART, "sys reset", 0, 1,  NULL, 0, 0, 0);    
     if (!uart_reads(LORA_UART, resp, 1, 5000)) {
         syslog(LOG_INFO, "RN2483 not found on %s", uart_name(LORA_UART));
 
@@ -74,7 +77,7 @@ int lora_mac_set(const char *command, const char *value) {
     
     sprintf(buffer, "mac set %s %s", command, value);
 
-    if (!uart_send_command(LORA_UART, buffer, 1, resp, 0, 1000, 1, "ok")) {
+    if (!uart_send_command(LORA_UART, buffer, 0, 1, resp, 0, 1000, 1, "ok")) {
         return 0;
     }  
     
@@ -87,7 +90,7 @@ char *lora_mac_get(const char *command) {
     
     sprintf(buffer, "mac get %s", command);
     
-    uart_send_command(LORA_UART, buffer, 1,  NULL, 0, 0, 0);    
+    uart_send_command(LORA_UART, buffer, 0, 1,  NULL, 0, 0, 0);    
     if (!uart_reads(LORA_UART, resp, 1, 1000)) {
         return NULL;
     }
@@ -97,5 +100,81 @@ char *lora_mac_get(const char *command) {
     
     return result;
 }
+
+int lora_error(char *resp) {
+    if (strcmp(resp, "keys_not_init") == 0) {    
+        return LORA_KEYS_NOT_CONFIGURED;
+    } else if (strcmp(resp, "no_free_ch") == 0) {
+        return LORA_ALL_CHANNELS_BUSY;
+    } else if (strcmp(resp, "silent") == 0) {
+        return LORA_DEVICE_IN_SILENT_STATE;
+    } else if (strcmp(resp, "busy") == 0) {
+        return LORA_DEVICE_DEVICE_IS_NOT_IDLE;
+    } else if (strcmp(resp, "mac_paused") == 0) {
+        return LORA_PAUSED;
+    } else if (strcmp(resp, "not_joined") == 0) {
+        return LORA_NOT_JOINED;
+    } else if (strcmp(resp, "frame_counter_err_rejoin_needed") == 0) {
+        return LORA_REJOIN_NEEDED;
+    } else if (strcmp(resp, "invalid_data_len") == 0) {
+        return LORA_INVALID_DATA_LEN;
+    } 
+}
+
+int lora_join_otaa() {
+    char resp[255];
+    
+    uart_send_command(LORA_UART, "mac join otaa", 0, 1,  NULL, 0, 0, 0);    
+    if (!uart_reads(LORA_UART, resp, 1, 1000)) {
+        return LORA_TIMEOUT;
+    }
+    
+    if (strcmp(resp, "ok") != 0) {
+        return lora_error(resp);
+    }
+    
+    if (!uart_reads(LORA_UART, resp, 1, 10000)) {
+        return LORA_TIMEOUT;
+    }    
+
+    if (strcmp(resp, "denied") == 0) {
+        return LORA_JOIN_DENIED;
+    } else if (strcmp(resp, "accepted") == 0) {
+        return 1;
+    } else {
+        return LORA_UNEXPECTED_RESPONSE;
+    }
+}
+
+int lora_tx(int cnf, int port, const char *data) {
+    char buffer[255];
+    char resp[255];
+    
+    if (cnf) {
+        sprintf(buffer,"mac tx cnf %d %s", port, data);
+    } else {
+        sprintf(buffer,"mac tx uncnf %d %s", port, data);        
+    }
+    
+    uart_send_command(LORA_UART, buffer, 0, 1,  NULL, 0, 0, 0);    
+    if (!uart_reads(LORA_UART, resp, 1, 1000)) {
+        return LORA_TIMEOUT;
+    }
+    
+    if (strcmp(resp, "ok") != 0) {
+        return lora_error(resp);
+    }
+    
+    if (!uart_reads(LORA_UART, resp, 1, 10000)) {
+        return LORA_TIMEOUT;
+    }    
+
+    if (strcmp(resp, "mac   _tx_ok") == 0) {
+        return 1;
+    } else if (strcmp(resp, "mac_err") == 0) {
+    } else {
+    }
+}
+
 #endif
 

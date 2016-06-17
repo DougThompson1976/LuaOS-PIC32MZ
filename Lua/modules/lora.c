@@ -33,6 +33,83 @@
 #include <drivers/cpu/error.h>
 #include <drivers/lora/lora.h>
 
+static void lora_error(lua_State* L, int code) {
+    switch (code){
+        case LORA_KEYS_NOT_CONFIGURED:
+            luaL_error(L, "keys are not configured");break;
+        case LORA_ALL_CHANNELS_BUSY:
+            luaL_error(L, "all channels are busy");break;
+        case LORA_DEVICE_IN_SILENT_STATE:
+            luaL_error(L, "device is in silent state");break;
+        case LORA_DEVICE_DEVICE_IS_NOT_IDLE:
+            luaL_error(L, "device is not idle");break;
+        case LORA_PAUSED:
+            luaL_error(L, "lora stack are paused");break;
+        case LORA_TIMEOUT:
+            luaL_error(L, "time out");break;
+        case LORA_JOIN_DENIED:
+            luaL_error(L, "join denied");break;
+        case LORA_UNEXPECTED_RESPONSE:
+            luaL_error(L, "unexpected response");break;
+        case LORA_NOT_JOINED:
+            luaL_error(L, "not joined");break;
+        case LORA_REJOIN_NEEDED:
+            luaL_error(L, "rejoin needed");break;
+        case LORA_INVALID_DATA_LEN:
+            luaL_error(L, "invalid data len");break;
+    }
+}
+
+// Checks if passed strings represents a valid hex number
+static int check_hex_str(const char *str) {
+    while (*str) {
+        if (((*str < '0') || (*str > '9')) && ((*str < 'A') || (*str > 'F'))) {
+            return 0;
+        }
+
+        str++;
+    }
+    
+    return 1;
+}
+
+// Pads a hex number string representation at a specified length
+static char *hex_str_pad(lua_State* L, const char  *str, int len) {
+    if (!check_hex_str(str)) {
+        luaL_error(L, "invalid hexadecimal number");     
+    }
+    
+    // Allocate string
+    char *tmp = (char *)malloc(len + 1);
+    if (!tmp) {
+        luaL_error(L, "not enough memory");
+    }
+
+    if (strlen(str) < len) {
+        // Needs pad
+        int i;
+        int curr_len = strlen(str);
+        int pad_num = len - curr_len;
+        char *c = tmp;
+        
+        // Pad with 0
+        for(i=0;i < pad_num;i++) {
+            *c++ = '0';
+        }
+
+       // Copy rest of string
+        for(i = pad_num - 1;i < len; i++) {
+            *c++ = *str++;
+        }
+        
+        *c = 0x00;
+    } else {
+        strcpy(tmp, str);
+    }
+
+    return tmp;
+}
+
 static int llora_setup(lua_State* L) {
     tdriver_error *error;
 
@@ -41,28 +118,111 @@ static int llora_setup(lua_State* L) {
     return 0;
 }
 
-static int llora_set_DevEui(lua_State* L) {
-    const char  *devEui = luaL_checkstring(L, 1);
-
-    lora_mac_set("deveui", devEui);
+static int llora_set_setDevAddr(lua_State* L) {
+    char  *devAddr = hex_str_pad(L, luaL_checkstring(L, 1), 8);
+        
+    if (!lora_mac_set("devaddr", devAddr)) {
+        free(devAddr);
+        return luaL_error(L, "invalid argument");        
+    }
     
+    free(devAddr);
     return 0;    
+}
+
+static int llora_set_DevEui(lua_State* L) {
+    char  *devEui = hex_str_pad(L, luaL_checkstring(L, 1), 16);
+        
+    if (!lora_mac_set("deveui", devEui)) {
+        free(devEui);
+        return luaL_error(L, "invalid argument");        
+    }
+    
+    free(devEui);
+    return 0;  
 }
 
 static int llora_set_AppEui(lua_State* L) {
-    const char  *appEui = luaL_checkstring(L, 1);
-
-    lora_mac_set("appeui", appEui);
+    char  *appEui = hex_str_pad(L, luaL_checkstring(L, 1), 16);
+        
+    if (!lora_mac_set("appeui", appEui)) {
+        free(appEui);
+        return luaL_error(L, "invalid argument");        
+    }
     
-    return 0;    
+    free(appEui);
+    return 0;  
+}
+
+static int llora_set_NwkSKey(lua_State* L) {
+    char  *nwkSKey = hex_str_pad(L, luaL_checkstring(L, 1), 32);
+        
+    if (!lora_mac_set("nwkskey", nwkSKey)) {
+        free(nwkSKey);
+        return luaL_error(L, "invalid argument");        
+    }
+    
+    free(nwkSKey);
+    return 0;  
+}
+
+static int llora_set_AppSKey(lua_State* L) {
+    char  *appSKey = hex_str_pad(L, luaL_checkstring(L, 1), 32);
+        
+    if (!lora_mac_set("appsKey", appSKey)) {
+        free(appSKey);
+        return luaL_error(L, "invalid argument");        
+    }
+    
+    free(appSKey);
+    return 0;
 }
 
 static int llora_set_AppKey(lua_State* L) {
-    const char  *appKey = luaL_checkstring(L, 1);
-
-    lora_mac_set("appkey", appKey);
+    char  *appKey = hex_str_pad(L, luaL_checkstring(L, 1), 32);
+        
+    if (!lora_mac_set("appkey", appKey)) {
+        free(appKey);
+        return luaL_error(L, "invalid argument");        
+    }
     
-    return 0;    
+    free(appKey);
+    return 0;
+}
+
+static int llora_set_Dr(lua_State* L) {
+    int dr = luaL_checkinteger(L, 1);
+    
+    if ((dr < 0) || (dr > 7)) {
+        return luaL_error(L, "invalid data rate value (0 to 7)"); 
+    }
+    
+    char value[2];
+    
+    sprintf(value,"%d", dr);
+        
+    if (!lora_mac_set("dr", value)) {
+        return luaL_error(L, "invalid argument");        
+    }
+    
+    return 0;
+}
+
+static int llora_set_Adr(lua_State* L) {
+    char value[4];
+
+    luaL_checktype(L, 1, LUA_TBOOLEAN);
+    if (lua_toboolean( L, 1 )) {
+        strcpy(value, "on");
+    } else {
+        strcpy(value, "off");
+    }
+    
+    if (!lora_mac_set("adr", value)) {
+        return luaL_error(L, "invalid argument");        
+    }
+    
+    return 0;
 }
 
 static int llora_get_DevEui(lua_State* L) {
@@ -83,22 +243,61 @@ static int llora_get_AppEui(lua_State* L) {
     return 1;    
 }
 
+static int llora_join(lua_State* L) {
+    int resp = 0;
+    
+    luaL_checktype(L, 1, LUA_TBOOLEAN);
+    if (lua_toboolean( L, 1 )) {
+        resp = lora_join_otaa();
+    } else {
+        return luaL_error(L, "ABP not allowed");        
+    }
+    
+    if (resp < 0) {
+        lora_error(L, resp);
+    }
+    
+    return 0;
+}
+
+static int llora_tx(lua_State* L) {
+    luaL_checktype(L, 1, LUA_TBOOLEAN);
+    int cnf = lua_toboolean( L, 1 );
+    int port = luaL_checkinteger(L, 2);
+    const char *data = luaL_checkstring(L, 3);
+    
+    if ((port < 1) || (port > 223)) {
+        return luaL_error(L, "invalid port number");   
+    }
+
+    if (!check_hex_str(data)) {
+        luaL_error(L, "invalid data");     
+    }    
+    
+    int resp = lora_tx(cnf, port, data);
+    if (resp < 0) {
+        lora_error(L, resp);
+    }
+    
+    return 0;    
+}
+
 static int llora_nothing(lua_State* L) {
     return luaL_error(L, "not implemented");    
 }
 
 static const luaL_Reg lora[] = {
     {"setup",        llora_setup}, 
-    {"setDevAddr",   llora_nothing}, 
+    {"setDevAddr",   llora_set_setDevAddr}, 
     {"setDevEui" ,   llora_set_DevEui}, 
     {"setAppEui" ,   llora_set_AppEui}, 
     {"setAppKey" ,   llora_set_AppKey}, 
-    {"setNwksKey",   llora_nothing}, 
-    {"setAppsKey",   llora_nothing}, 
-    {"setAppKey",    llora_nothing}, 
+    {"setNwksKey",   llora_set_NwkSKey}, 
+    {"setAppsKey",   llora_set_AppSKey}, 
+    {"setAppKey",    llora_set_AppKey}, 
     {"setPwrIdx",    llora_nothing}, 
-    {"setDr",        llora_nothing}, 
-    {"setAdr",       llora_nothing}, 
+    {"setDr",        llora_set_Dr}, 
+    {"setAdr",       llora_set_Adr}, 
     {"setRetX",      llora_nothing}, 
     {"setLinkChk",   llora_nothing}, 
     {"setRxDelay1",  llora_nothing}, 
@@ -125,7 +324,8 @@ static const luaL_Reg lora[] = {
     {"getGwNb",      llora_nothing}, 
     {"getStatus",    llora_nothing}, 
     {"getCha",       llora_nothing}, 
-
+    {"join",         llora_join}, 
+    {"tx",           llora_tx},
     {NULL, NULL}
 };
 

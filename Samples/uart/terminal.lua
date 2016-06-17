@@ -58,3 +58,11 @@ lora.setAppEui("70B3D57ED0000187")
 lora.setAppKey("CF584EAC0B9EB216379AF2FC7A9B4AB4")
 
 
+
+
+mac set appeui 70B3D57ED0000412
+mac set appkey AE07BD4621B7AAD81D5CAB3C5886BEEF
+mac set adr on
+mac save
+mac join otaa
+

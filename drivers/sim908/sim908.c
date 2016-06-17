@@ -356,11 +356,11 @@ static sim908_err sim908_set_pin() {
     strcat(temp_buffer,gprs_get_pin());
     strcat(temp_buffer,"\"");
 
-    if (uart_send_command(SIM908_UART, temp_buffer, 1, NULL, 0, 1000, 1, "OK")) {
+    if (uart_send_command(SIM908_UART, temp_buffer, 1, 1, NULL, 0, 1000, 1, "OK")) {
         flags &= ~SIM908_FLAG_NEED_PIN;
 
         // Wait for Call Ready
-        if (!uart_wait_response(SIM908_UART, NULL, NULL, 0, 30000, 1, "Call Ready")) {
+        if (!uart_wait_response(SIM908_UART, NULL, 1, NULL, 0, 30000, 1, "Call Ready")) {
             return ERR_INIT;
         }
     } else {
@@ -371,7 +371,7 @@ static sim908_err sim908_set_pin() {
 }
 
 static void sim908_enter_data_mode() {
-    if (uart_send_command(SIM908_UART, "ATO", 1, NULL, 0, 1000, 1, "CONNECT")) {
+    if (uart_send_command(SIM908_UART, "ATO", 1, 1, NULL, 0, 1000, 1, "CONNECT")) {
         syslog(LOG_INFO, "sim908 is in data mode"); 
     }    
 }
@@ -391,7 +391,7 @@ static void sim908_exit_data_mode() {
         uart_write(SIM908_UART,'+');
         usleep(500000);
         
-        if (uart_wait_response(SIM908_UART, NULL, NULL, 0, 3000, 1, "OK")) {
+        if (uart_wait_response(SIM908_UART, NULL, 1, NULL, 0, 3000, 1, "OK")) {
             syslog(LOG_INFO, "sim908 is in command mode"); 
             break;
         }
@@ -490,7 +490,7 @@ sim908_err sim908_init(int gprs, int gps) {
         // Send AT command, and wait for an OK, so once received SIM908 is inited
         retries = 0;
         for(;;)  {
-            ok = uart_send_command(SIM908_UART, "AT", 1, NULL, 0, 1000, 1, "OK");
+            ok = uart_send_command(SIM908_UART, "AT", 1, 1, NULL, 0, 1000, 1, "OK");
             if (!ok) {
                 retries++;
                 if (retries > 20) {
@@ -514,7 +514,7 @@ sim908_err sim908_init(int gprs, int gps) {
             syslog(LOG_INFO, "sim908 set full functionality");
 
             // Set full functionallity
-            ok = uart_send_command(SIM908_UART, "AT+CFUN=1",1,  NULL, 0, 5000, 1, "OK");
+            ok = uart_send_command(SIM908_UART, "AT+CFUN=1", 1, 1,  NULL, 0, 5000, 1, "OK");
             if (!ok) {
                 syslog(LOG_ERR, "sim908 %s", sim908_error(ERR_INIT));
                 return ERR_INIT;
@@ -550,8 +550,8 @@ sim908_err sim908_init(int gprs, int gps) {
                     return ERR_INIT;                
                 }
 
-                uart_send_command(SIM908_UART, "AT+CCALR?",1,  NULL, 0, 0, 0);
-                ok = uart_wait_response(SIM908_UART, NULL, NULL, 0, 500, 1, "+CCALR: 1");
+                uart_send_command(SIM908_UART, "AT+CCALR?", 1, 1,  NULL, 0, 0, 0);
+                ok = uart_wait_response(SIM908_UART, NULL, 1, NULL, 0, 500, 1, "+CCALR: 1");
                 if (ok) {
                     break;
                 }
@@ -560,7 +560,7 @@ sim908_err sim908_init(int gprs, int gps) {
             }            
         }
        
-        ok = uart_wait_response(SIM908_UART, NULL, NULL, 0, 3000, 1, "OK");
+        ok = uart_wait_response(SIM908_UART, NULL, 1, NULL, 0, 3000, 1, "OK");
         if (!ok) {
             syslog(LOG_ERR, "sim908 %s", sim908_error(ERR_INIT));
             return ERR_INIT;
@@ -578,19 +578,19 @@ sim908_err sim908_init(int gprs, int gps) {
             }
             
             // Init GPS
-            ok = uart_send_command(SIM908_UART, "AT+CGPSPWR=1", 1, NULL, 0, 2000, 1, "OK");
+            ok = uart_send_command(SIM908_UART, "AT+CGPSPWR=1", 1, 1, NULL, 0, 2000, 1, "OK");
             if (!ok) {
                 syslog(LOG_ERR, "sim908 %s", sim908_error(ERR_INIT));
                 return ERR_INIT;
             }
 
-            ok = uart_send_command(SIM908_UART, "AT+CGPSRST=0", 1, NULL, 0, 2000, 1, "OK");
+            ok = uart_send_command(SIM908_UART, "AT+CGPSRST=0", 1, 1, NULL, 0, 2000, 1, "OK");
             if (!ok) {
                 syslog(LOG_ERR, "sim908 %s", sim908_error(ERR_INIT));
                 return ERR_INIT;
             }
 
-            ok = uart_send_command(SIM908_UART, "AT+CGPSOUT=255", 1, NULL, 0, 2000, 1, "OK");
+            ok = uart_send_command(SIM908_UART, "AT+CGPSOUT=255", 1, 1, NULL, 0, 2000, 1, "OK");
             if (!ok) {
                 syslog(LOG_ERR, "sim908 %s", sim908_error(ERR_INIT));
                 return ERR_INIT;
@@ -755,8 +755,8 @@ sim908_err sim908_connect() {
     retries = 0;
     do {
         bzero(temp_buffer, sizeof (temp_buffer));
-        ok = uart_send_command(SIM908_UART, "AT+COPS?", 1, temp_buffer, 1, 1000, 2, "+COPS: 0,0", "+COPS: 0");
-        ok = uart_wait_response(SIM908_UART, NULL, NULL, 0, 1000, 1, "OK");
+        ok = uart_send_command(SIM908_UART, "AT+COPS?", 1, 1, temp_buffer, 1, 1000, 2, "+COPS: 0,0", "+COPS: 0");
+        ok = uart_wait_response(SIM908_UART, NULL, 1, NULL, 0, 1000, 1, "OK");
 
         if (strcmp(temp_buffer, "+COPS: 0") == 0) {
             retries++;
@@ -804,7 +804,7 @@ sim908_err sim908_connect() {
     strcat(temp_buffer,gprs_get_apn());
     strcat(temp_buffer,"\"");
 
-    ok = uart_send_command(SIM908_UART, temp_buffer, 1, NULL, 0, 30000, 1, "OK");
+    ok = uart_send_command(SIM908_UART, temp_buffer, 1, 1, NULL, 0, 30000, 1, "OK");
     if (!ok) {
         syslog(LOG_ERR, "sim908 %s", sim908_error(ERR_CANT_SET_APN));
         return ERR_CANT_SET_APN;
@@ -813,7 +813,7 @@ sim908_err sim908_connect() {
     // Connect
     syslog(LOG_INFO, "sim908 gprs connecting");
     bzero(temp_buffer, sizeof (temp_buffer));
-    ok = uart_send_command(SIM908_UART, "ATD*99#", 1, temp_buffer, 0, 60000, 2, "CONNECT", "NO CARRIER");
+    ok = uart_send_command(SIM908_UART, "ATD*99#", 1, 1, temp_buffer, 0, 60000, 2, "CONNECT", "NO CARRIER");
 
     if (!ok) {
         syslog(LOG_ERR, "sim908 %s", sim908_error(ERR_CANT_CONNECT));

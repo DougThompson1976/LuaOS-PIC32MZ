@@ -525,7 +525,7 @@ uint8_t uart_reads(u8_t unit, char *buff, u8_t crlf, uint32_t timeout) {
 }
 
 // Read from the UART and waits for a response
-static uint8_t _uart_wait_response(u8_t unit, char *command, char *ret, uint8_t substring, uint32_t timeout, int nargs, va_list pargs) {
+static uint8_t _uart_wait_response(u8_t unit, char *command, uint8_t echo, char *ret, uint8_t substring, uint32_t timeout, int nargs, va_list pargs) {
     int ok = 1;
 
     va_list args;
@@ -534,7 +534,7 @@ static uint8_t _uart_wait_response(u8_t unit, char *command, char *ret, uint8_t 
     char *arg;
 
     // Test if we receive an echo of the command sended
-    if (command != NULL) {
+    if ((command != NULL) && (echo)) {
         if (uart_reads(unit,buffer, 1, timeout)) {
             ok = (strcmp(buffer, command) == 0);
         } else {
@@ -585,12 +585,12 @@ static uint8_t _uart_wait_response(u8_t unit, char *command, char *ret, uint8_t 
 }
 
 // Read from the UART and waits for a response
-uint8_t uart_wait_response(u8_t unit, char *command, char *ret, uint8_t substring, uint32_t timeout, int nargs, ...) {
+uint8_t uart_wait_response(u8_t unit, char *command, uint8_t echo, char *ret, uint8_t substring, uint32_t timeout, int nargs, ...) {
     va_list pargs;
 
     va_start(pargs, nargs);
 
-    uint8_t ok = _uart_wait_response(unit, command, ret, substring, timeout, nargs, pargs);
+    uint8_t ok = _uart_wait_response(unit, command, echo, ret, substring, timeout, nargs, pargs);
 
     va_end(pargs);
 
@@ -598,7 +598,7 @@ uint8_t uart_wait_response(u8_t unit, char *command, char *ret, uint8_t substrin
 }
 
 // Sends a command to a device connected to the UART and waits for a response
-uint8_t uart_send_command(u8_t unit, char *command, uint8_t crlf, char *ret, uint8_t substring, uint32_t timeout, int nargs, ...) {
+uint8_t uart_send_command(u8_t unit, char *command, uint8_t echo, uint8_t crlf, char *ret, uint8_t substring, uint32_t timeout, int nargs, ...) {
     uint8_t ok = 0;
 
     uart_writes(unit,command);
@@ -610,7 +610,7 @@ uint8_t uart_send_command(u8_t unit, char *command, uint8_t crlf, char *ret, uin
     va_start(pargs, nargs);
 
 
-    ok = _uart_wait_response(unit, command, ret, substring, timeout, nargs, pargs);
+    ok = _uart_wait_response(unit, command, echo, ret, substring, timeout, nargs, pargs);
 
     va_end(pargs);
 
