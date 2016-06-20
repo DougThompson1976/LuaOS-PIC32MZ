@@ -17,6 +17,7 @@ int stackDump (lua_State *L) {
         case LUA_TBOOLEAN:  /* booleans */
           printf("%d: ", i);
           printf(lua_toboolean(L, i) ? "true" : "false");
+          printf("\n");
           break;
 
         case LUA_TNUMBER:  /* numbers */
