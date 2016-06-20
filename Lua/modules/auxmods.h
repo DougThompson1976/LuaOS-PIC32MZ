@@ -61,6 +61,9 @@ LUALIB_API int (luaopen_i2c) (lua_State* L);
 #define AUXLIB_LORA "lora"
 LUALIB_API int (luaopen_lora) (lua_State* L);
 
+#define AUXLIB_PACK "pack"
+LUALIB_API int (luaopen_pack) (lua_State* L);
+
 // Helper macros
 #define MOD_CHECK_ID( mod, id )\
   if( !platform_ ## mod ## _exists( id ) )\

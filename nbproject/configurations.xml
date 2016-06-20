@@ -636,6 +636,7 @@
           <itemPath>Lua/modules/liolib_adds.inc</itemPath>
           <itemPath>Lua/modules/lora.c</itemPath>
           <itemPath>Lua/modules/loslib_adds.inc</itemPath>
+          <itemPath>Lua/modules/lpack.c</itemPath>
           <itemPath>Lua/modules/lrodefs.h</itemPath>
           <itemPath>Lua/modules/lua_adds.inc</itemPath>
           <itemPath>Lua/modules/mqtt.c</itemPath>
@@ -1541,6 +1542,8 @@
       <item path="Lua/modules/i2c.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/lora.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/modules/lpack.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/lrodefs.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -3605,6 +3608,8 @@
       <item path="Lua/modules/i2c.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/lora.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/modules/lpack.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/lrodefs.h" ex="false" tool="3" flavor2="0">
       </item>

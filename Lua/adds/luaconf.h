@@ -95,7 +95,8 @@ extern inline void LuaUnlock(lua_State *L);
   {AUXLIB_HTTP, luaopen_http}, \
   {AUXLIB_STEPPER, luaopen_stepper}, \
   {AUXLIB_I2C, luaopen_i2c}, \
-  {AUXLIB_LORA, luaopen_lora},
+  {AUXLIB_LORA, luaopen_lora}, \
+  {AUXLIB_PACK, luaopen_pack},
       
 #define LINIT_OPEN_ADDS
 
