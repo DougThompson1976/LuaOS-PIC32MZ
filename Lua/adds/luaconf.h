@@ -76,7 +76,10 @@ extern inline void LuaUnlock(lua_State *L);
 
 // Adds in standard Lua modukes
 
-#define LBASELIB_REG_ADDS {"dumpstack", stackDump},  
+#define LBASELIB_REG_ADDS \
+    {"dumpstack", stackDump}, \
+    {"try", luaB_try}, 
+        
 #define LBASELIB_OPEN_ADDS 
 
 #define LINIT_REG_ADDS \
@@ -124,7 +127,7 @@ extern inline void LuaUnlock(lua_State *L);
   {"version",   os_version}, \
   {"cpu",   os_cpu}, \
   {"run", os_run}, 
-        
+
 #define LOSLIB_OPEN_ADDS \
   os_constants(L);
 

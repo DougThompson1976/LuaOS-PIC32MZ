@@ -7,7 +7,7 @@
 #define lbaselib_c
 #define LUA_LIB
 
-#include "lprefix.h"
+#include "lprefix.h"  
 
 
 #include <ctype.h>
@@ -40,7 +40,7 @@ static int luaB_print (lua_State *L) {
   }
   lua_writeline();
   return 0;
-}
+}    
 
 
 #define SPACECHARS	" \f\n\r\t\v"
