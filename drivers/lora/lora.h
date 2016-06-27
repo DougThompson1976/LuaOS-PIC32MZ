@@ -36,23 +36,31 @@
 
 #if USE_LORA
 
-#define LORA_KEYS_NOT_CONFIGURED            -1
-#define LORA_ALL_CHANNELS_BUSY              -2
-#define LORA_DEVICE_IN_SILENT_STATE         -3
-#define LORA_DEVICE_DEVICE_IS_NOT_IDLE      -4
-#define LORA_PAUSED                         -5
-#define LORA_TIMEOUT                        -6
-#define LORA_JOIN_DENIED                    -7
-#define LORA_UNEXPECTED_RESPONSE            -8
-#define LORA_NOT_JOINED                     -9
-#define LORA_REJOIN_NEEDED                 -10
-#define LORA_INVALID_DATA_LEN              -11
+#define LORA_OK                                  1  
+#define LORA_JOIN_ACCEPTED                       2  
+#define LORA_TX_OK                               3
+#define LORA_RX_OK                               4
+#define LORA_KEYS_NOT_CONFIGURED                -1
+#define LORA_ALL_CHANNELS_BUSY                  -2
+#define LORA_DEVICE_IN_SILENT_STATE             -3
+#define LORA_DEVICE_DEVICE_IS_NOT_IDLE          -4
+#define LORA_PAUSED                             -5
+#define LORA_TIMEOUT                            -6
+#define LORA_JOIN_DENIED                        -7
+#define LORA_UNEXPECTED_RESPONSE                -8
+#define LORA_NOT_JOINED                         -9
+#define LORA_REJOIN_NEEDED                      -10
+#define LORA_INVALID_DATA_LEN                   -11
+#define LORA_TRANSMISSION_FAIL_ACK_NOT_RECEIVED -12
+
+typedef void (lora_rx)(int port, char *payload);
 
 tdriver_error *lora_setup();
 int lora_mac_set(const char *command, const char *value);
 char *lora_mac_get(const char *command);
 int lora_join_otaa();
 int lora_tx(int cnf, int port, const char *data);
+void lora_set_rx_callback(lora_rx *callback);
 
 #endif
 

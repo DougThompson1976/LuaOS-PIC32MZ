@@ -7,8 +7,18 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/lpack.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/src/lua.h</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/lib/pthread/create.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/lauxlib.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/drivers/uart/uart.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Samples/lora/lora.lua</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/lauxlib.h</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/modules/lbaselib_adds.inc</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/modules/lpack.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/modules/thread.h</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/lapi.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/lbaselib.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/modules/thread.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/lib/pthread/pthread.c</file>
         </group>
     </open-files>
 </project-private>

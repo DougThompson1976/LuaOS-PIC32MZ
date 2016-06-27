@@ -28,19 +28,234 @@
  */
 
 #include "whitecat.h"
-#include <drivers/lora/lora.h>
-
+#include "FreeRTOS.h"
+#include "task.h"
+#include "event_groups.h"
+        
 #include <unistd.h>
 #include <syslog.h>
+#include <sys/mutex.h>
 #include <drivers/cpu/resource.h>
 #include <drivers/uart/uart.h>
+#include <drivers/lora/lora.h>
 
 #if USE_LORA
+
+#define LORA_TIMER_FREQ portTICK_PERIOD_MS * 5000
+#define LORA_WAIT_ENTER_COMMAND portTICK_PERIOD_MS * 200
+
+// Definition of Lora events used by this driver
+#define evLora_ok                                 (1 <<  0)
+#define evLora_join_accepted                      (1 <<  1)
+#define evLora_join_denied                        (1 <<  2)
+#define evLora_keys_not_configured                (1 <<  3)
+#define evLora_all_channels_busy                  (1 <<  4)
+#define evLora_device_in_silent_state             (1 <<  5)
+#define evLora_device_is_not_idle                 (1 <<  6)
+#define evLora_paused                             (1 <<  7)
+#define evLora_not_joined                         (1 <<  8)
+#define evLora_rejoin_needed                      (1 <<  9)
+#define evLora_invalid_data_len                   (1 << 10)
+#define evLora_transmission_fail_ack_not_received (1 << 11)
+#define evLora_tx_ok                              (1 << 12)
+
+#define loraEvent_ALL_EVENTS 0b1111111111111
+
+// Expected events after enter of set command
+#define evLoraSetEnterCommand  \
+    (evLora_ok)
+
+// Expected events after enter of join command
+#define evLoraJoinEnterCommand  \
+    (evLora_ok | evLora_keys_not_configured | evLora_all_channels_busy | \
+     evLora_device_in_silent_state | evLora_all_channels_busy | \
+     evLora_paused)
+
+// Expected events after end of join command
+#define evLoraJoinEndCommand  \
+    (evLora_join_accepted | evLora_join_denied)
+
+// Expected events after enter of tx command
+#define evLoraTxEnterCommand  \
+    (evLora_ok | evLora_not_joined | evLora_all_channels_busy | \
+     evLora_device_in_silent_state | evLora_rejoin_needed | \
+     evLora_device_is_not_idle | evLora_paused | evLora_invalid_data_len)
+
+// Expected events after end of tx command
+#define evLoraTxEndCommand  \
+    (evLora_tx_ok | evLora_transmission_fail_ack_not_received | \
+     evLora_invalid_data_len)
+
+// Group handle for lora envents
+static EventGroupHandle_t loraEvent;
+
+// Tasks handle for Lora
+static TaskHandle_t loraRXHandle = NULL;
+
+// Timer handle for Lora
+static TimerHandle_t loraTimer = NULL;
+
+static int joined = 0; // Are joined?
+static int otaa = 0;   // Las join were by OTAA?
+static int setup = 0;  // Driver is setup?
+
+// Callback function to call when data is received
+static lora_rx *lora_rx_callback = NULL;
+
+// Mutext for lora 
+static struct mtx lora_mtx;
+
+// This function parses a string received over the UART, and transform it into
+// a token
+static int lora_parse_response(char *resp) {
+    if (strcmp(resp, "ok") == 0) {
+        return LORA_OK;
+    } else if (strcmp(resp, "accepted") == 0) {    
+        return LORA_JOIN_ACCEPTED;
+    } else if (strcmp(resp, "denied") == 0) {    
+        return LORA_JOIN_DENIED;
+    } else if (strcmp(resp, "mac_tx_ok") == 0) {    
+        return LORA_TX_OK;
+    } else if (strncmp(resp, "mac_rx", 6) == 0) {    
+        return LORA_RX_OK;
+    } else if (strcmp(resp, "keys_not_init") == 0) {    
+        return LORA_KEYS_NOT_CONFIGURED;
+    } else if (strcmp(resp, "no_free_ch") == 0) {
+        return LORA_ALL_CHANNELS_BUSY;
+    } else if (strcmp(resp, "silent") == 0) {
+        return LORA_DEVICE_IN_SILENT_STATE;
+    } else if (strcmp(resp, "busy") == 0) {
+        return LORA_DEVICE_DEVICE_IS_NOT_IDLE;
+    } else if (strcmp(resp, "mac_paused") == 0) {
+        return LORA_PAUSED;
+    } else if (strcmp(resp, "not_joined") == 0) {
+        return LORA_NOT_JOINED;
+    } else if (strcmp(resp, "frame_counter_err_rejoin_needed") == 0) {
+        return LORA_REJOIN_NEEDED;
+    } else if (strcmp(resp, "invalid_data_len") == 0) {
+        return LORA_INVALID_DATA_LEN;
+    } else if (strcmp(resp, "mac_err") == 0) {
+        return LORA_TRANSMISSION_FAIL_ACK_NOT_RECEIVED;
+    }
+}
+
+// Translate a lora event to an error code
+static int lora_error(EventBits_t uxBits) {
+    if (uxBits & evLora_join_denied) {
+        return LORA_JOIN_DENIED;
+    } else if (uxBits & evLora_keys_not_configured) {
+        return LORA_KEYS_NOT_CONFIGURED;        
+    } else if (uxBits & evLora_all_channels_busy) {
+        return LORA_ALL_CHANNELS_BUSY;        
+    } else if (uxBits & evLora_device_in_silent_state) {
+        return LORA_DEVICE_IN_SILENT_STATE;        
+    } else if (uxBits & evLora_device_is_not_idle) {
+        return LORA_DEVICE_DEVICE_IS_NOT_IDLE;        
+    } else if (uxBits & evLora_paused) {
+        return LORA_PAUSED;        
+    } else if (uxBits & evLora_rejoin_needed) {
+        return LORA_NOT_JOINED;        
+    } else if (uxBits & evLora_rejoin_needed) {
+        return LORA_REJOIN_NEEDED;        
+    } else if (uxBits & evLora_invalid_data_len) {
+        return LORA_INVALID_DATA_LEN;        
+    } else if (uxBits & evLora_transmission_fail_ack_not_received) {
+        return LORA_TRANSMISSION_FAIL_ACK_NOT_RECEIVED;        
+    } else {
+        return LORA_UNEXPECTED_RESPONSE;
+    }
+}
+
+// This task scans for any new line received over the UART, and takes the
+// corresponding action
+static void loraRX(void *pvParameters) {
+    char buffer[255];
+    char payload[255];
+    char *payload_copy;
+    int  payload_len;
+    
+    int resp;
+    int port;
+    
+    UNUSED_ARG(pvParameters);
+    
+    for(;;) {
+        if (uart_reads(LORA_UART, buffer, 1, portMAX_DELAY)) {
+            xEventGroupClearBits(loraEvent,loraEvent_ALL_EVENTS);
+            
+            resp = lora_parse_response(buffer);
+            switch (resp) {
+                case LORA_OK:
+                    xEventGroupSetBits(loraEvent, evLora_ok); break;
+                case LORA_JOIN_DENIED:
+                    xEventGroupSetBits(loraEvent, evLora_join_denied); break;
+                case LORA_JOIN_ACCEPTED:
+                    xEventGroupSetBits(loraEvent, evLora_join_accepted); break;
+                case LORA_KEYS_NOT_CONFIGURED:
+                    xEventGroupSetBits(loraEvent, evLora_keys_not_configured); break;
+                case LORA_ALL_CHANNELS_BUSY:
+                    xEventGroupSetBits(loraEvent, evLora_all_channels_busy); break;
+                case LORA_DEVICE_IN_SILENT_STATE:
+                    xEventGroupSetBits(loraEvent, evLora_device_in_silent_state); break;
+                case LORA_DEVICE_DEVICE_IS_NOT_IDLE:
+                    xEventGroupSetBits(loraEvent, evLora_device_is_not_idle); break;
+                case LORA_PAUSED:
+                    xEventGroupSetBits(loraEvent, evLora_paused); break;
+                case LORA_NOT_JOINED:
+                    xEventGroupSetBits(loraEvent, evLora_not_joined); break;
+                case LORA_REJOIN_NEEDED:
+                    xEventGroupSetBits(loraEvent, evLora_rejoin_needed); break;
+                case LORA_INVALID_DATA_LEN:
+                    xEventGroupSetBits(loraEvent, evLora_invalid_data_len); break;
+                case LORA_TRANSMISSION_FAIL_ACK_NOT_RECEIVED:
+                    xEventGroupSetBits(loraEvent, evLora_transmission_fail_ack_not_received); break;
+                case LORA_TX_OK:
+                    xEventGroupSetBits(loraEvent, evLora_tx_ok); break;
+                case LORA_RX_OK:
+                    // Something received
+                    
+                    // Get received port / payload
+                    payload[0] = 0x00;
+                    sscanf(buffer,"mac_rx %d %s", &port, payload);
+
+                    payload_len = strlen(payload);
+                    if (payload_len) {
+                        if (lora_rx_callback) {
+                            // Make a copy of the payload
+                            payload_copy = (char *)malloc(payload_len + 1);
+                            if (payload_copy) {
+                                strcpy(payload_copy, payload);
+                                
+                                lora_rx_callback(port, payload_copy);
+                            }                            
+                        }
+                    }
+                    
+                    xEventGroupSetBits(loraEvent, evLora_tx_ok); break;
+            }
+        }    
+    }
+}
+
+void lora_timer(void *arg) {
+    EventBits_t uxBits;
+    
+    UNUSED_ARG(arg);
+  
+    mtx_lock(&lora_mtx);
+
+    uart_send_command(LORA_UART, "mac tx uncnf 1 01", 0, 1,  NULL, 0, 0, 0);    
+
+   
+    mtx_unlock(&lora_mtx);
+}
 
 // Setup driver
 tdriver_error *lora_setup() {
     char resp[255];
 
+    if (setup) return;
+        
     // TO DO: check resources
     
     // Init the UART where RN2483 is attached
@@ -68,20 +283,43 @@ tdriver_error *lora_setup() {
 
     syslog(LOG_INFO, "RN2483 is on %s", uart_name(LORA_UART));
     
+    // Create a task for inspect UART trafic
+    loraEvent = xEventGroupCreate();
+
+    xTaskCreate(loraRX, "loraTask", netTaskStack, NULL, tskIDLE_PRIORITY, &loraRXHandle);
+    
+    loraTimer = xTimerCreate("loraTimer", LORA_TIMER_FREQ, pdTRUE, (void *) 0, lora_timer);
+    if(loraTimer != NULL ){
+        xTimerStart(loraTimer, 0);
+    }
+        
+    mtx_init(&lora_mtx, NULL, NULL, 0);
+
+    setup = 1;
+    
     return NULL;
 }
 
 int lora_mac_set(const char *command, const char *value) {
+    EventBits_t uxBits;
     char buffer[255];
-    char resp[255];
-    
+
     sprintf(buffer, "mac set %s %s", command, value);
 
-    if (!uart_send_command(LORA_UART, buffer, 0, 1, resp, 0, 1000, 1, "ok")) {
-        return 0;
-    }  
+    mtx_lock(&lora_mtx);
+
+    uart_send_command(LORA_UART, buffer, 0, 1,  NULL, 0, 0, 0);    
     
-    return 1;
+    uxBits = xEventGroupWaitBits(loraEvent, evLoraSetEnterCommand,pdTRUE, pdFALSE, LORA_WAIT_ENTER_COMMAND);
+    if (uxBits & (evLora_ok)) {
+        mtx_unlock(&lora_mtx);
+
+        return LORA_OK;
+    }
+
+    mtx_unlock(&lora_mtx);
+
+    return lora_error(uxBits);
 }
 
 char *lora_mac_get(const char *command) {
@@ -90,6 +328,8 @@ char *lora_mac_get(const char *command) {
     
     sprintf(buffer, "mac get %s", command);
     
+    mtx_lock(&lora_mtx);
+
     uart_send_command(LORA_UART, buffer, 0, 1,  NULL, 0, 0, 0);    
     if (!uart_reads(LORA_UART, resp, 1, 1000)) {
         return NULL;
@@ -98,83 +338,77 @@ char *lora_mac_get(const char *command) {
     char *result = (char *)malloc(strlen(resp) + 1);
     strcpy(result, resp);
     
+    mtx_unlock(&lora_mtx);
+
     return result;
 }
 
-int lora_error(char *resp) {
-    if (strcmp(resp, "keys_not_init") == 0) {    
-        return LORA_KEYS_NOT_CONFIGURED;
-    } else if (strcmp(resp, "no_free_ch") == 0) {
-        return LORA_ALL_CHANNELS_BUSY;
-    } else if (strcmp(resp, "silent") == 0) {
-        return LORA_DEVICE_IN_SILENT_STATE;
-    } else if (strcmp(resp, "busy") == 0) {
-        return LORA_DEVICE_DEVICE_IS_NOT_IDLE;
-    } else if (strcmp(resp, "mac_paused") == 0) {
-        return LORA_PAUSED;
-    } else if (strcmp(resp, "not_joined") == 0) {
-        return LORA_NOT_JOINED;
-    } else if (strcmp(resp, "frame_counter_err_rejoin_needed") == 0) {
-        return LORA_REJOIN_NEEDED;
-    } else if (strcmp(resp, "invalid_data_len") == 0) {
-        return LORA_INVALID_DATA_LEN;
-    } 
-}
-
 int lora_join_otaa() {
-    char resp[255];
+    EventBits_t uxBits;
     
-    uart_send_command(LORA_UART, "mac join otaa", 0, 1,  NULL, 0, 0, 0);    
-    if (!uart_reads(LORA_UART, resp, 1, 1000)) {
-        return LORA_TIMEOUT;
-    }
+    joined = 0;
+    otaa = 1;
     
-    if (strcmp(resp, "ok") != 0) {
-        return lora_error(resp);
-    }
-    
-    if (!uart_reads(LORA_UART, resp, 1, 10000)) {
-        return LORA_TIMEOUT;
-    }    
+    mtx_lock(&lora_mtx);
 
-    if (strcmp(resp, "denied") == 0) {
-        return LORA_JOIN_DENIED;
-    } else if (strcmp(resp, "accepted") == 0) {
-        return 1;
-    } else {
-        return LORA_UNEXPECTED_RESPONSE;
+    uart_send_command(LORA_UART, "mac join otaa", 0, 1,  NULL, 0, 0, 0);    
+    uxBits = xEventGroupWaitBits(loraEvent, evLoraJoinEnterCommand,pdTRUE, pdFALSE, LORA_WAIT_ENTER_COMMAND);
+    if (!(uxBits & (evLora_ok))) {   
+        mtx_unlock(&lora_mtx);
+
+        return lora_error(uxBits);
     }
+
+    uxBits = xEventGroupWaitBits(loraEvent, evLoraJoinEndCommand,pdTRUE, pdFALSE, portTICK_PERIOD_MS * 20000);
+    if (uxBits & (evLora_join_accepted)) {
+        joined = 1;
+        mtx_unlock(&lora_mtx);
+
+        return LORA_OK;
+    }
+    
+    if (uxBits & (evLora_join_denied)) {
+        mtx_unlock(&lora_mtx);
+
+        return LORA_JOIN_DENIED;
+    }
+    
+    mtx_unlock(&lora_mtx);
+    return lora_error(uxBits);
 }
 
 int lora_tx(int cnf, int port, const char *data) {
+    EventBits_t uxBits;
     char buffer[255];
-    char resp[255];
     
     if (cnf) {
         sprintf(buffer,"mac tx cnf %d %s", port, data);
     } else {
         sprintf(buffer,"mac tx uncnf %d %s", port, data);        
     }
-    
-    uart_send_command(LORA_UART, buffer, 0, 1,  NULL, 0, 0, 0);    
-    if (!uart_reads(LORA_UART, resp, 1, 1000)) {
-        return LORA_TIMEOUT;
-    }
-    
-    if (strcmp(resp, "ok") != 0) {
-        return lora_error(resp);
-    }
-    
-    if (!uart_reads(LORA_UART, resp, 1, 10000)) {
-        return LORA_TIMEOUT;
-    }    
 
-    if (strcmp(resp, "mac   _tx_ok") == 0) {
-        return 1;
-    } else if (strcmp(resp, "mac_err") == 0) {
-    } else {
+    mtx_lock(&lora_mtx);
+
+    uart_send_command(LORA_UART, buffer, 0, 1,  NULL, 0, 0, 0);    
+    uxBits = xEventGroupWaitBits(loraEvent, evLoraTxEnterCommand,pdTRUE, pdFALSE, LORA_WAIT_ENTER_COMMAND);
+    if (!(uxBits & (evLora_ok))) {  
+        mtx_unlock(&lora_mtx);
+        return lora_error(uxBits);
     }
+
+    uxBits = xEventGroupWaitBits(loraEvent, evLoraTxEndCommand,pdTRUE, pdFALSE, portTICK_PERIOD_MS * 10000);
+    if (uxBits & (evLora_tx_ok)) {
+        mtx_unlock(&lora_mtx);
+        return LORA_OK;
+    }
+    
+    mtx_unlock(&lora_mtx);
+    
+    return lora_error(uxBits);
 }
 
+void lora_set_rx_callback(lora_rx *callback) {
+    lora_rx_callback = callback;
+}
 #endif
 

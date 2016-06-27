@@ -244,6 +244,7 @@
 #define luaTaskStack   configMINIMAL_STACK_SIZE * 60
 #define mqttStack      configMINIMAL_STACK_SIZE * 10
 #define ppinTaskStack  configMINIMAL_STACK_SIZE * 10
+#define loraTaskStack  configMINIMAL_STACK_SIZE * 10
 
 // ---------------------------------------------------------------------------
 // ETHERNET PINS
