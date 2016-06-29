@@ -42,7 +42,7 @@
 
 #if USE_LORA
 
-#define LORA_TIMER_FREQ portTICK_PERIOD_MS * 5000
+#define LORA_TIMER_FREQ portTICK_PERIOD_MS * 500000
 #define LORA_WAIT_ENTER_COMMAND portTICK_PERIOD_MS * 200
 
 // Definition of Lora events used by this driver
@@ -265,11 +265,24 @@ void lora_timer(void *arg) {
     mtx_unlock(&lora_mtx);
 }
 
-static void lora_hw_reset() {
+// Do a hardware reset
+static int lora_hw_reset() {
+    char tmp;
+    int ok = 0;
+    
+    // Consume all in UART
+    while(uart_read(LORA_UART,&tmp,100));
+
+    // HW reset sequence
     gpio_pin_clr(LORA_RST);
-    delay(500);
+    delay(250);
     gpio_pin_set(LORA_RST);
-    delay(500);   
+    delay(250);  
+    
+    // Consume all in UART
+    while(uart_read(LORA_UART,&tmp,500)) ok=1;
+    
+    return ok;
 }
 
 // Setup driver
@@ -280,8 +293,7 @@ tdriver_error *lora_setup() {
     if (setup) return NULL;
         
     // TO DO: check resources
-    
-    // Make a hardware reset
+
     gpio_disable_analog(LORA_RST);
     gpio_pin_output(LORA_RST);
     gpio_pin_set(LORA_RST);
@@ -292,28 +304,21 @@ tdriver_error *lora_setup() {
     //uart_debug(LORA_UART, 1);
     
   retry:
-    uart_consume(LORA_UART);
-
-    // System reset
-    uart_send_command(LORA_UART, "sys reset", 0, 1,  NULL, 0, 0, 0);    
-    if (!uart_reads(LORA_UART, resp, 1, 500)) {
-        if (retries < 5) {
-            retries++;
-            lora_hw_reset();
-            goto retry;
+    if (lora_hw_reset()) {
+        uart_send_command(LORA_UART, "sys get ver", 0, 1,  NULL, 0, 0, 0); 
+        if (!uart_reads(LORA_UART, resp, 1, 500)) {
+            if (!strstr(resp,"RN2483")) {
+                if (retries < 2) {
+                    retries++;
+                    goto retry;
+                }  
+                
+                syslog(LOG_INFO, "RN2483 not found on %s", uart_name(LORA_UART));
+                return setup_error(LORA, "RN2483 not found");
+            }
         }
-        
-        syslog(LOG_INFO, "RN2483 not found on %s", uart_name(LORA_UART));
-
-        return setup_error(LORA, "RN2483 not found");
     }
-    
-    if (!strstr(resp,"RN2483")) {
-        syslog(LOG_INFO, "RN2483 not found on %s", uart_name(LORA_UART));
-        
-        return setup_error(LORA, "RN2483 not found");
-    }
-
+  
     syslog(LOG_INFO, "RN2483 is on %s", uart_name(LORA_UART));
     
     // Create a task for inspect UART trafic
@@ -323,7 +328,62 @@ tdriver_error *lora_setup() {
     if(loraTimer != NULL ){
         xTimerStart(loraTimer, 0);
     }
-        
+    
+    // Default channel configuration
+    // This channels must be implemented in every EU868MHz end-device
+    // DR0 to DR5, 1% duty cycle
+    lora_mac_set("ch status","0 off");    
+    lora_mac_set("ch freq","0 868100000");
+    lora_mac_set("ch dcycle","0 99");
+    lora_mac_set("ch drrange","0 0 5");
+    lora_mac_set("ch status","0 on");
+
+    lora_mac_set("ch status","1 off");    
+    lora_mac_set("ch freq","1 868300000");
+    lora_mac_set("ch dcycle","1 99");
+    lora_mac_set("ch drrange","1 0 5");
+    lora_mac_set("ch status","1 on");
+    
+    lora_mac_set("ch status","2 off");    
+    lora_mac_set("ch freq","2 868500000");
+    lora_mac_set("ch dcycle","2 99");
+    lora_mac_set("ch drrange","2 0 5");
+    lora_mac_set("ch status","2 on");
+
+    // Other channels, in concordance with supported gateways
+    // 1% duty cycle
+    lora_mac_set("ch freq","3 867100000");
+    lora_mac_set("ch dcycle","3 99");
+    lora_mac_set("ch drrange","3 0 5");
+    lora_mac_set("ch status","3 on");
+    
+    lora_mac_set("ch freq","4 867100000");
+    lora_mac_set("ch dcycle","4 99");
+    lora_mac_set("ch drrange","4 0 5");
+    lora_mac_set("ch status","4 on");
+
+    lora_mac_set("ch freq","5 867300000");
+    lora_mac_set("ch dcycle","5 99");
+    lora_mac_set("ch drrange","5 0 5");
+    lora_mac_set("ch status","5 on");
+    
+    lora_mac_set("ch freq","6 867500000");
+    lora_mac_set("ch dcycle","6 99");
+    lora_mac_set("ch drrange","6 0 5");
+    lora_mac_set("ch status","6 on");
+
+    lora_mac_set("ch freq","7 867700000");
+    lora_mac_set("ch dcycle","7 99");
+    lora_mac_set("ch drrange","7 0 5");
+    lora_mac_set("ch status","7 on");
+
+    lora_mac_set("ch freq","8 867900000");
+    lora_mac_set("ch dcycle","8 99");
+    lora_mac_set("ch drrange","8 0 5");
+    lora_mac_set("ch status","8 on");
+
+    lora_mac_set("pwridx","1");
+    
     setup = 1;
     
     return NULL;
