@@ -147,6 +147,7 @@ const char *resource_name(tresource_type type) {
     switch (type) {
         case GPIO:  return "pin";
         case TIMER: return "timer";
+        case LORA: return "lora";
     }
     
     return "";

@@ -52,6 +52,8 @@
 #define LORA_REJOIN_NEEDED                      -10
 #define LORA_INVALID_DATA_LEN                   -11
 #define LORA_TRANSMISSION_FAIL_ACK_NOT_RECEIVED -12
+#define LORA_NOT_SETUP                          -13
+#define LORA_INVALID_PARAM                      -14
 
 typedef void (lora_rx)(int port, char *payload);
 

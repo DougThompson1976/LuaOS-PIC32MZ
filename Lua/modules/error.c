@@ -29,6 +29,13 @@ int luaL_driver_error(lua_State* L, const char *msg, tdriver_error *error) {
         }
         
         return ret_val;
+    } else if (err.type = SETUP) {
+        ret_val = luaL_error(L,
+            "%s: %s (%s)", 
+            msg,
+            resource_name(err.resource),
+            err.msg
+        );                                
     }
     
     return luaL_error(L, msg);

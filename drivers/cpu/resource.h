@@ -30,7 +30,7 @@
 #ifndef RESOURCE_H
 #define RESOURCE_H
 
-typedef enum {GPIO, TIMER} tresource_type;
+typedef enum {GPIO, TIMER, LORA} tresource_type;
 typedef enum {FREE, SYSTEM, STEPPER, PWM, UART, SPI, I2C} tresource_owner;
 
 typedef struct {

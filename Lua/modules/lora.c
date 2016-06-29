@@ -74,6 +74,10 @@ static void lora_error(lua_State* L, int code) {
             luaL_error(L, "invalid data len");break;
         case LORA_TRANSMISSION_FAIL_ACK_NOT_RECEIVED:
             luaL_error(L, "transmission fail, ack not received");break;
+        case LORA_NOT_SETUP:
+            luaL_error(L, "lora is not setup, setup first");break;
+        case LORA_INVALID_PARAM:
+            luaL_error(L, "invalid argument");break;
     }
 }
 
@@ -129,18 +133,23 @@ static char *hex_str_pad(lua_State* L, const char  *str, int len) {
 
 static int llora_setup(lua_State* L) {
     tdriver_error *error;
-
-    lora_setup();
+    
+    // Setup in base of frequency
+    error = lora_setup();
+    if (error) {
+        return luaL_driver_error(L, "lora can't setup", error);
+    }
     
     return 0;
 }
 
 static int llora_set_setDevAddr(lua_State* L) {
-    char  *devAddr = hex_str_pad(L, luaL_checkstring(L, 1), 8);
-        
-    if (lora_mac_set("devaddr", devAddr) != LORA_OK) {
+    char *devAddr = hex_str_pad(L, luaL_checkstring(L, 1), 8);
+    
+    int resp = lora_mac_set("devaddr", devAddr);
+    if (resp != LORA_OK) {
         free(devAddr);
-        return luaL_error(L, "invalid argument");        
+        lora_error(L, resp);    
     }
     
     free(devAddr);
@@ -150,9 +159,10 @@ static int llora_set_setDevAddr(lua_State* L) {
 static int llora_set_DevEui(lua_State* L) {
     char  *devEui = hex_str_pad(L, luaL_checkstring(L, 1), 16);
         
-    if (lora_mac_set("deveui", devEui) != LORA_OK) {
+    int resp = lora_mac_set("deveui", devEui);
+    if (resp != LORA_OK) {
         free(devEui);
-        return luaL_error(L, "invalid argument");        
+        lora_error(L, resp);    
     }
     
     free(devEui);
@@ -162,11 +172,12 @@ static int llora_set_DevEui(lua_State* L) {
 static int llora_set_AppEui(lua_State* L) {
     char  *appEui = hex_str_pad(L, luaL_checkstring(L, 1), 16);
         
-    if (lora_mac_set("appeui", appEui) != LORA_OK) {
+    int resp = lora_mac_set("appeui", appEui);
+    if (resp != LORA_OK) {
         free(appEui);
-        return luaL_error(L, "invalid argument");        
+        lora_error(L, resp);    
     }
-    
+
     free(appEui);
     return 0;  
 }
@@ -174,9 +185,10 @@ static int llora_set_AppEui(lua_State* L) {
 static int llora_set_NwkSKey(lua_State* L) {
     char  *nwkSKey = hex_str_pad(L, luaL_checkstring(L, 1), 32);
         
-    if (lora_mac_set("nwkskey", nwkSKey) != LORA_OK) {
+    int resp = lora_mac_set("nwkskey", nwkSKey);
+    if (resp != LORA_OK) {
         free(nwkSKey);
-        return luaL_error(L, "invalid argument");        
+        lora_error(L, resp);    
     }
     
     free(nwkSKey);
@@ -186,11 +198,12 @@ static int llora_set_NwkSKey(lua_State* L) {
 static int llora_set_AppSKey(lua_State* L) {
     char  *appSKey = hex_str_pad(L, luaL_checkstring(L, 1), 32);
         
-    if (lora_mac_set("appsKey", appSKey) != LORA_OK) {
+    int resp = lora_mac_set("appsKey", appSKey);
+    if (resp != LORA_OK) {
         free(appSKey);
-        return luaL_error(L, "invalid argument");        
+        lora_error(L, resp);    
     }
-    
+
     free(appSKey);
     return 0;
 }
@@ -198,11 +211,12 @@ static int llora_set_AppSKey(lua_State* L) {
 static int llora_set_AppKey(lua_State* L) {
     char  *appKey = hex_str_pad(L, luaL_checkstring(L, 1), 32);
         
-    if (lora_mac_set("appkey", appKey) != LORA_OK) {
+    int resp = lora_mac_set("appkey", appKey);
+    if (resp != LORA_OK) {
         free(appKey);
-        return luaL_error(L, "invalid argument");        
+        lora_error(L, resp);    
     }
-    
+
     free(appKey);
     return 0;
 }
@@ -218,10 +232,11 @@ static int llora_set_Dr(lua_State* L) {
     
     sprintf(value,"%d", dr);
         
-    if (lora_mac_set("dr", value) != LORA_OK) {
-        return luaL_error(L, "invalid argument");        
+    int resp = lora_mac_set("dr", value);
+    if (resp != LORA_OK) {
+        lora_error(L, resp);    
     }
-    
+
     return 0;
 }
 
@@ -235,10 +250,11 @@ static int llora_set_Adr(lua_State* L) {
         strcpy(value, "off");
     }
     
-    if (lora_mac_set("adr", value) != LORA_OK) {
-        return luaL_error(L, "invalid argument");        
+    int resp = lora_mac_set("adr", value);
+    if (resp != LORA_OK) {
+        lora_error(L, resp);    
     }
-    
+
     return 0;
 }
 
@@ -252,8 +268,9 @@ static int llora_set_Ar(lua_State* L) {
         strcpy(value, "off");
     }
     
-    if (lora_mac_set("ar", value) != LORA_OK) {
-        return luaL_error(L, "invalid argument");        
+    int resp = lora_mac_set("ar", value);
+    if (resp != LORA_OK) {
+        lora_error(L, resp);    
     }
     
     return 0;

@@ -34,7 +34,8 @@
 #include <drivers/cpu/resource.h>
 
 typedef enum {
-    LOCK
+    LOCK,
+    SETUP
 } tdriver_error_type;
 
 typedef struct {
@@ -44,9 +45,11 @@ typedef struct {
     tresource_owner owner;
     int owner_unit;
     int id;
+    const char *msg;
 } tdriver_error;
 
 tdriver_error *lock_error(tresource_lock *lock);
+tdriver_error *setup_error(tresource_type res_type, const char *msg);
 
 #endif
 

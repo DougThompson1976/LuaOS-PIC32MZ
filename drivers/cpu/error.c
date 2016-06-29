@@ -44,3 +44,16 @@ tdriver_error *lock_error(tresource_lock *lock) {
 
     return error;
 }
+
+tdriver_error *setup_error(tresource_type resource, const char *msg) {
+    tdriver_error *error;
+
+    error = (tdriver_error *)malloc(sizeof(tdriver_error));
+    if (error) {
+        error->type = SETUP;
+        error->resource = resource;
+        error->msg = msg;
+    }
+
+    return error;
+}

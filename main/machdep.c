@@ -197,6 +197,10 @@ mach_init()
     syscalls_init();
     _pthread_init();
     _signal_init();
-
+    
+    #if USE_LORA
+    _lora_init();
+    #endif
+    
     mach_dev();
 }

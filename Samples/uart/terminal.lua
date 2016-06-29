@@ -2,6 +2,12 @@
 --
 -- UART terminal
 
+pio.pin.setdir(pio.OUTPUT,pio.PE_0)                                         
+pio.pin.setlow(pio.PE_0)
+tmr.delay(1)
+pio.pin.sethigh(pio.PE_0)
+tmr.delay(1)
+
 line = ""
 console = 1
 uartid = 2
