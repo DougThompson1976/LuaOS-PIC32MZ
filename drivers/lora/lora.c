@@ -496,6 +496,7 @@ char *lora_mac_get(const char *command) {
 
 int lora_join_otaa() {
     EventBits_t uxBits;
+    int retries;
     
     joined = 0;
     otaa = 1;
@@ -507,6 +508,7 @@ int lora_join_otaa() {
         return LORA_NOT_SETUP;
     }
 
+retry:
     uart_send_command(LORA_UART, "mac join otaa", 0, 1,  NULL, 0, 0, 0);    
     uxBits = xEventGroupWaitBits(loraEvent, evLoraJoinEnterCommand,pdTRUE, pdFALSE, LORA_WAIT_ENTER_COMMAND);
     if (!(uxBits & (evLora_ok))) {   
@@ -529,6 +531,14 @@ int lora_join_otaa() {
         return LORA_JOIN_DENIED;
     }
     
+    if (uxBits & (evLora_all_channels_busy)) {
+        delay(5000);
+        if (retries < 3) {
+            retries++;
+            goto retry;
+        }
+    } 
+    
     mtx_unlock(&lora_mtx);
     return lora_error(uxBits);
 }
@@ -536,6 +546,7 @@ int lora_join_otaa() {
 int lora_tx(int cnf, int port, const char *data) {
     EventBits_t uxBits;
     char buffer[255];
+    int retries;
     
     if (cnf) {
         sprintf(buffer,"mac tx cnf %d %s", port, data);
@@ -565,9 +576,7 @@ retry:
     }
     
     if (uxBits & (evLora_not_joined || evLora_rejoin_needed)) {
-        if (otaa) {
-            int retries;
-            
+        if (otaa) {            
             while ((lora_join_otaa() != LORA_OK) && (retries < 3)) {
                 retries++;  
                 delay(5000);
