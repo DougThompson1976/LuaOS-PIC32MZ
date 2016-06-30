@@ -42,7 +42,7 @@
 
 #if USE_LORA
 
-#define LORA_TIMER_FREQ portTICK_PERIOD_MS * 500000
+#define LORA_TIMER_FREQ portTICK_PERIOD_MS * 45000
 #define LORA_WAIT_ENTER_COMMAND portTICK_PERIOD_MS * 200
 
 // Definition of Lora events used by this driver
