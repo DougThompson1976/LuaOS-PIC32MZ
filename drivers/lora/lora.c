@@ -63,6 +63,10 @@
 
 #define loraEvent_ALL_EVENTS 0b1111111111111
 
+// Expected events after enter of mac command
+#define evLoraMacEnterCommand  \
+    (evLora_ok)
+
 // Expected events after enter of set command
 #define evLoraSetEnterCommand  \
     (evLora_ok)
@@ -286,7 +290,7 @@ static int lora_hw_reset() {
 }
 
 // Setup driver
-tdriver_error *lora_setup() {
+tdriver_error *lora_setup(int band) {
     char resp[255];
     int retries = 0;
 
@@ -329,64 +333,117 @@ tdriver_error *lora_setup() {
         xTimerStart(loraTimer, 0);
     }
     
-    // Default channel configuration
-    // This channels must be implemented in every EU868MHz end-device
-    // DR0 to DR5, 1% duty cycle
-    lora_mac_set("ch status","0 off");    
-    lora_mac_set("ch freq","0 868100000");
-    lora_mac_set("ch dcycle","0 99");
-    lora_mac_set("ch drrange","0 0 5");
-    lora_mac_set("ch status","0 on");
+    // Reset the stack, and set default parameters for the selected band
+    if (band == 868) {
+        lora_mac("reset","868");   
 
-    lora_mac_set("ch status","1 off");    
-    lora_mac_set("ch freq","1 868300000");
-    lora_mac_set("ch dcycle","1 99");
-    lora_mac_set("ch drrange","1 0 5");
-    lora_mac_set("ch status","1 on");
+        // Default channel configuration
+        // This channels must be implemented in every EU868MHz end-device
+        // DR0 to DR5, 1% duty cycle
+        lora_mac_set("ch status","0 off");    
+        lora_mac_set("ch freq","0 868100000");
+        lora_mac_set("ch dcycle","0 99");
+        lora_mac_set("ch drrange","0 0 5");
+        lora_mac_set("ch status","0 on");
+
+        lora_mac_set("ch status","1 off");    
+        lora_mac_set("ch freq","1 868300000");
+        lora_mac_set("ch dcycle","1 99");
+        lora_mac_set("ch drrange","1 0 5");
+        lora_mac_set("ch status","1 on");
+
+        lora_mac_set("ch status","2 off");    
+        lora_mac_set("ch freq","2 868500000");
+        lora_mac_set("ch dcycle","2 99");
+        lora_mac_set("ch drrange","2 0 5");
+        lora_mac_set("ch status","2 on");
+
+        // Other channels, in concordance with supported gateways
+        // 1% duty cycle
+        lora_mac_set("ch freq","3 867100000");
+        lora_mac_set("ch dcycle","3 99");
+        lora_mac_set("ch drrange","3 0 5");
+        lora_mac_set("ch status","3 on");
+
+        lora_mac_set("ch freq","4 867300000");
+        lora_mac_set("ch dcycle","4 99");
+        lora_mac_set("ch drrange","4 0 5");
+        lora_mac_set("ch status","4 on");
+
+        lora_mac_set("ch freq","5 867500000");
+        lora_mac_set("ch dcycle","5 99");
+        lora_mac_set("ch drrange","5 0 5");
+        lora_mac_set("ch status","5 on");
+
+        lora_mac_set("ch freq","6 867700000");
+        lora_mac_set("ch dcycle","6 99");
+        lora_mac_set("ch drrange","6 0 5");
+        lora_mac_set("ch status","6 on");
+
+        lora_mac_set("ch freq","7 867900000");
+        lora_mac_set("ch dcycle","7 99");
+        lora_mac_set("ch drrange","7 0 5");
+        lora_mac_set("ch status","7 on");
     
-    lora_mac_set("ch status","2 off");    
-    lora_mac_set("ch freq","2 868500000");
-    lora_mac_set("ch dcycle","2 99");
-    lora_mac_set("ch drrange","2 0 5");
-    lora_mac_set("ch status","2 on");
+        lora_mac_set("pwridx","1");
 
-    // Other channels, in concordance with supported gateways
-    // 1% duty cycle
-    lora_mac_set("ch freq","3 867100000");
-    lora_mac_set("ch dcycle","3 99");
-    lora_mac_set("ch drrange","3 0 5");
-    lora_mac_set("ch status","3 on");
-    
-    lora_mac_set("ch freq","4 867100000");
-    lora_mac_set("ch dcycle","4 99");
-    lora_mac_set("ch drrange","4 0 5");
-    lora_mac_set("ch status","4 on");
+    } else {
+        lora_mac("reset","433"); 
+        
+        // Default channel configuration
+        // This channels must be implemented in every EU433 end-device
+        // DR0 to DR5, 1% duty cycle
+        lora_mac_set("ch status","0 off");    
+        lora_mac_set("ch freq","0 433175000");
+        lora_mac_set("ch dcycle","0 99");
+        lora_mac_set("ch drrange","0 0 5");
+        lora_mac_set("ch status","0 on");
 
-    lora_mac_set("ch freq","5 867300000");
-    lora_mac_set("ch dcycle","5 99");
-    lora_mac_set("ch drrange","5 0 5");
-    lora_mac_set("ch status","5 on");
-    
-    lora_mac_set("ch freq","6 867500000");
-    lora_mac_set("ch dcycle","6 99");
-    lora_mac_set("ch drrange","6 0 5");
-    lora_mac_set("ch status","6 on");
+        lora_mac_set("ch status","1 off");    
+        lora_mac_set("ch freq","1 433375000");
+        lora_mac_set("ch dcycle","1 99");
+        lora_mac_set("ch drrange","1 0 5");
+        lora_mac_set("ch status","1 on");
 
-    lora_mac_set("ch freq","7 867700000");
-    lora_mac_set("ch dcycle","7 99");
-    lora_mac_set("ch drrange","7 0 5");
-    lora_mac_set("ch status","7 on");
+        lora_mac_set("ch status","2 off");    
+        lora_mac_set("ch freq","2 433575000");
+        lora_mac_set("ch dcycle","2 99");
+        lora_mac_set("ch drrange","2 0 5");
+        lora_mac_set("ch status","2 on");
+        
+        lora_mac_set("pwridx","0");
+    }
 
-    lora_mac_set("ch freq","8 867900000");
-    lora_mac_set("ch dcycle","8 99");
-    lora_mac_set("ch drrange","8 0 5");
-    lora_mac_set("ch status","8 on");
-
-    lora_mac_set("pwridx","1");
-    
     setup = 1;
     
     return NULL;
+}
+
+int lora_mac(const char *command, const char *value) {
+    EventBits_t uxBits;
+    char buffer[255];
+
+    sprintf(buffer, "mac %s %s", command, value);
+
+    mtx_lock(&lora_mtx);
+
+    if (!setup) {
+        mtx_unlock(&lora_mtx);
+        return LORA_NOT_SETUP;
+    }
+
+    uart_send_command(LORA_UART, buffer, 0, 1,  NULL, 0, 0, 0);    
+    
+    uxBits = xEventGroupWaitBits(loraEvent, evLoraMacEnterCommand,pdTRUE, pdFALSE, LORA_WAIT_ENTER_COMMAND);
+    if (uxBits & (evLora_ok)) {
+        mtx_unlock(&lora_mtx);
+
+        return LORA_OK;
+    }
+
+    mtx_unlock(&lora_mtx);
+
+    return lora_error(uxBits);
 }
 
 int lora_mac_set(const char *command, const char *value) {

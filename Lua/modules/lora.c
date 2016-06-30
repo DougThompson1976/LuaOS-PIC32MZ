@@ -131,11 +131,18 @@ static char *hex_str_pad(lua_State* L, const char  *str, int len) {
     return tmp;
 }
 
-static int llora_setup(lua_State* L) {
+static int llora_setup(lua_State* L) {    
     tdriver_error *error;
     
+    int band = luaL_checkinteger(L, 1);
+
+    // Sanity checks
+    if ((band != 868) && (band != 433)) {
+        return luaL_error(L, "invalid band", error);
+    }
+    
     // Setup in base of frequency
-    error = lora_setup();
+    error = lora_setup(band);
     if (error) {
         return luaL_driver_error(L, "lora can't setup", error);
     }
@@ -395,6 +402,12 @@ static const luaL_Reg lora[] = {
 
 int luaopen_lora(lua_State* L) {
     luaL_newlib(L, lora);
+
+    lua_pushinteger(L, 868);
+    lua_setfield(L, -2, "BAND868");
+
+    lua_pushinteger(L, 433);
+    lua_setfield(L, -2, "BAND433");
 
     return 1;
 }

@@ -15,7 +15,7 @@ try(
 )
 
 
-lora.setup()
+lora.setup(lora.BAND868)
 lora.setAppEui("70B3D57ED0000412")
 lora.setAppKey("AE07BD4621B7AAD81D5CAB3C5886BEEF")
 lora.setAdr(true)
