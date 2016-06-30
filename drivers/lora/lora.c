@@ -550,6 +550,7 @@ int lora_tx(int cnf, int port, const char *data) {
         return LORA_NOT_SETUP;
     }
 
+retry:
     uart_send_command(LORA_UART, buffer, 0, 1,  NULL, 0, 0, 0);    
     uxBits = xEventGroupWaitBits(loraEvent, evLoraTxEnterCommand,pdTRUE, pdFALSE, LORA_WAIT_ENTER_COMMAND);
     if (!(uxBits & (evLora_ok))) {  
@@ -561,6 +562,18 @@ int lora_tx(int cnf, int port, const char *data) {
     if (uxBits & (evLora_tx_ok)) {
         mtx_unlock(&lora_mtx);
         return LORA_OK;
+    }
+    
+    if (uxBits & (evLora_not_joined || evLora_rejoin_needed)) {
+        if (otaa) {
+            int retries;
+            
+            while ((lora_join_otaa() != LORA_OK) && (retries < 3)) {
+                retries++;  
+                delay(5000);
+                goto retry;
+            }
+        }
     }
     
     mtx_unlock(&lora_mtx);
