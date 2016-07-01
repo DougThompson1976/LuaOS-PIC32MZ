@@ -64,29 +64,36 @@ static int luaB_try (lua_State *L) {
     // Call try function
     lua_rawgeti(L, LUA_REGISTRYINDEX, tryFunc);
     
-    int status = lua_pcall(L, 0, 0, 0); 
+    int status = lua_pcall(L, 0, 0, NULL); 
     if (status != LUA_OK) {
-        if (catchFunc) {
+        if (catchFunc != LUA_NOREF) {
             const char *msg = lua_tostring(L, -1);
-            lua_remove(L, -2);
             
+            const char *whereEnd = strchr(msg,':');
+            const char *lineEnd = strchr(whereEnd + 1,':');
+
+            lua_remove(L, -2);
+                        
             // Call fails, call to catch function
             lua_rawgeti(L, LUA_REGISTRYINDEX, catchFunc); 
-            lua_pushstring(L, msg);            
-            lua_pcall(L, 1, 0, 0);    
-
-            luaL_unref(L, LUA_REGISTRYINDEX, catchFunc);
+            
+            lua_pushlstring(L, msg, whereEnd - msg);
+            lua_pushlstring(L, whereEnd + 1, lineEnd -whereEnd - 1);
+            lua_pushstring(L, lineEnd + 2);
+            
+            lua_pcall(L, 3, 0, NULL);    
         }
     }
     
-    if (finallyFunc) {
+    if (finallyFunc != LUA_NOREF) {
        // Call finally
         lua_rawgeti(L, LUA_REGISTRYINDEX, finallyFunc);
-        lua_pcall(L, 0, 0, 0); 
-        luaL_unref(L, LUA_REGISTRYINDEX, finallyFunc);
+        lua_pcall(L, 0, 0, NULL); 
     }
     
-    luaL_unref(L, LUA_REGISTRYINDEX, tryFunc);
+    if ( tryFunc!= LUA_NOREF) luaL_unref(L, LUA_REGISTRYINDEX, tryFunc);
+    if ( catchFunc!= LUA_NOREF) luaL_unref(L, LUA_REGISTRYINDEX, catchFunc);
+    if ( finallyFunc!= LUA_NOREF) luaL_unref(L, LUA_REGISTRYINDEX, finallyFunc);
     
     return 0;
 }

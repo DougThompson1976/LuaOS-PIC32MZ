@@ -4,16 +4,18 @@ lora.setAppKey("AE07BD4621B7AAD81D5CAB3C5886BEEF")
 lora.setAdr(true)
 lora.setAr(true)
 
+thread.start(function()
 try(
     function()
-        lora.join(true)
-        lora.tx(false,1,pack.pack(25.3))
+        a=a*2
     end,
-    function(error)
+    function(where, line, error)
+        print(where)
+        print(line)
         print(error)
     end
 )
-
+end)
 
 lora.setup(lora.BAND868)
 lora.setAppEui("70B3D57ED0000412")
