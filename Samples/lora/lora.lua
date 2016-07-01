@@ -1,4 +1,12 @@
-lora.setup()
+mac set appeui 70B3D57ED0000412
+mac set appkey AE07BD4621B7AAD81D5CAB3C5886BEEF
+mac set adr on
+mac set ar on
+mac set linkchk 1
+
+
+
+lora.setup(lora.BAND868)
 lora.setAppEui("70B3D57ED0000412")
 lora.setAppKey("AE07BD4621B7AAD81D5CAB3C5886BEEF")
 lora.setAdr(true)

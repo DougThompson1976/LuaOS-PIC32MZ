@@ -289,25 +289,12 @@ static int lora_hw_reset() {
     return ok;
 }
 
-// Setup driver
-tdriver_error *lora_setup(int band) {
+// Do a reset on Lora module
+static tdriver_error *lora_reset() {
     char resp[255];
     int retries = 0;
 
-    if (setup) return NULL;
-        
-    // TO DO: check resources
-
-    gpio_disable_analog(LORA_RST);
-    gpio_pin_output(LORA_RST);
-    gpio_pin_set(LORA_RST);
-    
-    // Init the UART where RN2483 is attached
-    uart_init(LORA_UART, LORA_UART_BR, PIC32_UMODE_PDSEL_8NPAR, LORA_UART_BUFF_SIZE);
-    uart_init_interrupts(LORA_UART);
-    //uart_debug(LORA_UART, 1);
-    
-  retry:
+retry:
     if (lora_hw_reset()) {
         uart_send_command(LORA_UART, "sys get ver", 0, 1,  NULL, 0, 0, 0); 
         if (!uart_reads(LORA_UART, resp, 1, 500)) {
@@ -321,6 +308,29 @@ tdriver_error *lora_setup(int band) {
                 return setup_error(LORA, "RN2483 not found");
             }
         }
+    } 
+    
+    return NULL;
+}
+
+// Setup driver
+tdriver_error *lora_setup(int band) {
+    if (setup) return NULL;
+        
+    // TO DO: check resources
+
+    gpio_disable_analog(LORA_RST);
+    gpio_pin_output(LORA_RST);
+    gpio_pin_set(LORA_RST);
+    
+    // Init the UART where RN2483 is attached
+    uart_init(LORA_UART, LORA_UART_BR, PIC32_UMODE_PDSEL_8NPAR, LORA_UART_BUFF_SIZE);
+    uart_init_interrupts(LORA_UART);
+    //uart_debug(LORA_UART, 1);
+    
+    tdriver_error *error = lora_reset();
+    if (error) {
+        return error;
     }
   
     syslog(LOG_INFO, "RN2483 is on %s", uart_name(LORA_UART));
@@ -416,6 +426,9 @@ tdriver_error *lora_setup(int band) {
 
     setup = 1;
     
+    // Save config
+    lora_mac("save", NULL);
+    
     return NULL;
 }
 
@@ -423,8 +436,12 @@ int lora_mac(const char *command, const char *value) {
     EventBits_t uxBits;
     char buffer[255];
 
-    sprintf(buffer, "mac %s %s", command, value);
-
+    if (value) {
+        sprintf(buffer, "mac %s %s", command, value);
+    } else {
+        sprintf(buffer, "mac %s", command);
+    }
+    
     mtx_lock(&lora_mtx);
 
     if (!setup) {
