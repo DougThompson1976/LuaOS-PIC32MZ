@@ -10,9 +10,9 @@
 extern inline void LuaLock(lua_State *L);
 extern inline void LuaUnlock(lua_State *L);
 
-#define lua_lock(L)          LuaLock(L)
-#define lua_unlock(L)        LuaUnlock(L)
-#define luai_threadyield(L) {lua_unlock(L); lua_lock(L);}
+//#define lua_lock(L)          LuaLock(L)
+//#define lua_unlock(L)        LuaUnlock(L)
+//#define luai_threadyield(L) {lua_unlock(L); lua_lock(L);}
 
 
 #include "auxmods.h"

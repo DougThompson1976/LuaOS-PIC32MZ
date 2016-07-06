@@ -68,7 +68,6 @@ static void gpsTask(void *pvParameters) {
     struct position new_pos;
     struct position first_pos;
 
-
     // Allocate space for sentence
     sentence = malloc(MAX_NMA_SIZE);
     buffer = sentence;

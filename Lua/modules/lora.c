@@ -134,7 +134,11 @@ static char *hex_str_pad(lua_State* L, const char  *str, int len) {
 static int llora_setup(lua_State* L) {    
     tdriver_error *error;
     
-    int band = luaL_checkinteger(L, 1);
+    int band = luaL_optinteger(L, 1, 868);
+    
+    luaL_checktype(L, 2, LUA_TBOOLEAN);
+    
+    int rx_listener = lua_toboolean( L, 2 );
 
     // Sanity checks
     if ((band != 868) && (band != 433)) {
@@ -142,7 +146,7 @@ static int llora_setup(lua_State* L) {
     }
     
     // Setup in base of frequency
-    error = lora_setup(band);
+    error = lora_setup(band, rx_listener);
     if (error) {
         return luaL_driver_error(L, "lora can't setup", error);
     }
@@ -304,12 +308,18 @@ static int llora_get_AppEui(lua_State* L) {
 static int llora_join(lua_State* L) {
     int resp = 0;
     
-    luaL_checktype(L, 1, LUA_TBOOLEAN);
-    if (lua_toboolean( L, 1 )) {
-        resp = lora_join_otaa();
-    } else {
-        return luaL_error(L, "ABP not allowed");        
+    int join_type = luaL_checkinteger(L, 1);
+
+    if ((join_type != 1) && (join_type != 2)) {
+        return luaL_error(L, "invalid join type, user lora.OTAA or lora.ABP");                
     }
+    
+    if (join_type == 2) {
+        return luaL_error(L, "ABP not allowed");                
+    }
+    
+    if (join_type == 1)
+        resp = lora_join_otaa();
     
     if (resp != LORA_OK) {
         lora_error(L, resp);
@@ -348,6 +358,17 @@ static int llora_rx(lua_State* L) {
             
     rx_callbackL = L;
     lora_set_rx_callback(on_received);
+    
+    return 0;
+}
+
+static int llora_reset(lua_State* L) {
+    tdriver_error *error;
+    
+    error = lora_reset(0);
+    if (error) {
+        return luaL_driver_error(L, "lora can't setup", error);
+    }
     
     return 0;
 }
@@ -397,6 +418,7 @@ static const luaL_Reg lora[] = {
     {"join",         llora_join}, 
     {"tx",           llora_tx},
     {"whenReceived", llora_rx},
+    {"reset",        llora_reset},
     {NULL, NULL}
 };
 
@@ -408,6 +430,12 @@ int luaopen_lora(lua_State* L) {
 
     lua_pushinteger(L, 433);
     lua_setfield(L, -2, "BAND433");
+
+    lua_pushinteger(L, 1);
+    lua_setfield(L, -2, "OTAA");
+    
+    lua_pushinteger(L, 2);
+    lua_setfield(L, -2, "ABP");
 
     return 1;
 }

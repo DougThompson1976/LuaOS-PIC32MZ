@@ -1,12 +1,11 @@
 -- WHITECAT sample code
 --
 -- UART terminal
-
-pio.pin.setdir(pio.OUTPUT,pio.PE_0)                                         
-pio.pin.setlow(pio.PE_0)
-tmr.delay(1)
-pio.pin.sethigh(pio.PE_0)
-tmr.delay(1)
+function terminal()
+pio.pin.setdir(pio.OUTPUT,pio.PE_2)                                         
+pio.pin.setlow(pio.PE_2)
+tmr.delayms(50)
+pio.pin.sethigh(pio.PE_2)
 
 line = ""
 console = 1
@@ -39,7 +38,8 @@ while true do
         uart.write(console, c)
     end
 end
-
+end
+terminal()
 
 while true do
 net.setup("gprs","m2m.vodafone.es","3267")
