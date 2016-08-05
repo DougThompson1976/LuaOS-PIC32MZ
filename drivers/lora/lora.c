@@ -568,9 +568,11 @@ retry:
         }
 
         if (retries < 3) {
+            mtx_unlock(&lora_mtx);
             delay(2000);
             syslog(LOG_DEBUG, "lora: retry");
             retries++;
+            mtx_lock(&lora_mtx);
             goto retry;
         }
     } 
