@@ -91,6 +91,7 @@ static int joined = 0;       // Are joined?
 static int otaa = 0;        // Las join were by OTAA?
 static int uart_setup = 0; // Driver uart is setup?
 static int setup = 0;       // Driver is setup?
+static int current_band = 868;
 
 // Callback function to call when data is received
 static lora_rx *lora_rx_callback = NULL;
@@ -145,7 +146,7 @@ static int lora_parse_response(char *resp) {
     }
 }
 
-static int lora_response() {
+static int lora_response(int timeout) {
     char buffer[255];
     char payload[255];
     char *payload_copy;
@@ -154,7 +155,7 @@ static int lora_response() {
     int resp;
     int port;
 
-    if (uart_reads(LORA_UART, buffer, 1, portMAX_DELAY)) {
+    if (uart_reads(LORA_UART, buffer, 1, timeout)) {
         syslog(LOG_DEBUG, "lora: %s", buffer);
         
         if ((resp = lora_parse_response(buffer)) == LORA_RX_OK) {
@@ -189,7 +190,9 @@ static int lora_response() {
         } else {
             return resp;
         }
-    }   
+    } else {
+        return LORA_TIMEOUT;
+    }
 }
 
 void lora_timer(void *arg) {
@@ -203,7 +206,7 @@ void lora_timer(void *arg) {
 }
 
 // Do a hardware reset
-static void lora_hw_reset() {
+static int lora_hw_reset() {
     // HW reset sequence
     gpio_pin_clr(LORA_RST);
     delay(50);
@@ -211,7 +214,7 @@ static void lora_hw_reset() {
 
     syslog(LOG_DEBUG, "lora: hw reset");
     
-    int resp = lora_response();
+    return lora_response(1000 * 5);
 }
 
 // Do a reset on Lora module
@@ -229,7 +232,11 @@ tdriver_error *lora_reset(int factory_reset) {
     }
 
     // Reset module by hardware
-    lora_hw_reset();
+    if (lora_hw_reset() == LORA_TIMEOUT) {
+        syslog(LOG_ERR, "lora: RN2483 not found");
+
+        return setup_error(LORA, "RN2483 not found");        
+    }
 
     // Get module version
     resp = lora_sys_get("ver");
@@ -249,49 +256,11 @@ tdriver_error *lora_reset(int factory_reset) {
             return setup_error(LORA, "RN2483 factory reset fail");            
         }
     }
-    
-    return NULL;
-}
 
-// Setup driver
-tdriver_error *lora_setup(int band, int rx_listener) {
-    if (setup) return NULL;
-        
-    // TO DO: check resources
-    
-    syslog(LOG_DEBUG, "lora: setup, band %d, rx listener %d", band, rx_listener);
-
-    gpio_disable_analog(LORA_RST);
-    gpio_pin_output(LORA_RST);
-    gpio_pin_set(LORA_RST);
-    
-    // Init the UART where RN2483 is attached
-    uart_init(LORA_UART, LORA_UART_BR, PIC32_UMODE_PDSEL_8NPAR, LORA_UART_BUFF_SIZE);
-    uart_init_interrupts(LORA_UART);
-    //uart_debug(LORA_UART, 1);
-        
-    if (!loraTimer && rx_listener) {
-        loraTimer = xTimerCreate("loraTimer", LORA_TIMER_FREQ, pdTRUE, (void *) 0, lora_timer);
-        if(loraTimer != NULL ){
-            xTimerStart(loraTimer, 0);
-            
-            syslog(LOG_DEBUG, "lora: timer created");
-        }
-    }
-    
-    uart_setup = 1;
-
-    tdriver_error *error = lora_reset(1);
-    if (error) {
-        return error;
-    }
-  
     syslog(LOG_INFO, "RN2483 is on %s", uart_name(LORA_UART));
         
     // Reset the stack, and set default parameters for the selected band
-    if (band == 868) {
-        lora_mac("reset","868");   
-
+    if (current_band == 868) {
         // Default channel configuration
         // This channels must be implemented in every EU868MHz end-device
         // DR0 to DR5, 1% duty cycle
@@ -339,8 +308,6 @@ tdriver_error *lora_setup(int band, int rx_listener) {
     
         lora_mac_set("pwridx","1");
     } else {
-        lora_mac("reset","433"); 
-        
         // Default channel configuration
         // This channels must be implemented in every EU433 end-device
         // DR0 to DR5, 1% duty cycle
@@ -365,13 +332,52 @@ tdriver_error *lora_setup(int band, int rx_listener) {
         lora_mac_set("pwridx","0");
     }
     
-    // Automatic reply
+    lora_mac_set("adr", "off");
     lora_mac_set("ar", "on");
+    lora_mac_set("dr", "0");
 
     // Set deveui with hweui value
-    char *resp = lora_sys_get("hweui");
+    resp = lora_sys_get("hweui");
     lora_mac_set("deveui", resp);
     free(resp);
+    
+    return NULL;
+}
+
+// Setup driver
+tdriver_error *lora_setup(int band, int rx_listener) {
+    // TO DO: check resources
+    
+    syslog(LOG_DEBUG, "lora: setup, band %d, rx listener %d", band, rx_listener);
+
+    if (!setup) {
+        gpio_disable_analog(LORA_RST);
+        gpio_pin_output(LORA_RST);
+        gpio_pin_set(LORA_RST);
+    
+        // Init the UART where RN2483 is attached
+        uart_init(LORA_UART, LORA_UART_BR, PIC32_UMODE_PDSEL_8NPAR, LORA_UART_BUFF_SIZE);
+        uart_init_interrupts(LORA_UART);
+        //uart_debug(LORA_UART, 1);
+
+        if (!loraTimer && rx_listener) {
+            loraTimer = xTimerCreate("loraTimer", LORA_TIMER_FREQ, pdTRUE, (void *) 0, lora_timer);
+            if(loraTimer != NULL ){
+                xTimerStart(loraTimer, 0);
+
+                syslog(LOG_DEBUG, "lora: timer created");
+            }
+        }
+
+        uart_setup = 1;
+    }
+    
+    current_band = band;
+    
+    tdriver_error *error = lora_reset(1);
+    if (error) {
+        return error;
+    }
     
     setup = 1;
     
@@ -399,7 +405,7 @@ int lora_mac(const char *command, const char *value) {
 
     uart_writes(LORA_UART, buffer);    
 
-    resp = lora_response();
+    resp = lora_response(portMAX_DELAY);
     if (resp & (LORA_OK)) {
         mtx_unlock(&lora_mtx);
 
@@ -432,7 +438,7 @@ int lora_sys(const char *command, const char *value) {
 
     uart_writes(LORA_UART, buffer);    
 
-    resp = lora_response();
+    resp = lora_response(portMAX_DELAY);
     if (resp & (LORA_OK | LORA_OTHER)) {
         mtx_unlock(&lora_mtx);
 
@@ -461,7 +467,7 @@ int lora_mac_set(const char *command, const char *value) {
 
     uart_writes(LORA_UART, buffer);    
 
-    resp = lora_response();
+    resp = lora_response(portMAX_DELAY);
     if (resp & (LORA_OK)) {
         mtx_unlock(&lora_mtx);
 
@@ -487,7 +493,7 @@ char *lora_mac_get(const char *command) {
 
     uart_writes(LORA_UART, buffer);   
     
-    resp = lora_response();
+    resp = lora_response(portMAX_DELAY);
     if (resp & (LORA_OTHER)) {
         char *result = (char *)malloc(strlen(buffer) + 1);
         strcpy(result, buffer);
@@ -518,7 +524,7 @@ char *lora_sys_get(const char *command) {
 
     uart_writes(LORA_UART, buffer); 
     
-    resp = lora_response();
+    resp = lora_response(portMAX_DELAY);
     if (resp & (LORA_OTHER)) {
         char *result = (char *)malloc(strlen(buffer) + 1);
         strcpy(result, buffer);
@@ -550,22 +556,19 @@ int lora_join_otaa() {
     }
 
 retry:
-    syslog(LOG_DEBUG, "lora: radio set pwr 15");
-
-    uart_writes(LORA_UART, "radio set pwr 15\r\n");    
-    resp = lora_response();
-
     syslog(LOG_DEBUG, "lora: mac join otaa");
     
     uart_writes(LORA_UART, "mac join otaa\r\n");    
-    resp = lora_response();
+    resp = lora_response(portMAX_DELAY);
     if (resp & (LORA_ALL_CHANNELS_BUSY | LORA_DEVICE_DEVICE_IS_NOT_IDLE | LORA_DEVICE_IN_SILENT_STATE)) {
         if (resp & (LORA_ALL_CHANNELS_BUSY)) {
             syslog(LOG_DEBUG, "lora: all channels busy");
-            delay(2000);
+        } else {
+            syslog(LOG_DEBUG, "lora: not idle or silent");
         }
 
         if (retries < 3) {
+            delay(2000);
             syslog(LOG_DEBUG, "lora: retry");
             retries++;
             goto retry;
@@ -578,7 +581,7 @@ retry:
         return resp;
     }
 
-    resp = lora_response();
+    resp = lora_response(portMAX_DELAY);
     if (resp & (LORA_JOIN_ACCEPTED)) {
         joined = 1;
         mtx_unlock(&lora_mtx);
@@ -599,8 +602,9 @@ retry:
 
 int lora_tx(int cnf, int port, const char *data) {
     int resp;
-    char buffer[255];
+    char buffer[1024];
     int res;
+    int retries = 0;
     
     mtx_lock(&lora_mtx);
 
@@ -615,16 +619,11 @@ int lora_tx(int cnf, int port, const char *data) {
         sprintf(buffer,"mac tx uncnf %d %s\r\n", port, data);        
     }
 
-retry:  
-    syslog(LOG_DEBUG, "lora: radio set pwr 15");
-
-    uart_writes(LORA_UART, "radio set pwr 15\r\n");    
-    resp = lora_response();
-    
+retry:      
     syslog(LOG_DEBUG, "lora: %s", buffer);
 
     uart_writes(LORA_UART, buffer);    
-    resp = lora_response();
+    resp = lora_response(portMAX_DELAY);
     
     // If node is not joined, or node needs a rejoin do a join again after
     // some time
@@ -647,7 +646,10 @@ retry:
             
             syslog(LOG_DEBUG, "lora: try to send again");
             
-            goto retry;
+            if (retries < 3) {
+                retries++;
+                goto retry;
+            }
         }
     }
 
@@ -656,7 +658,7 @@ retry:
         return resp;
     }
 
-    resp = lora_response();
+    resp = lora_response(portMAX_DELAY);
     if (resp & (LORA_OK)) {
         mtx_unlock(&lora_mtx);
         return LORA_OK;
@@ -671,33 +673,5 @@ void lora_set_rx_callback(lora_rx *callback) {
     lora_rx_callback = callback;
 }
 
-int lora_radio_set(const char *command, const char *value) {
-    int resp;
-    char buffer[255];
-    
-    mtx_lock(&lora_mtx);
-
-    if (!uart_setup) {
-        mtx_unlock(&lora_mtx);
-        return LORA_NOT_SETUP;
-    }
-
-    sprintf(buffer, "radio set %s %s\r\n", command, value);
-
-    syslog(LOG_DEBUG, "lora: %s", buffer);
-
-    uart_writes(LORA_UART, buffer);    
-
-    resp = lora_response();
-    if (resp & (LORA_OK)) {
-        mtx_unlock(&lora_mtx);
-
-        return LORA_OK;
-    }
-
-    mtx_unlock(&lora_mtx);
-
-    return resp;
-}
 #endif
 

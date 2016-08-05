@@ -47,9 +47,14 @@ lora.setAr(true)
 lora.join(true)
 
 
-mosquitto_sub -h staging.thethingsnetwork.org -u 70B3D57ED0000412 -P Dkh24xMCH+hTbv08ynXVGjv07B1LX98H68w/fTxh+Xw= -t 70B3D57ED0000412/devices/0004A30B001AB6CD/up
+mosquitto_sub -h staging.thethingsnetwork.org -u 70B3D57ED0000740 -P 9K+rP/5NY8cynVm2qdttGvjP+1M90wvIE4Vk+H31q0c= -t 70B3D57ED0000740/devices/*/up
 
 
 mosquitto_pub -h staging.thethingsnetwork.org -t '70B3D57ED0000412/devices/0004A30B001AB6CD/down' -u 70B3D57ED0000412 -P 'Dkh24xMCH+hTbv08ynXVGjv07B1LX98H68w/fTxh+Xw=' -m '{ "payload":"SGVsbG8gd29ybGQK","port":1,"ttl":"1h"}'
 
 
+os.logcons(true)
+lora.setup(lora.BAND868, false)
+
+uart.setup(2, 57600, 8, uart.PARNONE, uart.STOP1)
+uart.read(4,"*l",true,1000*10)

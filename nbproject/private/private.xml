@@ -8,18 +8,11 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/lora.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Samples/lora/lora.lua</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/lora/lora.h</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/uart/uart.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/platform/pio.c</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Samples/uart/terminal.lua</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/screen/screen.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/utils/delay.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Samples/lora/lora.lua</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/lora/lora.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/display/display.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/pio.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/main/whitecat.h</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/src/lauxlib.c</file>
         </group>
     </open-files>
 </project-private>

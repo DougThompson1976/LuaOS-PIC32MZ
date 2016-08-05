@@ -374,10 +374,6 @@ void uart_init(u8_t unit, u32_t brg, u32_t mode, u32_t qs) {
     assign_rx(unit, rx);
     assign_tx(unit, tx);
     
-    gpio_pin_input(rx);
-    gpio_pin_output(tx);
-    gpio_disable_analog(rx);
-
     reg->staset = PIC32_USTA_URXEN |       // Receiver Enable
   	          PIC32_USTA_UTXEN |	   // Transmit Enable
                   PIC32_USTA_URXISEL_NEMP;
@@ -471,9 +467,7 @@ u8_t uart_read(u8_t unit, char *c, uint32_t timeout) {
    // Get UART register
     unit--;
 	
-    if (timeout == portMAX_DELAY) {
-        timeout = portMAX_DELAY;
-    } else {
+    if (timeout != portMAX_DELAY) {
         timeout = portTICK_PERIOD_MS * timeout;
     }
 	

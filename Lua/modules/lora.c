@@ -287,6 +287,15 @@ static int llora_set_Ar(lua_State* L) {
     return 0;
 }
 
+static int llora_get_DevAddr(lua_State* L) {
+    char *value = lora_mac_get("devaddr");
+    
+    lua_pushlstring(L, value, strlen(value));
+    free(value);
+    
+    return 1;    
+}
+
 static int llora_get_DevEui(lua_State* L) {
     char *value = lora_mac_get("deveui");
     
@@ -300,6 +309,29 @@ static int llora_get_AppEui(lua_State* L) {
     char *value = lora_mac_get("appeui");
     
     lua_pushlstring(L, value, strlen(value));
+    free(value);
+    
+    return 1;    
+}
+
+static int llora_get_Dr(lua_State* L) {
+    char *value = lora_mac_get("dr");
+    
+    lua_pushinteger(L, atoi(value));
+    free(value);
+    
+    return 1;    
+}
+
+static int llora_get_Adr(lua_State* L) {
+    char *value = lora_mac_get("adr");
+    
+    if (strcmp(value,"on") == 0) {
+        lua_pushboolean(L, 1);
+    } else {
+        lua_pushboolean(L, 0);        
+    }
+
     free(value);
     
     return 1;    
@@ -386,29 +418,25 @@ static const luaL_Reg lora[] = {
     {"setNwksKey",   llora_set_NwkSKey}, 
     {"setAppsKey",   llora_set_AppSKey}, 
     {"setAppKey",    llora_set_AppKey}, 
-    {"setPwrIdx",    llora_nothing}, 
     {"setDr",        llora_set_Dr}, 
     {"setAdr",       llora_set_Adr}, 
     {"setRetX",      llora_nothing}, 
-    {"setLinkChk",   llora_nothing}, 
+    {"setLinkChk",   llora_nothing}, // MUST DO
     {"setRxDelay1",  llora_nothing}, 
     {"setAr",        llora_set_Ar}, 
-    {"setRx2",       llora_nothing}, 
-    {"setChFreq",    llora_nothing}, 
+    {"setRx2",       llora_nothing}, // MUST DO
+    {"setChFreq",    llora_nothing}, // MUST DO
     {"setChFCycle",  llora_nothing}, 
-    {"setChDrrange", llora_nothing}, 
+    {"setChDrrange", llora_nothing}, // MUST DO
     {"setChStatus",  llora_nothing}, 
-    {"getDevAddr",   llora_nothing}, 
+    {"getDevAddr",   llora_get_DevAddr}, 
     {"getDevEui" ,   llora_get_DevEui}, 
     {"getAppEui" ,   llora_get_AppEui}, 
-    {"getDr",        llora_nothing}, 
-    {"getBand",      llora_nothing}, 
-    {"getPwrIdx",    llora_nothing}, 
-    {"getAdr",       llora_nothing}, 
+    {"getDr",        llora_get_Dr}, 
+    {"getAdr",       llora_get_Adr}, 
     {"getRetX",      llora_nothing}, 
     {"getRxDelay1",  llora_nothing}, 
     {"getRxDelay2",  llora_nothing},
-    {"getAr",        llora_nothing}, 
     {"getRx2",       llora_nothing}, 
     {"getDCyclePs",  llora_nothing}, 
     {"getMrgn",      llora_nothing}, 
