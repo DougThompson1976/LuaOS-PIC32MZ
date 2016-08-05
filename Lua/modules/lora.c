@@ -287,6 +287,26 @@ static int llora_set_Ar(lua_State* L) {
     return 0;
 }
 
+
+static int llora_set_LinkChk(lua_State* L) {
+    int interval = luaL_checkinteger(L, 1);
+    
+    if ((interval < 0) || (interval > 65535)) {
+        return luaL_error(L, "invalid interval (0 to 65535)"); 
+    }
+    
+    char value[6];
+    
+    sprintf(value,"%d", interval);
+        
+    int resp = lora_mac_set("linkchk", value);
+    if (resp != LORA_OK) {
+        lora_error(L, resp);    
+    }
+
+    return 0;
+}
+
 static int llora_get_DevAddr(lua_State* L) {
     char *value = lora_mac_get("devaddr");
     
@@ -332,6 +352,29 @@ static int llora_get_Adr(lua_State* L) {
         lua_pushboolean(L, 0);        
     }
 
+    free(value);
+    
+    return 1;    
+}
+
+static int llora_get_Ar(lua_State* L) {
+    char *value = lora_mac_get("ar");
+    
+    if (strcmp(value,"on") == 0) {
+        lua_pushboolean(L, 1);
+    } else {
+        lua_pushboolean(L, 0);        
+    }
+
+    free(value);
+    
+    return 1;    
+}
+
+static int llora_get_Mrgn(lua_State* L) {
+    char *value = lora_mac_get("mrgn");
+    
+    lua_pushinteger(L, atoi(value));
     free(value);
     
     return 1;    
@@ -421,7 +464,7 @@ static const luaL_Reg lora[] = {
     {"setDr",        llora_set_Dr}, 
     {"setAdr",       llora_set_Adr}, 
     {"setRetX",      llora_nothing}, 
-    {"setLinkChk",   llora_nothing}, // MUST DO
+    {"setLinkChk",   llora_set_LinkChk}, // MUST DO
     {"setRxDelay1",  llora_nothing}, 
     {"setAr",        llora_set_Ar}, 
     {"setRx2",       llora_nothing}, // MUST DO
@@ -437,9 +480,10 @@ static const luaL_Reg lora[] = {
     {"getRetX",      llora_nothing}, 
     {"getRxDelay1",  llora_nothing}, 
     {"getRxDelay2",  llora_nothing},
+    {"getAr",        llora_get_Ar}, 
     {"getRx2",       llora_nothing}, 
     {"getDCyclePs",  llora_nothing}, 
-    {"getMrgn",      llora_nothing}, 
+    {"getMrgn",      llora_get_Mrgn}, 
     {"getGwNb",      llora_nothing}, 
     {"getStatus",    llora_nothing}, 
     {"getCha",       llora_nothing}, 
