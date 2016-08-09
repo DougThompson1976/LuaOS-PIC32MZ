@@ -269,6 +269,25 @@ static int llora_set_Adr(lua_State* L) {
     return 0;
 }
 
+static int llora_set_RetX(lua_State* L) {
+    int rets = luaL_checkinteger(L, 1);
+    
+    if ((rets < 0) || (rets > 255)) {
+        return luaL_error(L, "invalid retransmissions value (0 to 255)"); 
+    }
+    
+    char value[2];
+    
+    sprintf(value,"%d", rets);
+        
+    int resp = lora_mac_set("retx", value);
+    if (resp != LORA_OK) {
+        lora_error(L, resp);    
+    }
+
+    return 0;
+}
+
 static int llora_set_Ar(lua_State* L) {
     char value[4];
 
@@ -357,6 +376,15 @@ static int llora_get_Adr(lua_State* L) {
     return 1;    
 }
 
+static int llora_get_RetX(lua_State* L) {
+    char *value = lora_mac_get("retx");
+    
+    lua_pushinteger(L, atoi(value));
+    free(value);
+    
+    return 1;    
+}
+
 static int llora_get_Ar(lua_State* L) {
     char *value = lora_mac_get("ar");
     
@@ -437,17 +465,6 @@ static int llora_rx(lua_State* L) {
     return 0;
 }
 
-static int llora_reset(lua_State* L) {
-    tdriver_error *error;
-    
-    error = lora_reset(0);
-    if (error) {
-        return luaL_driver_error(L, "lora can't setup", error);
-    }
-    
-    return 0;
-}
-
 static int llora_nothing(lua_State* L) {
     return luaL_error(L, "not implemented");    
 }
@@ -463,7 +480,7 @@ static const luaL_Reg lora[] = {
     {"setAppKey",    llora_set_AppKey}, 
     {"setDr",        llora_set_Dr}, 
     {"setAdr",       llora_set_Adr}, 
-    {"setRetX",      llora_nothing}, 
+    {"setRetX",      llora_set_RetX}, 
     {"setLinkChk",   llora_set_LinkChk}, // MUST DO
     {"setRxDelay1",  llora_nothing}, 
     {"setAr",        llora_set_Ar}, 
@@ -477,7 +494,7 @@ static const luaL_Reg lora[] = {
     {"getAppEui" ,   llora_get_AppEui}, 
     {"getDr",        llora_get_Dr}, 
     {"getAdr",       llora_get_Adr}, 
-    {"getRetX",      llora_nothing}, 
+    {"getRetX",      llora_get_RetX}, 
     {"getRxDelay1",  llora_nothing}, 
     {"getRxDelay2",  llora_nothing},
     {"getAr",        llora_get_Ar}, 
@@ -490,7 +507,6 @@ static const luaL_Reg lora[] = {
     {"join",         llora_join}, 
     {"tx",           llora_tx},
     {"whenReceived", llora_rx},
-    {"reset",        llora_reset},
     {NULL, NULL}
 };
 

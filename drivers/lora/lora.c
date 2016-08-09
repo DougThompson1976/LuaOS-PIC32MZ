@@ -218,19 +218,9 @@ static int lora_hw_reset() {
 }
 
 // Do a reset on Lora module
-tdriver_error *lora_reset(int factory_reset) {
+tdriver_error *lora_reset() {
     char *resp;
     
-    // If reset don't need a factory reset this is done due to a module
-    // error, and we need to save all configured module options
-    if (!factory_reset) {
-        if (lora_mac("save", NULL) != LORA_OK) {
-            syslog(LOG_ERR, "lora: RN2483 not found");
-            
-            return setup_error(LORA, "RN2483 not found");
-        }
-    }
-
     // Reset module by hardware
     if (lora_hw_reset() == LORA_TIMEOUT) {
         syslog(LOG_ERR, "lora: RN2483 not found");
@@ -249,12 +239,9 @@ tdriver_error *lora_reset(int factory_reset) {
     }
     free(resp);
     
-    // Do a factory reset, if needed
-    if (factory_reset) {
-        if (lora_sys("factoryRESET", NULL) != LORA_OK) {
-            syslog(LOG_ERR, "lora: RN2483 factory reset fail", uart_name(LORA_UART));
-            return setup_error(LORA, "RN2483 factory reset fail");            
-        }
+    if (lora_sys("factoryRESET", NULL) != LORA_OK) {
+        syslog(LOG_ERR, "lora: RN2483 factory reset fail", uart_name(LORA_UART));
+        return setup_error(LORA, "RN2483 factory reset fail");            
     }
 
     syslog(LOG_INFO, "RN2483 is on %s", uart_name(LORA_UART));
@@ -374,7 +361,7 @@ tdriver_error *lora_setup(int band, int rx_listener) {
     
     current_band = band;
     
-    tdriver_error *error = lora_reset(1);
+    tdriver_error *error = lora_reset();
     if (error) {
         return error;
     }
@@ -627,34 +614,6 @@ retry:
     uart_writes(LORA_UART, buffer);    
     resp = lora_response(portMAX_DELAY);
     
-    // If node is not joined, or node needs a rejoin do a join again after
-    // some time
-    if (resp & (LORA_NOT_JOINED | LORA_REJOIN_NEEDED)) {
-        syslog(LOG_DEBUG, "lora: not joined / rejoin needed");
-        
-        // Update joined status
-        joined = 0;
-        
-        // Join again
-        if (otaa) {   
-            mtx_unlock(&lora_mtx);
-            
-            delay(2000);
-            if ((res = lora_join_otaa()) != LORA_OK) {
-                return res;
-            }
-            
-            mtx_lock(&lora_mtx);
-            
-            syslog(LOG_DEBUG, "lora: try to send again");
-            
-            if (retries < 3) {
-                retries++;
-                goto retry;
-            }
-        }
-    }
-
     if (!(resp & (LORA_OK))) {  
         mtx_unlock(&lora_mtx);
         return resp;
@@ -676,4 +635,3 @@ void lora_set_rx_callback(lora_rx *callback) {
 }
 
 #endif
-

@@ -67,7 +67,7 @@ int lora_join_otaa();
 int lora_tx(int cnf, int port, const char *data);
 void lora_set_rx_callback(lora_rx *callback);
 int lora_mac(const char *command, const char *value);
-tdriver_error *lora_reset(int factory_reset);
+tdriver_error *lora_reset();
 
 #endif
 
