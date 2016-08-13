@@ -4034,6 +4034,10 @@ FRESULT f_forward (
 #define N_FATS		1		/* Number of FATs (1 or 2) */
 
 
+void f_info(const char *info, int percent) {
+   printf("\r%s: %d%% completed", info, percent); 
+}
+
 FRESULT f_mkfs (
 	const TCHAR* path,	/* Logical drive number */
 	BYTE sfd,			/* Partitioning rule 0:FDISK, 1:SFD */
@@ -4067,6 +4071,7 @@ FRESULT f_mkfs (
 
 	/* Get disk statics */
 	stat = disk_initialize(pdrv);
+
 	if (stat & STA_NOINIT) return FR_NOT_READY;
 	if (stat & STA_PROTECT) return FR_WRITE_PROTECTED;
 #if _MAX_SS != _MIN_SS		/* Get disk sector size */
@@ -4082,7 +4087,7 @@ FRESULT f_mkfs (
 		b_vol = LD_DWORD(tbl + 8);	/* Volume start sector */
 		n_vol = LD_DWORD(tbl + 12);	/* Volume size */
 	} else {
-		/* Create a partition in this function */
+                /* Create a partition in this function */
 		if (disk_ioctl(pdrv, GET_SECTOR_COUNT, &n_vol) != RES_OK || n_vol < 128)
 			return FR_DISK_ERR;
 		b_vol = (sfd) ? 0 : 63;		/* Volume start sector */
@@ -4101,6 +4106,7 @@ FRESULT f_mkfs (
 
 	/* Pre-compute number of clusters and FAT sub-type */
 	n_clst = n_vol / au;
+        
 	fmt = FS_FAT12;
 	if (n_clst >= MIN_FAT16) fmt = FS_FAT16;
 	if (n_clst >= MIN_FAT32) fmt = FS_FAT32;
@@ -4149,6 +4155,8 @@ FRESULT f_mkfs (
 		}
 	}
 
+        f_info("Creating partition", 50);
+        
 	if (_MULTI_PARTITION && part) {
 		/* Update system ID in the partition table */
 		tbl = &fs->win[MBR_Table + (part - 1) * SZ_PTE];
@@ -4178,6 +4186,8 @@ FRESULT f_mkfs (
 			md = 0xF8;
 		}
 	}
+
+        f_info("Creating partition", 100);
 
 	/* Create BPB in the VBR */
 	tbl = fs->win;							/* Clear sector */
@@ -4223,6 +4233,17 @@ FRESULT f_mkfs (
 		disk_write(pdrv, tbl, b_vol + 6, 1);
 
 	/* Initialize FAT area */
+        
+        // WHITECAT BEGIN
+        int percent = 0;
+        int prev_percent = 0;
+        int percentFrom = 0;
+        int percentTo = n_fat - 1;
+        int hard = 0;
+
+        f_info("Initializing FAT area", percent);
+        // WHITECAT END
+        
 	wsect = b_fat;
 	for (i = 0; i < N_FATS; i++) {		/* Initialize each FAT copy */
 		mem_set(tbl, 0, SS(fs));			/* 1st sector of the FAT  */
@@ -4239,15 +4260,43 @@ FRESULT f_mkfs (
 		if (disk_write(pdrv, tbl, wsect++, 1) != RES_OK)
 			return FR_DISK_ERR;
 		mem_set(tbl, 0, SS(fs));			/* Fill following FAT entries with zero */
-		for (n = 1; n < n_fat; n++) {		/* This loop may take a time on FAT32 volume due to many single sector writes */
-			if (disk_write(pdrv, tbl, wsect++, 1) != RES_OK)
-				return FR_DISK_ERR;
-		}
+                for (n = 1; n < n_fat; n++) {		/* This loop may take a time on FAT32 volume due to many single sector writes */
+                            // WHITECAT BEGIN
+                            percentFrom++;
+                            percent = (int)(((float)percentFrom / (float)percentTo) * 100.0);
+                            if (prev_percent != percent) { 
+                                prev_percent = percent;
+                                f_info("Initializing FAT area", percent);
+                            }
+                            // WHITECAT END
+
+                            if (disk_write(pdrv, tbl, wsect++, 1) != RES_OK)
+                                return FR_DISK_ERR;
+                }
+
 	}
 
 	/* Initialize root directory */
+        
 	i = (fmt == FS_FAT32) ? au : (UINT)n_dir;
+
+        // WHITECAT BEGIN
+        percent = 0;
+        percentFrom = 0;
+        percentTo = i;
+        f_info("Initializing root directory", percent);
+        // WHITECAT END
+
 	do {
+                // WHITECAT BEGIN
+                percentFrom++;
+                percent = (int)(((float)percentFrom / (float)percentTo) * 100.0);
+                if (prev_percent != percent) {
+                    prev_percent = percent;
+                    f_info("Initializing root directory", percent);
+                }
+                // WHITECAT END
+                
 		if (disk_write(pdrv, tbl, wsect++, 1) != RES_OK)
 			return FR_DISK_ERR;
 	} while (--i);
@@ -4272,8 +4321,6 @@ FRESULT f_mkfs (
 
 	return (disk_ioctl(pdrv, CTRL_SYNC, 0) == RES_OK) ? FR_OK : FR_DISK_ERR;
 }
-
-
 
 #if _MULTI_PARTITION
 /*-----------------------------------------------------------------------*/

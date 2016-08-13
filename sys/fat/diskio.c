@@ -100,11 +100,11 @@ DRESULT disk_ioctl (
 {    
     switch (cmd) {
         case GET_SECTOR_COUNT:
-            *((int *)buff) = card_size(0) / 512;
+            *((unsigned long *)buff) = card_size(0);
             break;
             
         case GET_SECTOR_SIZE:
-            *((int *)buff) = card_size(0);
+            *((int *)buff) = SECTSIZE;
             break;
             
         case GET_BLOCK_SIZE:

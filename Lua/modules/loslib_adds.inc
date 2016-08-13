@@ -293,9 +293,12 @@ static int os_format(lua_State *L) {
     const char *device = luaL_checkstring(L, 1);
     char response = ' ';
     struct devops *ops;
-    
-    if (strcmp(device,"cfi") != 0) {
-         return luaL_error(L, "device %s not yet supported for format", device);                    
+
+    // This if check is for future use, to determine drive number
+    if (strcmp(device,"cfi") == 0) {
+    } else if (strcmp(device,"sd") == 0) {
+    } else {
+        return luaL_error(L, "device %s not exists for format", device); 
     }
     
     // Check for mounted device

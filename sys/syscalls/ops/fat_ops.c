@@ -62,8 +62,12 @@ int fat_init() {
         return -1;
     }
 
-    if (!sd_has_partition(0, 0x0b)) {
-        syslog(LOG_ERR, "fat sdcard hasn't a FAT32 partition");
+    if (
+            !sd_has_partition(0, 0x01) && sd_has_partition(0, 0x04) && 
+            !sd_has_partition(0, 0x06) && !sd_has_partition(0, 0x0b) && 
+            !sd_has_partition(0, 0x0e) && !sd_has_partition(0, 0x0c)
+        ) {
+        syslog(LOG_ERR, "fat hasn't a FAT3 partition");
         return -1;
     }
 
@@ -397,8 +401,23 @@ int fat_readdir(struct file *fp, struct dirent *ent) {
 }
 
 int fat_format() {
-//    f_mkfs("", 0, 0); 
-   // cpu_reset();
+    FRESULT res;
+    
+    res = f_mkfs("", 0, 512);
+    if (res == FR_NOT_ENABLED) {
+        res = f_mount(&sd_fs[0], "", 1);
+        if (res == FR_OK) {
+            res = f_mkfs("", 0, 512);
+        }
+    }
+    
+    res = f_mount(&sd_fs[0], "", 1);
+    
+    if (res == FR_OK) {
+       cpu_reset();
+    }
+    
+    return res;
 }
 
 #endif
