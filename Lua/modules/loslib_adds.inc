@@ -41,7 +41,9 @@ static int os_cp(lua_State *L) {
     FILE *fsrc, *fdst;
     char c;
     int res1, res2;
-    
+
+    int line = 0;
+
     fsrc = fopen(src,"r");
     if (!fsrc) {
         return luaL_fileresult(L, 0, src);

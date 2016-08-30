@@ -7,9 +7,36 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/lora.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/syscalls/mutex.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/lora/lora.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/syscalls/descrip.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/spiffs/spiffs_hydrogen.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/loslib_adds.inc</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/spiffs/spiffs_config.h</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/spiffs/spiffs_nucleus.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/lib/libc/stdio/remove.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/spiffs/spiffs_cache.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/lua_adds.inc</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/.dep.inc</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/file.h</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/spiffs/spiffs_nucleus.h</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/adds/luaconf.h</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/spiffs/spiffs.h</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/fat/ff.h</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/spiffs/spiffs_check.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/spiffs/spiffs_gc.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/syscalls/open.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/main/main.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/fat/diskio.h</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/spi/spi.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/cfi/cfi.h</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/syscalls/ops/fat_ops.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/syscalls/unlink.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/syscalls/ops/spiffs_ops.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/cfi/cfi.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/main/machdev.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/fat/fat.h</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/src/loslib.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/fat/ff.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/lib/libc/stdio/fopen.c</file>
         </group>
     </open-files>
 </project-private>

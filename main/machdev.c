@@ -90,7 +90,7 @@ void mach_dev() {
     openlog(__progname, LOG_CONS | LOG_NDELAY, LOG_LOCAL1);
     cpu_show_info();
     
-    //Init filesystem    
+    //Init filesystem  
     #if USE_CFI
         if (spiffs_init()) {
             mount_set_mounted("cfi", 1);

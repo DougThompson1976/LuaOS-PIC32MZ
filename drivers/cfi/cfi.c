@@ -137,34 +137,31 @@ static int enable_write(struct cfi *cfi) {
 
 static int cfi_setup(struct cfi *cfi) {
     char buff[15];
-    char reg[3];
-    int sr2;
-    
-    // Read device information
-    cfi_send_command(cfi, CMD_RDID, NULL, (char *)&cfi->idcfi, sizeof(struct idcfi), 0);
+    char sr2;
         
-    // Get information from status register 2
+    // Read status and configuration registers
     sr2 = cfi_read_reg(cfi, CMD_RDSR2);
-    
-    // Page size
+
     cfi->pagesiz = 256;
-    if (sr2 & CR2_02h_O_MASK) {
+    if (sr2 & SR2_02h_O_MASK) {
         cfi->pagesiz = 512;
     }
     
-    // Sector size
     cfi->sectsiz = 64 * 1024;
-    if (sr2 & CR2_D8h_O_MASK) {
+    if (sr2 & SR2_D8h_O_MASK) {
         cfi->sectsiz = 256 * 1024;
     }
-    
+
+    // Read device information
+    cfi_send_command(cfi, CMD_RDID, NULL, (char *)&cfi->idcfi, sizeof(struct idcfi), 0);
+
     cfi->sectors = (cfi_size(cfi) * 1024 * 1024) / cfi->sectsiz;
 
     if (cfi_size(cfi) <= 0) {
         syslog(LOG_ERR, "cfi%d can't detect spi flash", cfi->unit);
         return 0;
     }
-    
+   
     syslog(LOG_INFO, "cfi%d %s, %d Mbytes, %d bytes/page, %d Kb/sector, speed %d Mhz", 
           cfi->unit,
           cfi_model(cfi, buff),
@@ -173,17 +170,6 @@ static int cfi_setup(struct cfi *cfi) {
           cfi->sectsiz / 1024,
           spi_get_speed(cfi->spi) / 1000
     );
-
-    if (cfi->pagesiz == 256) {
-        reg[2] = cfi_read_reg(cfi, CMD_RDSR1);
-        reg[1] = cfi_read_reg(cfi, CMD_RDSR2);
-        reg[0] =  cfi_read_reg(cfi, CMD_RDCR);
-
-        // Set page size to 512, uniform sector size
-        reg[1] |= CR2_D8h_O_MASK | CR2_02h_O_MASK;
-        
-        cfi_send_command(cfi, CMD_WRR, NULL, reg, sizeof(reg), 1);
-    }
     
     inited = 1;
     
@@ -243,19 +229,24 @@ void cfi_read(int unit, int addr, int size, char *buf) {
 }
 
 void cfi_erase(int unit, int addr, int size) {
-    int i, count, sector, sector_addr;    
     struct cfi *cfi = &cfid[unit];
-                
-    sector = addr / cfi->sectsiz;
-    count = size / cfi->sectsiz;
+    int i, block;    
+
+    // Get the block number
+    block = (addr - cfi->pagesiz) / cfi->sectsiz;
     
-    for(i=0;i < count;i++) {
-        sector_addr = (sector << 16);
+    if (block == 255) {
+        for(i=0;i < 16;i++) {
+            enable_write(cfi);
+            cfi_send_command(cfi, CMD_P4E, &addr, NULL, 0, 1);  
+            addr += cfi->sectsiz / 16;
+        }
+    } else {
         enable_write(cfi);
-        //cfi_send_command(cfi, CMD_SE, &sector_addr, NULL, 0, 1);
-        cfi_send_command(cfi, CMD_SE, &addr, NULL, 0, 1);
-        sector++;
-    }        
+        cfi_send_command(cfi, CMD_SE, &addr, NULL, 0, 1);   
+    }  
+    
+    cfi_wait_ready(cfi); 
 }
 
 void cfi_bulk_erase(int unit) {
@@ -267,4 +258,43 @@ void cfi_bulk_erase(int unit) {
 
 struct cfi *cfi_get(int unit) {
     return &cfid[unit];
+}
+
+void cfi_test() {
+    struct cfi *cfi;
+    char test_buff[2] = {0x2c,0x04};
+    char read_buff[2];
+    int addr;
+    int i;
+    
+    delay(5 * 1000);
+
+    printf("cfi test ...\n");
+
+    cfi_init(0);  
+    
+    cfi = &cfid[0];
+    
+    addr = 0xf80000;
+    for(i=0;i<256;i++) {
+        cfi_erase(0, addr, cfi->sectsiz);
+        cfi_write(0, addr + 0x01fe, 2, test_buff);  
+        cfi_write(0, addr + 0x01fc, 2, test_buff);  
+        addr += cfi->sectsiz;
+    }
+
+    addr = 0xf80000;
+    for(i=0;i<256;i++) {
+        cfi_read(0, addr + 0x01fe, 2, read_buff);
+        if ((read_buff[0] != 0x2c) || (read_buff[1] != 0x04)) {
+            printf("error block %d\n",i);
+        }
+        cfi_read(0, addr + 0x01fc, 2, read_buff);
+        if ((read_buff[0] != 0x2c) || (read_buff[1] != 0x04)) {
+            printf("error block %d\n",i);
+        }
+        addr += cfi->sectsiz;
+    }
+
+    printf("finish");
 }

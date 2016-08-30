@@ -153,7 +153,7 @@ void initTask(void *pvParameters) {
     pthread_attr_t attr;
     pthread_t thread;
     int res;
-            
+
     pthread_attr_init(&attr);
     pthread_attr_setstacksize(&attr, luaTaskStack);
 

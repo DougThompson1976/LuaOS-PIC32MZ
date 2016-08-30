@@ -12,14 +12,16 @@
 #define CMD_RDSR2 0x07 // Read Status Register 2        
 #define CMD_BRRD  0x16 // Bank Register Read
 #define CMD_BRWR  0x17 // Bank Register Write
-#define CMD_P4E   0x20 // Sector erase 4 Kb
+#define CMD_P4E   0x20 // Sector erase (4 Kb)
+#define CMF_ASPRD 0x2b // Read ASP register
 #define CMD_CLSR  0x30 // Clear Status Register
 #define CMD_RDCR  0x35 // Read Configuration Register
 #define CMD_BLKE  0x60 // Bulk Erase
-#define CMD_SE    0xd8 // Sector erase
+#define CMD_SE    0xd8 // Sector erase (64 Kb or 256 Kb)
 #define CMD_REMS  0x90 // Read Identification
 #define CMD_BRAC  0xb9 // Bank Register Access
 #define CMD_PPBE  0xe4 // PPB Erase
+#define CMD_RESET 0xf0 // Reset
 #define CMD_RDID  0x9f // Read ID (JEDEC Manufacturer ID and JEDEC CFI)
 
 #define SR1_SRWD_MASK   (1 << 7)
@@ -40,8 +42,8 @@
 #define CR1_QUAD_MASK   (1 << 1)
 #define CR1_FREEZE_MASK (1 << 0)
 
-#define CR2_D8h_O_MASK  (1 << 7)
-#define CR2_02h_O_MASK  (1 << 6)
+#define SR2_D8h_O_MASK  (1 << 7)
+#define SR2_02h_O_MASK  (1 << 6)
 
 struct idcfi {
     char manid;

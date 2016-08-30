@@ -109,12 +109,11 @@ int spiffs_mount() {
     res = cfi_init(unit);
     if (!res)
         return 0;
-
+    
     // Get cfi driver structure
     cfi = cfi_get(0);
     
-    // Start address at page 1
-    cfg.phys_addr = cfi->pagesiz;
+    cfg.phys_addr = 0;
     
     // Physical size
     cfg.phys_size = cfi->sectors * cfi->sectsiz;
@@ -137,7 +136,7 @@ int spiffs_mount() {
         return -1;
     }
     
-    int fds_len = 32 * 4;
+    int fds_len = sizeof(spiffs_fd) * 40;
     my_spiffs_fds = malloc(fds_len);
     if (!my_spiffs_fds) {
         free(my_spiffs_work_buf);
@@ -145,7 +144,7 @@ int spiffs_mount() {
         return -1;                
     }
     
-    int cache_len = (cfg.log_page_size + 32) * 4 * 4 + 40;
+    int cache_len = cfg.log_page_size * 32;
     my_spiffs_cache = malloc(cache_len);
     if (!my_spiffs_cache) {
         free(my_spiffs_work_buf);
@@ -278,14 +277,6 @@ int spiffs_close_op(struct file *fp) {
         spiffs_stat stat;
         char c = ' ';
         
-        // If file size is 0 write something due to a current issue on this
-        res = SPIFFS_stat(&fs, fp->f_path, &stat);
-        if (res == SPIFFS_OK) {
-            if (stat.size == 0) {
-                res = SPIFFS_write(&fs, *(spiffs_file *)fp->f_fs, &c, 1);
-            }
-        }
-
         res = SPIFFS_close(&fs, *(spiffs_file *)fp->f_fs);
         if (res < 0) {
             result = spiffs_result(fs.err_code);
@@ -400,14 +391,33 @@ int spiffs_rename_op(const char *old_filename, const char *new_filename) {
 
 
 int spiffs_unlink_op(struct file *fp) {
-    int res = SPIFFS_fremove(&fs, *(spiffs_file *)fp->f_fs);
+    spiffs_file fh = *(spiffs_file *)fp->f_fs;
+    spiffs_fd *fd;
+    s32_t res;
+
+    res = spiffs_fd_get(&fs, fh, &fd);
+    if (res == SPIFFS_ERR_BAD_DESCRIPTOR) {
+        char npath[MAXPATHLEN];
+
+        strcpy(npath, fp->f_path);
+
+        if (is_dir(fp->f_path)) {
+            if (strcmp(fp->f_path,"/") != 0) {
+                strcat(npath,"/.");
+            }            
+        }
+
+        fh = SPIFFS_open(&fs, npath, SPIFFS_RDWR, 0); 
+    }
+    
+    res = SPIFFS_fremove(&fs, fh);
     if (res < 0) {
         res = spiffs_result(fs.err_code);
     }
     
     return res;
 }
-
+    
 int spiffs_opendir_op(struct file *fp) {
     fp->f_dir = malloc(sizeof(spiffs_DIR));
     if (!fp->f_dir) {
@@ -470,7 +480,7 @@ int spiffs_readdir_op(struct file *fp, struct dirent *ent) {
         // Get name and length
         fn = pe->name;
         len = strlen(fn);
-        
+
         // Get entry type and size
         ent->d_type = DT_REG;
         ent->d_reclen = pe->size;
