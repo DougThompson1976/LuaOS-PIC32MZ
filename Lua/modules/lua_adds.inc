@@ -123,32 +123,46 @@ static void luaos_boot_scripts(lua_State *L) {
     FILE *fp;
     int i;
 
-    char *system_order[] = {
-        "/sd/system.lua",
-        "/sd/system.lc",
-        "system.lua",
-        "system.lc",
-    };
-    
-    char *autorun_order[] = {
-        "/sd/autorun.lua",
-        "/sd/autorun.lc",
-        "autorun.lua",
-        "autorun.lc",
-    };
+    const char *system_order[2];
+    const char *autorun_order[2];
+
+    if (!mount_is_mounted("sd") && !mount_is_mounted("cfi")) {
+        // No filesystem is mounted, exit
+        return;
+    } else if (!mount_is_mounted("sd") &&  mount_is_mounted("cfi")) {
+        system_order[0] = "/system.lua";
+        system_order[1] = NULL;
+
+        autorun_order[0] = "/autorun.lua";
+        autorun_order[1] = NULL;
+    } else if (mount_is_mounted("sd") && !mount_is_mounted("cfi")) {
+        system_order[0] = "/system.lua";
+        system_order[1] = NULL;
+
+        autorun_order[0] = "/autorun.lua";
+        autorun_order[1] = NULL;
+    } else if (mount_is_mounted("sd") &&  mount_is_mounted("cfi")) {
+        system_order[0] = "/sd/system.lua";
+        system_order[1] = NULL;
+
+        autorun_order[0] = "/sd/autorun.lua";
+        autorun_order[1] = NULL;
+    }
 
     printf("\n");
 
     // Ecexute system script
     system = -1;
     for(i = 0; i < sizeof(system_order) / sizeof(*system_order); i++) {
-        if (fp = fopen(system_order[i], "r" )) {
-            fclose(fp);
-            system = i;
-            break;
+        if (system_order[i]) {
+            if (fp = fopen(system_order[i], "r" )) {
+                fclose(fp);
+                system = i;
+                break;
+            }            
         }
     }
-        
+    
     if (system >=0) {
         printf("Executing %s ...\n", system_order[system]);
         dofile(L, system_order[system]);
@@ -157,13 +171,15 @@ static void luaos_boot_scripts(lua_State *L) {
     // Ecexute autorun script
     autorun = -1;
     for(i = 0; i < sizeof(autorun_order) / sizeof(*autorun_order); i++) {
-        if (fp = fopen(autorun_order[i], "r" )) {
-            fclose(fp);
-            autorun = i;
-            break;
+        if (autorun_order[i]) {
+            if (fp = fopen(autorun_order[i], "r" )) {
+                fclose(fp);
+                autorun = i;
+                break;
+            }            
         }
     }
-        
+
     if (autorun >=0) {
         printf("Executing %s ...\n", autorun_order[autorun]);
         dofile(L, autorun_order[autorun]);

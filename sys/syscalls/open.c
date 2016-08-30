@@ -213,7 +213,10 @@ device:
     
 fs:
     strcpy(namebuf, mount_device(fname));
-    
+    if (!mount_is_mounted(namebuf)) {
+        return (ENXIO);   
+    }
+
 find:
     // store device name
     fp->f_devname = (char *)malloc(sizeof(char) * strlen(namebuf));

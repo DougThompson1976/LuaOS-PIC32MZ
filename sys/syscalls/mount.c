@@ -50,23 +50,22 @@ struct mountp {
 
 static const struct mountp mountps[] = {
 #if USE_CFI
+#if USE_SD
     {"/", "sd", "/sd", "cfi", "sd"},
+#endif
 #endif
     {NULL, NULL, NULL, NULL}
 };
 
+static struct mountd mountds[] = {
 #if USE_CFI
-static struct mountd mountds[] = {
     {"cfi", 0},
-    {"sd", 0},
-    {NULL, 0}
-};
-#else
-static struct mountd mountds[] = {
-    {"sd", 0},
-    {NULL, 0}
-};
 #endif
+#if USE_SD
+    {"sd", 0},
+#endif
+    {NULL, 0}
+};
 
 const char *mount_default_device() {
     struct mountd *cmountd = &mountds[0];
