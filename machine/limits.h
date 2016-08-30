@@ -33,10 +33,17 @@
  *      @(#)limits.h    8.2 (Berkeley) 5/4/95
  */
 
+// WHITECAT BEGIN
+#include "FreeRTOS.h"
+// WHITECAT END
+
 #define CHAR_BIT        8               /* number of bits in a char */
 #define MB_LEN_MAX      6               /* Allow 31 bit UTF2 */
 
-#define CLK_TCK         100             /* ticks per second */
+// WHITECAT BEGIN
+// define CLK_TCK according to FreeRTOS config
+#define CLK_TCK         (configTICK_RATE_HZ) /* ticks per second */
+// WHITECAT END
 
 /*
  * According to ANSI (section 2.2.4.2), the values below must be usable by
