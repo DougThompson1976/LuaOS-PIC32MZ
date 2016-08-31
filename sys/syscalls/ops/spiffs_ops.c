@@ -316,7 +316,7 @@ int spiffs_write_op(struct file *fp, struct uio *uio, struct ucred *cred) {
     int res;
     char *buf = uio->uio_iov->iov_base;
     unsigned int size = uio->uio_iov->iov_len;
-    
+
     res = SPIFFS_write(&fs, *(spiffs_file *)fp->f_fs, buf, size);
     if (res >= 0) {
         uio->uio_resid = uio->uio_resid - res;
@@ -326,20 +326,17 @@ int spiffs_write_op(struct file *fp, struct uio *uio, struct ucred *cred) {
         res = spiffs_result(fs.err_code);
     }
     
-/*
-    if (res == FR_OK) {
-        res = f_sync((FIL *)fp->f_fs);
-    }
-*/
-   
     return res;
 }
 
 int spiffs_stat_op(struct file *fp, struct stat *sb) {
-    int res;
     spiffs_stat stat;
-
-    sb->st_blksize = 256;
+    int res;
+    
+    // Get cfi driver structure
+    struct cfi *cfi = cfi_get(0);
+    
+    sb->st_blksize = cfi->pagesiz;
 
     // First test if it's a directory entry
     if (is_dir(fp->f_path)) {

@@ -60,19 +60,6 @@ static int f_receive (lua_State *L) {
 
     FILE *f= fopen(filename, "w");
     if (f) {
-        fclose(f);
-        
-        // Remove file
-        if (unlink(filename) < 0) {
-            return luaL_error(L, strerror(errno));
-        }
-        
-        // Re-open file
-        FILE *f= fopen(filename, "w");
-        if (!f) {
-            return luaL_error(L, strerror(errno));
-        }
-        
         // Lock tty, avoid other threads to write to console
         tty_lock();
         
@@ -106,10 +93,7 @@ static int f_receive (lua_State *L) {
             }
 
             // Wrhite chunk to disk
-            cchunk = chunk;
-            for(i=0; i < chunk_size; i++) {
-                fwrite(cchunk++,1,1,f);
-            }
+            fwrite(chunk,chunk_size,1,f);
 
             // Send 'C' for start
             uart_write(CONSOLE_UART, 'C');
