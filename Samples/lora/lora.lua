@@ -26,10 +26,11 @@ try(
 end)
 
 lora.setup(lora.BAND868, false)
-lora.setAppEui("70B3D57ED0000412")
-lora.setAppKey("AE07BD4621B7AAD81D5CAB3C5886BEEF")
-lora.setAdr(true)
+lora.setAppEui("70B3D57ED0000740")
+lora.setAppKey("FB5E2EB1FDE0DCCB7B905685FD6B60A5")
+lora.setAdr(false)
 lora.setAr(true)
+lora.setDr(0)
 lora.join(lora.OTAA)
 lora.tx(false,1,pack.pack(25.3))
 
@@ -40,7 +41,7 @@ lora.tx(false,1,pack.pack(25.3))
 
 
 lora.setup(lora.BAND868)
-lora.setAppEui("70B3D57ED0000412")
+lora.setAppEui("70B3D57ED0000740")
 lora.setAppKey("AE07BD4621B7AAD81D5CAB3C5886BEEF")
 lora.setAdr(true)
 lora.setAr(true)

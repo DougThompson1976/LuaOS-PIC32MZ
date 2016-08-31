@@ -66,7 +66,7 @@
 #define LORA_UART                   2
 #define LORA_UART_BR                57600
 #define LORA_UART_BUFF_SIZE         1024
-#define LORA_RST                    0x52
+#define LORA_RST                    0x50
 
 // ---------------------------------------------------------------------------
 // RTC
