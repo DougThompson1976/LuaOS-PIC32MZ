@@ -55,6 +55,7 @@
 #define LORA_TRANSMISSION_FAIL_ACK_NOT_RECEIVED  (1 << 18)
 #define LORA_NOT_SETUP                           (1 << 19)
 #define LORA_INVALID_PARAM                       (1 << 20)
+#define LORA_INVALID_ARGUMENT                    (1 << 20)
 
 typedef void (lora_rx)(int port, char *payload);
 

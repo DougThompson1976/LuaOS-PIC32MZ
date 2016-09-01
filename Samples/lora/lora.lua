@@ -15,12 +15,14 @@ lora.join(true)
 thread.start(function()
 try(
     function()
-        a=a*2
+a=a*2
+        --lora.setAdr(false)
     end,
-    function(where, line, error)
+    function(where, line, error, msg)
         print(where)
         print(line)
         print(error)
+        print(msg)
     end
 )
 end)

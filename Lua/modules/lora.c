@@ -51,33 +51,33 @@ static void on_received(int port, char *payload) {
 static void lora_error(lua_State* L, int code) {
     switch (code){
         case LORA_KEYS_NOT_CONFIGURED:
-            luaL_error(L, "keys are not configured");break;
+            luaL_error(L, "%d:keys are not configured", LORA_KEYS_NOT_CONFIGURED);break;
         case LORA_ALL_CHANNELS_BUSY:
-            luaL_error(L, "all channels are busy");break;
+            luaL_error(L, "%d:all channels are busy", LORA_ALL_CHANNELS_BUSY);break;
         case LORA_DEVICE_IN_SILENT_STATE:
-            luaL_error(L, "device is in silent state");break;
+            luaL_error(L, "%d:device is in silent state", LORA_DEVICE_IN_SILENT_STATE);break;
         case LORA_DEVICE_DEVICE_IS_NOT_IDLE:
-            luaL_error(L, "device is not idle");break;
+            luaL_error(L, "%d:device is not idle", LORA_DEVICE_DEVICE_IS_NOT_IDLE);break;
         case LORA_PAUSED:
-            luaL_error(L, "lora stack are paused");break;
+            luaL_error(L, "%d:lora stack are paused", LORA_PAUSED);break;
         case LORA_TIMEOUT:
-            luaL_error(L, "time out");break;
+            luaL_error(L, "%d:time out", LORA_TIMEOUT);break;
         case LORA_JOIN_DENIED:
-            luaL_error(L, "join denied");break;
+            luaL_error(L, "%d:join denied", LORA_JOIN_DENIED);break;
         case LORA_UNEXPECTED_RESPONSE:
-            luaL_error(L, "unexpected response");break;
+            luaL_error(L, "%d:unexpected response", LORA_UNEXPECTED_RESPONSE);break;
         case LORA_NOT_JOINED:
-            luaL_error(L, "not joined");break;
+            luaL_error(L, "%d:not joined", LORA_NOT_JOINED);break;
         case LORA_REJOIN_NEEDED:
-            luaL_error(L, "rejoin needed");break;
+            luaL_error(L, "%d:rejoin needed", LORA_REJOIN_NEEDED);break;
         case LORA_INVALID_DATA_LEN:
-            luaL_error(L, "invalid data len");break;
+            luaL_error(L, "%d:invalid data len", LORA_INVALID_DATA_LEN);break;
         case LORA_TRANSMISSION_FAIL_ACK_NOT_RECEIVED:
-            luaL_error(L, "transmission fail, ack not received");break;
+            luaL_error(L, "%d:transmission fail, ack not received", LORA_TRANSMISSION_FAIL_ACK_NOT_RECEIVED);break;
         case LORA_NOT_SETUP:
-            luaL_error(L, "lora is not setup, setup first");break;
+            luaL_error(L, "%d:lora is not setup, setup first", LORA_NOT_SETUP);break;
         case LORA_INVALID_PARAM:
-            luaL_error(L, "invalid argument");break;
+            luaL_error(L, "%d:invalid argument", LORA_INVALID_ARGUMENT);break;
     }
 }
 
@@ -142,7 +142,7 @@ static int llora_setup(lua_State* L) {
 
     // Sanity checks
     if ((band != 868) && (band != 433)) {
-        return luaL_error(L, "invalid band", error);
+        return luaL_error(L, "%d:invalid band", LORA_INVALID_ARGUMENT);
     }
     
     // Setup in base of frequency
@@ -236,7 +236,7 @@ static int llora_set_Dr(lua_State* L) {
     int dr = luaL_checkinteger(L, 1);
     
     if ((dr < 0) || (dr > 7)) {
-        return luaL_error(L, "invalid data rate value (0 to 7)"); 
+        return luaL_error(L, "%d:invalid data rate value (0 to 7)", LORA_INVALID_ARGUMENT); 
     }
     
     char value[2];
@@ -273,7 +273,7 @@ static int llora_set_RetX(lua_State* L) {
     int rets = luaL_checkinteger(L, 1);
     
     if ((rets < 0) || (rets > 255)) {
-        return luaL_error(L, "invalid retransmissions value (0 to 255)"); 
+        return luaL_error(L, "%d:invalid retransmissions value (0 to 255)", LORA_INVALID_ARGUMENT); 
     }
     
     char value[2];
@@ -311,7 +311,7 @@ static int llora_set_LinkChk(lua_State* L) {
     int interval = luaL_checkinteger(L, 1);
     
     if ((interval < 0) || (interval > 65535)) {
-        return luaL_error(L, "invalid interval (0 to 65535)"); 
+        return luaL_error(L, "%d:invalid interval (0 to 65535)", LORA_INVALID_ARGUMENT); 
     }
     
     char value[6];
@@ -414,11 +414,11 @@ static int llora_join(lua_State* L) {
     int join_type = luaL_checkinteger(L, 1);
 
     if ((join_type != 1) && (join_type != 2)) {
-        return luaL_error(L, "invalid join type, user lora.OTAA or lora.ABP");                
+        return luaL_error(L, "%d:invalid join type, user lora.OTAA or lora.ABP", LORA_INVALID_ARGUMENT);                
     }
     
     if (join_type == 2) {
-        return luaL_error(L, "ABP not allowed");                
+        return luaL_error(L, "%d:ABP not allowed", LORA_INVALID_ARGUMENT);                
     }
     
     if (join_type == 1)
@@ -438,11 +438,11 @@ static int llora_tx(lua_State* L) {
     const char *data = luaL_checkstring(L, 3);
     
     if ((port < 1) || (port > 223)) {
-        return luaL_error(L, "invalid port number");   
+        return luaL_error(L, "%d:invalid port number", LORA_INVALID_ARGUMENT);   
     }
 
     if (!check_hex_str(data)) {
-        luaL_error(L, "invalid data");     
+        luaL_error(L, "%d:invalid data", LORA_INVALID_ARGUMENT);     
     }    
     
     int resp = lora_tx(cnf, port, data);
@@ -466,7 +466,7 @@ static int llora_rx(lua_State* L) {
 }
 
 static int llora_nothing(lua_State* L) {
-    return luaL_error(L, "not implemented");    
+    return luaL_error(L, "%d:not implemented", LORA_INVALID_ARGUMENT);    
 }
 
 static const luaL_Reg lora[] = {
@@ -524,6 +524,53 @@ int luaopen_lora(lua_State* L) {
     
     lua_pushinteger(L, 2);
     lua_setfield(L, -2, "ABP");
+
+    // Create a table of errors
+    lua_newtable(L);
+    
+    lua_pushinteger(L, LORA_KEYS_NOT_CONFIGURED);
+    lua_setfield(L, -2, "KeysNotConfigured");
+    
+    lua_pushinteger(L, LORA_ALL_CHANNELS_BUSY);
+    lua_setfield(L, -2, "AllChannelsBusy");
+
+    lua_pushinteger(L, LORA_DEVICE_IN_SILENT_STATE);
+    lua_setfield(L, -2, "DeviceInSilentState");
+
+    lua_pushinteger(L, LORA_DEVICE_DEVICE_IS_NOT_IDLE);
+    lua_setfield(L, -2, "DeviceIsNotIdle");
+
+    lua_pushinteger(L, LORA_PAUSED);
+    lua_setfield(L, -2, "Paused");
+
+    lua_pushinteger(L, LORA_TIMEOUT);
+    lua_setfield(L, -2, "Timeout");
+
+    lua_pushinteger(L, LORA_JOIN_DENIED);
+    lua_setfield(L, -2, "JoinDenied");
+
+    lua_pushinteger(L, LORA_UNEXPECTED_RESPONSE);
+    lua_setfield(L, -2, "UnexpectedResponse");
+
+    lua_pushinteger(L, LORA_NOT_JOINED);
+    lua_setfield(L, -2, "NotJoined");
+
+    lua_pushinteger(L, LORA_REJOIN_NEEDED);
+    lua_setfield(L, -2, "RejoinNeeded");
+
+    lua_pushinteger(L, LORA_INVALID_DATA_LEN);
+    lua_setfield(L, -2, "InvalidDataLen");
+
+    lua_pushinteger(L, LORA_TRANSMISSION_FAIL_ACK_NOT_RECEIVED);
+    lua_setfield(L, -2, "TransmissionFail");
+
+    lua_pushinteger(L, LORA_NOT_SETUP);
+    lua_setfield(L, -2, "NotSetup");
+
+    lua_pushinteger(L, LORA_INVALID_PARAM);
+    lua_setfield(L, -2, "InvalidArgument");
+
+    lua_setfield(L, -2, "error");
 
     return 1;
 }

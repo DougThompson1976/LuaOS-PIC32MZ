@@ -69,19 +69,48 @@ static int luaB_try (lua_State *L) {
         if (catchFunc != LUA_NOREF) {
             const char *msg = lua_tostring(L, -1);
             
+            // Parse error message, with format
+            // where:line-number error-code:error-message
+            //
+            // where and line-number are mandatory
+            // error-code is optional
             const char *whereEnd = strchr(msg,':');
             const char *lineEnd = strchr(whereEnd + 1,':');
-
+            const char *messageStart;
+            
+            int error_code;
+            
+            if (!sscanf(lineEnd + 2,"%d:", &error_code)) {
+                error_code = 0;
+                messageStart = lineEnd + 2;
+            } else {
+                messageStart = strchr(lineEnd + 2,':');
+                messageStart++;
+            }
+            
             lua_remove(L, -2);
                         
             // Call fails, call to catch function
             lua_rawgeti(L, LUA_REGISTRYINDEX, catchFunc); 
             
+            // Push where (where error occurs)
             lua_pushlstring(L, msg, whereEnd - msg);
-            lua_pushlstring(L, whereEnd + 1, lineEnd -whereEnd - 1);
-            lua_pushstring(L, lineEnd + 2);
             
-            lua_pcall(L, 3, 0, NULL);    
+            // Push line (line number where error occurs)
+            lua_pushlstring(L, whereEnd + 1, lineEnd -whereEnd - 1);
+            
+            // Push error code
+            if (!error_code) {
+                // No error code, push nil value
+                lua_pushnil(L);
+            } else {
+                lua_pushinteger(L, error_code);
+            }
+            
+            // Push error message
+            lua_pushstring(L, messageStart);
+            
+            lua_pcall(L, 4, 0, NULL);    
         }
     }
     
