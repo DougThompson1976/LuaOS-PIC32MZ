@@ -34,6 +34,8 @@
 #ifndef CAN_H
 #define	CAN_H
 
+#define CAN_MAX_LEN 8
+
 #define CAN_1TQ 0
 #define CAN_2TQ 1
 #define CAN_3TQ 2

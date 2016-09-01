@@ -95,7 +95,7 @@ static int luaos_pushline (lua_State *L, int firstline) {
   if (readstatus == 0)
     return 0;  /* no input (prompt will be popped by caller) */
   
-#if USE_SHELL
+#if LUA_USE_SHELL
   if (lua_shell_on) {
       lua_shell(buffer);
   }

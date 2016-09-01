@@ -98,7 +98,7 @@
 #define mem_calloc(c, n)            calloc
 #define mem_realloc(p, sz)          realloc
 
-#define LWIP_DEBUG                  1
+#define LWIP_DEBUG                  0
 #define DNS_DEBUG                   LWIP_DBG_OFF
 #define ETHARP_DEBUG                LWIP_DBG_OFF
 #define NETIF_DEBUG                 LWIP_DBG_OFF
@@ -129,6 +129,6 @@
 #define SLIP_DEBUG                  LWIP_DBG_OFF
 #define DHCP_DEBUG                  LWIP_DBG_OFF
 #define SNTP_DEBUG                  LWIP_DBG_OFF
-#define PING_DEBUG                  LWIP_DBG_ON
+#define PING_DEBUG                  LWIP_DBG_OFF
  
 #endif /* __LWIPOPTS_H__ */

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="97">
+<configurationDescriptor version="95">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -7,8 +7,6 @@
       <logicalFolder name="HeaderFiles"
                      displayName="Header Files"
                      projectFiles="true">
-        <itemPath>Lua/platform/pio.h</itemPath>
-        <itemPath>Lua/platform/platform.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
@@ -611,11 +609,6 @@
           <itemPath>Lua/common/y.tab.c</itemPath>
           <itemPath>Lua/common/y.tab.h</itemPath>
         </logicalFolder>
-        <logicalFolder name="elua" displayName="elua" projectFiles="true">
-          <logicalFolder name="inc" displayName="inc" projectFiles="true">
-            <itemPath>Lua/elua/inc/elua_platform.h</itemPath>
-          </logicalFolder>
-        </logicalFolder>
         <logicalFolder name="modules" displayName="modules" projectFiles="true">
           <logicalFolder name="screen" displayName="screen" projectFiles="true">
             <itemPath>Lua/modules/screen/bitmap.c</itemPath>
@@ -626,6 +619,7 @@
             <itemPath>Lua/modules/screen/screen.c</itemPath>
           </logicalFolder>
           <itemPath>Lua/modules/adc.c</itemPath>
+          <itemPath>Lua/modules/adc.h</itemPath>
           <itemPath>Lua/modules/auxmods.h</itemPath>
           <itemPath>Lua/modules/can.c</itemPath>
           <itemPath>Lua/modules/error.c</itemPath>
@@ -637,13 +631,13 @@
           <itemPath>Lua/modules/lora.c</itemPath>
           <itemPath>Lua/modules/loslib_adds.inc</itemPath>
           <itemPath>Lua/modules/lpack.c</itemPath>
-          <itemPath>Lua/modules/lrodefs.h</itemPath>
           <itemPath>Lua/modules/lua_adds.inc</itemPath>
           <itemPath>Lua/modules/mqtt.c</itemPath>
           <itemPath>Lua/modules/net.c</itemPath>
           <itemPath>Lua/modules/pio.c</itemPath>
           <itemPath>Lua/modules/pwm.c</itemPath>
           <itemPath>Lua/modules/spi.c</itemPath>
+          <itemPath>Lua/modules/spi.h</itemPath>
           <itemPath>Lua/modules/stepper.c</itemPath>
           <itemPath>Lua/modules/thread.c</itemPath>
           <itemPath>Lua/modules/thread.h</itemPath>
@@ -1418,7 +1412,7 @@
             <pElem>lib/pthread</pElem>
             <pElem>Lua/exec/include</pElem>
           </incDir>
-          <commandLine>-Dnational -mips32r2 -EL -mhard-float -fno-short-double -mfp64 -nostdinc -D__PIC32MZ__ -G 0 -Os -fno-builtin -DLUA_COMPAT_MODULE -DLUA_USE_CTYPE -DLUA_C89_NUMBERS -DCLOCKS_PER_SEC=1000 -DLUA_COMPAT_5_2 -fno-builtin -ffunction-sections -fdata-sections</commandLine>
+          <commandLine>-Dnational -mips32r2 -EL -mhard-float -fno-short-double -mfp64 -nostdinc -D__PIC32MZ__ -G 0 -Os -fno-builtin -DLUA_COMPAT_MODULE -DLUA_USE_CTYPE -DLUA_C89_NUMBERS -DCLOCKS_PER_SEC=1000 -fno-builtin -ffunction-sections -fdata-sections</commandLine>
         </cTool>
         <asmTool>
           <commandLine>-mdsp -mips32r2 -EL -mfp64 -G 0 -Os</commandLine>
@@ -1441,7 +1435,7 @@
             <linkerLibFileItem>FreeRTOS/port/port_asm.o</linkerLibFileItem>
             <linkerLibFileItem>main/locore.o</linkerLibFileItem>
           </linkerLibItems>
-          <commandLine>-mips32r2 -EL -nostdlib -nostartfiles -T ./main/boot.ld -Wl,--oformat=elf32-littlemips -o LuaOS_V1.elf -Wl,-z,max-page-size=4096,-Os -Wl,-Map=LuaOS_V1.map -Wl,--gc-sections</commandLine>
+          <commandLine>-mips32r2 -EL -nostdlib -nostartfiles -T ./main/boot.ld -Wl,--oformat=elf32-littlemips -o LuaOS_V1.elf -Wl,-z,max-page-size=4096,-Os -Wl,-Map=LuaOS_V1.map -Wl,--gc-sections,-u,main</commandLine>
         </linkerTool>
       </compileType>
       <item path="FreeRTOS/FreeRTOSConfig.h" ex="false" tool="3" flavor2="0">
@@ -1525,9 +1519,9 @@
       </item>
       <item path="Lua/common/y.tab.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Lua/elua/inc/elua_platform.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="Lua/modules/adc.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/modules/adc.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/modules/auxmods.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -1545,13 +1539,13 @@
       </item>
       <item path="Lua/modules/lpack.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="Lua/modules/lrodefs.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="Lua/modules/mqtt.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/net.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/pio.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/modules/pio.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/modules/pwm.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -1568,6 +1562,8 @@
       <item path="Lua/modules/screen/screen.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/spi.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/modules/spi.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/modules/stepper.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -1590,10 +1586,6 @@
       <item path="Lua/platform/net.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/platform/pio.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/platform/pio.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/platform/platform.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/platform/pwm.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -3591,9 +3583,9 @@
       </item>
       <item path="Lua/common/y.tab.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Lua/elua/inc/elua_platform.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="Lua/modules/adc.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/modules/adc.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/modules/auxmods.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -3611,13 +3603,13 @@
       </item>
       <item path="Lua/modules/lpack.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="Lua/modules/lrodefs.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="Lua/modules/mqtt.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/net.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/pio.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/modules/pio.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/modules/pwm.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -3634,6 +3626,8 @@
       <item path="Lua/modules/screen/screen.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/spi.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Lua/modules/spi.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/modules/stepper.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -3656,10 +3650,6 @@
       <item path="Lua/platform/net.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/platform/pio.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/platform/pio.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Lua/platform/platform.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/platform/pwm.c" ex="false" tool="0" flavor2="0">
       </item>

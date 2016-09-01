@@ -5,6 +5,10 @@
  * high-level functions that read bitmap files.
  */
 
+#include "whitecat.h"
+
+#if LUA_USE_SCREEN
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -1022,3 +1026,5 @@ int readSingleImageICOPTR(FILE *fp, char **xorMask, char **andMask,
  * c-label-offset:-4
  * End:
  */
+
+#endif

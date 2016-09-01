@@ -49,6 +49,19 @@
 #define PBCLK4_DIV ((CPU_HZ / PBCLK4_HZ) - 1)
 #define PBCLK5_DIV ((CPU_HZ / PBCLK5_HZ) - 1)
 
+#define USE_LORA             1
+#define USE_RTC              1
+#define USE_ETHERNET         1
+#define USE_WIFI             0
+#define USE_GPRS             1
+#define USE_GPS              1
+#define USE_CONSOLE          1
+#define USE_SD               1
+#define USE_CFI              1
+#define USE_DISPLAY          1
+#define USE_CAN              1
+#define USE_STEPPER          1
+
 // ---------------------------------------------------------------------------
 // Leds
 // ---------------------------------------------------------------------------
@@ -62,16 +75,10 @@
 #define LORA_TRANSCEIVER_RN2483     1
 #define LORA_TRANSCEIVER_TYPE       LORA_TRANSCEIVER_RN2483
 
-#define USE_LORA                    1
 #define LORA_UART                   2
 #define LORA_UART_BR                57600
 #define LORA_UART_BUFF_SIZE         1024
 #define LORA_RST                    0x50
-
-// ---------------------------------------------------------------------------
-// RTC
-// ---------------------------------------------------------------------------
-#define USE_RTC             1
 
 // ---------------------------------------------------------------------------
 // Ethernet
@@ -81,8 +88,6 @@
         ((u32_t)((c) & 0xff) << 16) | \
         ((u32_t)((b) & 0xff) << 8)  | \
         (u32_t)((a) & 0xff))
-
-#define USE_ETHERNET         1     // Use ethernet capabilities
 
 // Phy settings
 #define PHY_TYPE_LAN8720     1
@@ -123,19 +128,16 @@
 // ---------------------------------------------------------------------------
 // GPRS
 // ---------------------------------------------------------------------------
-#define USE_GPRS          1
 #define SIM908_UART       4
 #define SIM908_BR         115200  // Baud rate
 #define SIM908_PWR_PIN      0x50    // RE0
 #define SIM908_STATUS_PIN   0x51    // RE1
 
 // GPS
-#define USE_GPS           1
 #define SIM908_UART_DBG   3       // GPS datata UART
 #define GPS_BR            115200  // Baud rate
 
 // Console configuration
-#define USE_CONSOLE   1
 #define CONSOLE_UART  1
 #define CONSOLE_BR    115200
 
@@ -200,8 +202,6 @@
 // ---------------------------------------------------------------------------
 // SDCARD
 // ---------------------------------------------------------------------------
-#define USE_SD        1
-
 #define SD_SPI        1
 #define SD_CS         SPI1_CS
 #define SD_LED        LED_1
@@ -209,7 +209,6 @@
 // ---------------------------------------------------------------------------
 // CFI
 // ---------------------------------------------------------------------------
-#define USE_CFI        1
 #define CFI_SPI        3
 #define CFI_CS         SPI3_CS  
 #define CFI_LED        LED_1
@@ -217,7 +216,6 @@
 // ---------------------------------------------------------------------------
 // DISPLAY
 // ---------------------------------------------------------------------------
-#define USE_DISPLAY        1
 #define DISPLAY_SPI        2
 #define DISPLAY_CS         SPI2_CS  
 #define DISPLAY_RE         0x25
@@ -226,7 +224,6 @@
 // ---------------------------------------------------------------------------
 // CAN
 // ---------------------------------------------------------------------------
-#define USE_CAN       1
 #define CAN_BUS_SPEED 250000
 #define CAN_RX_QUEUE  100
 
@@ -303,10 +300,28 @@
 // ---------------------------------------------------------------------------
 #define HISTORY_DEFAULT_STATE 0
 
-#define USE_SHELL             1 // Use LuaOS shell?
 #define SHELL_DEFAULT_STATE   0 // Initial LuaOS shell status (1 = on, 0 = off)
 
-#define USE_HTTP 1
-
+// ---------------------------------------------------------------------------
+// Lua modules
+// ---------------------------------------------------------------------------
+#define LUA_USE_PIO         1
+#define LUA_USE_TMR         1
+#define LUA_USE_CAN         (1 && USE_CAN)
+#define LUA_USE_NET         (1 && (USE_ETHERNET || USE_WIFI || USE_GPRS))
+#define LUA_USE_ADC         1
+#define LUA_USE_SPI         1
+#define LUA_USE_MQTT        (1 && (USE_ETHERNET || USE_WIFI || USE_GPRS))
+#define LUA_USE_THREAD      1
+#define LUA_USE_SCREEN      (1 && USE_DISPLAY)
+#define LUA_USE_UART        1
+#define LUA_USE_PWM         1
+#define LUA_USE_GPS         (1 && USE_GPS)
+#define LUA_USE_HTTP        (1 && (USE_ETHERNET || USE_WIFI || USE_GPRS))
+#define LUA_USE_STEPPER     (1 && USE_STEPPER)
+#define LUA_USE_I2C         1
+#define LUA_USE_LORA        (1 && USE_LORA)
+#define LUA_USE_PACK        1
+#define LUA_USE_SHELL       1
 
 #endif	/* CONFIG_H */

@@ -27,6 +27,10 @@
  * this software.
  */
 
+#include "whitecat.h"
+
+#if LUA_USE_THREAD
+
 #include <stdlib.h>
 #include <assert.h>
 #include <signal.h>
@@ -448,3 +452,4 @@ int luaopen_thread(lua_State* L)
     return 1;
 } 
  
+#endif

@@ -87,12 +87,13 @@ struct device devs[] = {
          spiffs_format}
     },
 #endif
+#if (USE_ETHERNET || USE_GPRS || USER_WIFI)
     {
         "net",
         {net_open, net_read, net_write, net_ioctl, net_select, net_stat, 
          net_close, NULL, NULL, NULL, NULL, NULL, NULL, NULL}
     }    
-    
+#endif
 };
 
 int ndevs = sizeof(devs) / sizeof(struct device);

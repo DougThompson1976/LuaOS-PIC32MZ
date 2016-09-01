@@ -25,12 +25,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
-#include "FreeRTOS.h"
-#include "task.h"
-
 #include "whitecat.h"
 
-#if USE_HTTP
+#if LUA_USE_HTTP
+
+#include "FreeRTOS.h"
+#include "task.h"
 
 #include <time.h>
 #include <stdio.h>

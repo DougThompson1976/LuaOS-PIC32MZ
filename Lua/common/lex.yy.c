@@ -1,3 +1,6 @@
+#include "whitecat.h"
+
+#if LUA_USE_SHELL
 
 #line 3 "lex.yy.c"
 
@@ -1918,5 +1921,4 @@ void yyfree (void * ptr )
 
 #line 31 "shell.l"
 
-
-
+#endif

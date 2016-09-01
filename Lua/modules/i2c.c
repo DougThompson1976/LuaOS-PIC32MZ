@@ -27,6 +27,10 @@
  * this software.
  */
 
+#include "whitecat.h"
+
+#if LUA_USE_I2C
+
 #include "lua.h"
 #include "lauxlib.h"
 
@@ -188,3 +192,5 @@ int luaopen_i2c(lua_State* L) {
 
     return 1;
 }
+
+#endif

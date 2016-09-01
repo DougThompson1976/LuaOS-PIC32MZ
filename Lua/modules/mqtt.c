@@ -1,9 +1,10 @@
+#include "whitecat.h"
+
+#if LUA_USE_MQTT
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
-#include "elua_platform.h"
 #include "auxmods.h"
-#include "lrodefs.h"
 
 #include "mqtt/MQTTClient.h"
 #include "mqtt/MQTTClientPersistence.h"
@@ -303,20 +304,16 @@ static int f_gc (lua_State *L) {
 const luaL_Reg mqtt_client_map[] = 
 {
   {"__gc", f_gc},
-  { LSTRKEY( "client" ),  LFUNCVAL( mqtt_client ) },
-  { LSTRKEY( "connect" ),  LFUNCVAL( mqtt_connect ) },
-  { LSTRKEY( "disconnect" ),  LFUNCVAL( mqtt_disconnect ) },
-  { LSTRKEY( "subscribe" ),  LFUNCVAL( mqtt_subscribe ) },
-  { LSTRKEY( "publish" ),  LFUNCVAL( mqtt_publish ) },
-#if LUA_OPTIMIZE_MEMORY > 0
-  { LSTRKEY( "ID_STD" ), LNUMVAL( ELUA_CAN_ID_STD ) },
-  { LSTRKEY( "ID_EXT" ), LNUMVAL( ELUA_CAN_ID_EXT ) },
-#endif
-  { LNILKEY, LNILVAL }
+  { "client",  mqtt_client },
+  { "connect",  mqtt_connect },
+  { "disconnect",  mqtt_disconnect },
+  { "subscribe",  mqtt_subscribe },
+  { "publish",  mqtt_publish },
+  { NULL, NULL}
 };
 
 const luaL_Reg mqtt_map[] = {
-  { LNILKEY, LNILVAL }
+  { NULL, NULL }
 };
 
 LUALIB_API int luaopen_mqtt( lua_State *L ) {
@@ -346,3 +343,4 @@ LUALIB_API int luaopen_mqtt( lua_State *L ) {
 
     return 1;  
 }
+#endif

@@ -373,9 +373,17 @@ void cpu_idle(int seconds) {
     syslog(LOG_INFO,"cpu enter to iddle mode at %s",asctime(info));
 
     // Stop network interfaces
+    #if USE_ETHERNET
     int restart_en =   (netStop("en")   != NET_NOT_YET_STARTED);
+    #endif
+    
+    #if USE_GPRS
     int restart_gprs = (netStop("gprs") != NET_NOT_YET_STARTED);
+    #endif
+
+    #if USER_WIFI
     int restart_wf =   (netStop("wf")   != NET_NOT_YET_STARTED);
+    #endif
     
     vTaskSuspendAll();
 
@@ -411,15 +419,21 @@ void cpu_idle(int seconds) {
     syslog(LOG_INFO,"cpu exit from iddle mode at %s",asctime(info));
     
     // Restart netork interfaces
+    #if USE_ETHERNET
     if (restart_en) {
         netStart("en");
     }
+    #endif
 
+    #if USE_GPRS
     if (restart_gprs) {
         netStart("gprs");
     }
+    #endif
 
+    #if USE_WIFI
     if (restart_wf) {
         netStart("wf");
     }
+    #endif
 }

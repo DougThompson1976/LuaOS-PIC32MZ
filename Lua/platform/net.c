@@ -26,6 +26,10 @@
  * arising out of or in connection with the use or performance of
  * this software.
  */
+#include "whitecat.h"
+
+#if LUA_USE_NET
+
 #include <string.h>
 
 #include "lwip/inet.h"
@@ -142,3 +146,5 @@ int platform_net_sntp_start() {
 void platform_net_setup_gprs(const char *apn, const char *pin) {
     netSetupGprs(apn, pin);
 }
+
+#endif

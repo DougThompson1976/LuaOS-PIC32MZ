@@ -27,6 +27,10 @@
  * this software.
  */
 
+#include "whitecat.h"
+
+#if LUA_USE_UART
+
 #include <stdlib.h>
 #include <assert.h>
 #include <signal.h>
@@ -222,3 +226,5 @@ int luaopen_uart(lua_State* L)
     
     return 1;
 }
+
+#endif

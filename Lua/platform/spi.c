@@ -27,12 +27,15 @@
  * this software.
  */
 
-#include "elua_platform.h"
+#include "whitecat.h"
+
+#if LUA_USE_SPI
 
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
 
+#include "Lua/modules/spi.h"
 #include "drivers/spi/spi.h"
 
 #include <strings.h>
@@ -68,7 +71,7 @@ u32 platform_spi_setup( spi_userdata *spi, int mode, u32 clock, unsigned cpol, u
     spi_set_cspin(spi->spi, spi->cs);
     spi_deselect(spi->spi);
     
-    if (mode == PLATFORM_SPI_MASTER) {
+    if (mode == 1) {
         spi->mode = PIC32_SPICON_MSTEN | PIC32_SPICON_ON | PIC32_SPICON_CKE | PIC32_SPICON_SMP;
         
         switch (databits) {
@@ -104,3 +107,5 @@ void platform_spi_select( spi_userdata *spi, int is_select ) {
 spi_data_type platform_spi_send_recv( spi_userdata *spi, spi_data_type data ) {
     return spi_transfer(spi->spi, data);
 }
+
+#endif

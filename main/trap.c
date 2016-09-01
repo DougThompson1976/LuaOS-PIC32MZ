@@ -99,52 +99,68 @@ void interrupt() {
         case PIC32_IRQ_T1:
             vPortIncrementTick();break;	
 
-        case PIC32_IRQ_T2:    
+        case PIC32_IRQ_T2:  
+            #if USE_STEPPER
             if (stepper_timer == 2) {
                 stepper_intr(PIC32_IRQ_T2);
             }
+            #endif
             break;
                 
         case PIC32_IRQ_T3:    
+            #if USE_STEPPER
             if (stepper_timer == 3) {
                 stepper_intr(PIC32_IRQ_T3);
             }
+            #endif
             break;
 
         case PIC32_IRQ_T4: 
+            #if USE_STEPPER
             if (stepper_timer == 4) {
                 stepper_intr(PIC32_IRQ_T4);
             }
+            #endif
             break;
 
         case PIC32_IRQ_T5:    
+            #if USE_STEPPER
             if (stepper_timer == 5) {
                 stepper_intr(PIC32_IRQ_T5);
             }
+            #endif
             break;
 
         case PIC32_IRQ_T6:    
+            #if USE_STEPPER
             if (stepper_timer == 6) {
                 stepper_intr(PIC32_IRQ_T6);
             }
+            #endif
             break;
 
         case PIC32_IRQ_T7:    
+            #if USE_STEPPER
             if (stepper_timer == 7) {
                 stepper_intr(PIC32_IRQ_T7);
             }
+            #endif
             break;
 
         case PIC32_IRQ_T8:    
+            #if USE_STEPPER
             if (stepper_timer == 8) {
                 stepper_intr(PIC32_IRQ_T8);
             }
+            #endif
             break;
 
         case PIC32_IRQ_T9:    
+            #if USE_STEPPER
             if (stepper_timer == 9) {
                 stepper_intr(PIC32_IRQ_T9);
             }
+            #endif
             break;
 
         /* UART */
@@ -167,7 +183,7 @@ void interrupt() {
         case PIC32_IRQ_U5E:   uart_intr_er(4); break;
         case PIC32_IRQ_U6E:   uart_intr_er(5); break;
 
-#ifdef USE_CAN
+#if USE_CAN
         /* CAN */
         case PIC32_IRQ_CAN1:  can_intr(0); break;
         case PIC32_IRQ_CAN2:  can_intr(1); break;

@@ -61,3 +61,9 @@ lora.setup(lora.BAND868, false)
 
 uart.setup(2, 57600, 8, uart.PARNONE, uart.STOP1)
 uart.read(4,"*l",true,1000*10)
+
+
+
+mosquitto_sub -h staging.thethingsnetwork.org -u 70B3D57ED0000740 -P 9K+rP/5NY8cynVm2qdttGvjP+1M90wvIE4Vk+H31q0c= -t 70B3D57ED0000740/devices/*/up
+
+

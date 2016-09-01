@@ -27,10 +27,12 @@
  * this software.
  */
 
+#include "whitecat.h"
+
+#if LUA_USE_HTTP
+
 #include "lua.h"
 #include "lauxlib.h"
-
-#if USE_HTTP
 
 static int lhttp_start(lua_State* L) {
     http_start();

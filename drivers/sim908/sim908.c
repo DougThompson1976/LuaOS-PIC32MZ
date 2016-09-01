@@ -202,43 +202,6 @@ const char *sim908_error(int code) {
     }
 }
 
-static void sim908_watchdog() {
-    if (gprs_netif.ip_addr.addr == 0) {
-        // Has not ip
-        if (!no_ip_start) {
-            no_ip_start = time(NULL);
-        }
-
-        if (time(NULL) - no_ip_start >= 20) {
-            no_ip_start = 0;
-            xEventGroupSetBits(networkEvent, evGprs_link_down | evGprs_restart);
-        }
-    } else {
-        // Has ip
-        no_ip_start = 0;
-        
-/*
-        if (!last_ping ) {
-            last_ping = time(NULL);
-        }
-        
-        if (time(NULL) - last_ping > 20) {
-            // Test for connection
-            ip_addr_t ping_target;
-
-            ping_target.addr = DNS1;
-            if (ping_send(ping, &ping_target) == ERR_OK) {
-                ping_recv(ping);
-            } else {
-                xEventGroupSetBits(networkEvent, evGprs_link_down | evGprs_restart);
-            }
-            
-            last_ping = time(NULL);
-        }
-*/
-    }    
-}
-
 // Once sim908 is reset module does a reboot, until GPS ready us received module
 // informs us of some events necessary for the module setup, such as: need for
 // pin, presence of SIM, etc ... We detect this needed things in this function.
@@ -571,11 +534,13 @@ sim908_err sim908_init(int gprs, int gps) {
     
     #if USE_GPS
         if (gps && !(flags & SIM908_FLAG_GPS_STARTED)) {
+            #if USE_GPRS
             if ((flags & SIM908_FLAG_GPRS_STARTED)) {
                 mtx_lock(&sio_mtx);
                 ppp_pause();
                 sim908_exit_data_mode();
             }
+            #endif
             
             // Init GPS
             ok = uart_send_command(SIM908_UART, "AT+CGPSPWR=1", 1, 1, NULL, 0, 2000, 1, "OK");
@@ -596,11 +561,13 @@ sim908_err sim908_init(int gprs, int gps) {
                 return ERR_INIT;
             }
 
+            #if USE_GPRS
             if ((flags & SIM908_FLAG_GPRS_STARTED)) {
                 sim908_enter_data_mode();
                 ppp_resume();
                 mtx_unlock(&sio_mtx);
             }
+            #endif
         }
     #endif
 
@@ -616,6 +583,23 @@ sim908_err sim908_init(int gprs, int gps) {
 }
 
 #if USE_GPRS
+
+static void sim908_watchdog() {
+    if (gprs_netif.ip_addr.addr == 0) {
+        // Has not ip
+        if (!no_ip_start) {
+            no_ip_start = time(NULL);
+        }
+
+        if (time(NULL) - no_ip_start >= 20) {
+            no_ip_start = 0;
+            xEventGroupSetBits(networkEvent, evGprs_link_down | evGprs_restart);
+        }
+    } else {
+        // Has ip
+        no_ip_start = 0;
+    }    
+}
 
 // This task process stablishes ppp connection, receices packets from ppp and 
 // passed it then to the TCP/IP stack when convenient
@@ -741,7 +725,6 @@ static void pppTask(void *pvParameters) {
 
     vTaskDelete(NULL);
 }
-#endif
 
 // Init a ppp connection to gprs modem
 sim908_err sim908_connect() {
@@ -833,9 +816,11 @@ sim908_err sim908_connect() {
     
     return ERR_OK;
 }
+#endif
 
 void sim908_stop(int gprs, int gps) {        
     // Stop ppp task if gprs is started and want to stop gprs
+    #if USE_GPRS
     if (gprs && (flags & SIM908_FLAG_GPRS_STARTED)) {
         syslog(LOG_INFO, "sim908 stopping gprs ...");
 
@@ -849,7 +834,8 @@ void sim908_stop(int gprs, int gps) {
         
         syslog(LOG_INFO, "sim908 gprs stopped");
     }
-
+    #endif
+    
     // Update flags
     if (gprs) {
         flags &= ~SIM908_FLAG_GPRS_STARTED;

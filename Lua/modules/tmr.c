@@ -27,6 +27,10 @@
  * this software.
  */
 
+#include "whitecat.h"
+
+#if LUA_USE_TMR
+
 #include "lua.h"
 #include "lauxlib.h"
 
@@ -101,3 +105,5 @@ LUALIB_API int luaopen_tmr( lua_State *L ) {
 
     return 1;
 }
+
+#endif

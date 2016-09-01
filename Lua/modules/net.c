@@ -29,6 +29,10 @@
  * this software.
  */
 
+#include "whitecat.h"
+
+#if LUA_USE_NET
+
 #include "lualib.h"
 #include "lauxlib.h"
 
@@ -575,3 +579,5 @@ int luaopen_net( lua_State *L ) {
 
     return 1;
 }
+
+#endif

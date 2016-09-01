@@ -27,7 +27,9 @@
  * this software.
  */
 
-#include "elua_platform.h"
+#include "whitecat.h"
+
+#if LUA_USE_CAN
 
 #include "lua.h"
 #include "lualib.h"
@@ -151,3 +153,5 @@ int platform_can_stats(unsigned id, struct can_stats *stats) {
 
     return 1;
 }
+
+#endif

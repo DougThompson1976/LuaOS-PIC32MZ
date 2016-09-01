@@ -27,6 +27,10 @@
  * this software.
  */
 
+#include "whitecat.h"
+
+#if LUA_USE_STEPPER
+
 #include "lua.h"
 #include "lauxlib.h"
 
@@ -226,3 +230,5 @@ int luaopen_stepper(lua_State* L)
 
     return 1;
 }
+
+#endif

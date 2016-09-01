@@ -30,6 +30,8 @@
 #ifndef ADC_H
 #define	ADC_H
 
+#include "unistd.h"
+
 #define NADC 1
 
 #define ADC_NOT_CONFIGURED -1

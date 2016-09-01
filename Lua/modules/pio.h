@@ -2,7 +2,7 @@
 #define	PIO_H
 
 #include <types.h>
-
+#include "drivers/gpio/gpio.h"
 enum
 {
   // Pin operations

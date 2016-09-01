@@ -27,7 +27,10 @@
  * arising out of or in connection with the use or performance of
  * this software.
  */
-#include "elua_platform.h"
+
+#include "whitecat.h"
+
+#if LUA_USE_UART
 
 #include "lua.h"
 #include "lualib.h"
@@ -118,3 +121,5 @@ int platform_uart_issetup(int id) {
 void platform_consume(int id) {
     uart_consume(id);
 }
+
+#endif

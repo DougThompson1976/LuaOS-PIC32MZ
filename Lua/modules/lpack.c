@@ -27,6 +27,10 @@
  * this software.
  */
 
+#include "whitecat.h"
+
+#if LUA_USE_PACK
+
 #include "lua.h"
 #include "lauxlib.h"
 
@@ -399,3 +403,5 @@ int luaopen_pack(lua_State *L) {
 
     return 1;
 }
+
+#endif

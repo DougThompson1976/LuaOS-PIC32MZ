@@ -1,15 +1,17 @@
 // Module for interfacing with PIO
 
+#include "whitecat.h"
+
+#if LUA_USE_PIO
+
 #include "lualib.h"
 #include "lauxlib.h"
-#include "platform.h"
-#include "elua_platform.h"
 #include "auxmods.h"
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include "lrodefs.h"
 
+#include "Lua/modules/pio.h"
 #include "drivers/cpu/cpu.h"
 #include "drivers/gpio/gpio.h"
 
@@ -386,3 +388,5 @@ LUALIB_API int luaopen_pio(lua_State *L) {
 
     return 1;
 }
+
+#endif

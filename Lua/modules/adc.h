@@ -1,5 +1,5 @@
 /*
- * Whitecat, platform functions for lua I2C module
+ * Whitecat, adc wrapper for whitecat
  *
  * Copyright (C) 2015 - 2016
  * IBEROXARXA SERVICIOS INTEGRALES, S.L. & CSS IBÉRICA, S.L.
@@ -21,24 +21,26 @@
  * software, including all implied warranties of merchantability
  * and fitness.  In no event shall the author be liable for any
  * special, indirect or consequential damages or any damages
- * whatsoever resulting from loss of use, ƒintedata or profits, whether
+ * whatsoever resulting from loss of use, data or profits, whether
  * in an action of contract, negligence or other tortious action,
  * arising out of or in connection with the use or performance of
  * this software.
  */
 
-#include "whitecat.h"
+#ifndef LADC_H
+#define	LADC_H
 
-#if LUA_USE_I2C
+#include "drivers/adc/adc.h"
 
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
+typedef struct {
+    unsigned int adc;
+    unsigned int ref_type;
+    unsigned int ref_voltage;
+    unsigned int chan;
+    unsigned int resolution;
+    unsigned int frequency;
+    unsigned int max_val;
+} adc_userdata;
 
-#include "drivers/i2c/i2c.h"
+#endif	/* ADC_H */
 
-int platform_i2c_exists(int id) {
-    return ((id > 0) && (id <= NI2C));
-}
-
-#endif

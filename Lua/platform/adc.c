@@ -1,5 +1,8 @@
-#include "elua_platform.h"
+#include "whitecat.h"
 
+#if LUA_USE_ADC
+
+#include "Lua/modules/adc.h"
 #include <drivers/adc/adc.h>
 
 int platform_adc_exists( unsigned id ) {
@@ -42,3 +45,5 @@ void platform_adc_set_timer( unsigned id, u32 timer )
   d->timer_id = timer;
 }
 */
+
+#endif

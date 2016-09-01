@@ -27,11 +27,13 @@
  * this software.
  */
 
+#include "whitecat.h"
+
+#if LUA_USE_CAN
+
 #include "lualib.h"
 #include "lauxlib.h"
-#include "elua_platform.h"
 #include "auxmods.h"
-#include "lrodefs.h"
 
 #include <drivers/can/can.h>
 
@@ -71,7 +73,7 @@ static int lcan_send( lua_State* L ) {
   len = luaL_checkinteger( L, 4 );
   
   data = luaL_checkstring (L, 5);
-  if ( len > PLATFORM_CAN_MAXLEN )
+  if ( len > CAN_MAX_LEN )
     return luaL_error( L, "message exceeds max length" );
   
   platform_can_send( id, canid, idtype, len, ( const u8 * )data);
@@ -84,12 +86,12 @@ static int lcan_recv( lua_State* L ) {
   u8 len;
   int id;
   u32 canid;
-  u8  idtype, data[ PLATFORM_CAN_MAXLEN ];
+  u8  idtype, data[ CAN_MAX_LEN ];
   
   id = luaL_checkinteger( L, 1 );
   MOD_CHECK_ID( can, id );
   
-  if( platform_can_recv( id, &canid, &idtype, &len, data ) == PLATFORM_OK )
+  if( platform_can_recv( id, &canid, &idtype, &len, data ))
   {
     lua_pushinteger( L, canid );
     lua_pushinteger( L, idtype );
@@ -111,7 +113,7 @@ static int lcan_stats( lua_State* L )
   id = luaL_checkinteger( L, 1 );
   MOD_CHECK_ID( can, id );
   
-  if( platform_can_stats( id, &stats ) == PLATFORM_OK )
+  if( platform_can_stats( id, &stats ))
   {
     lua_pushinteger( L, stats.rx );
     lua_pushinteger( L, stats.tx );
@@ -129,12 +131,12 @@ static int lcan_stats( lua_State* L )
 
 const luaL_Reg can_map[] = 
 {
-  { LSTRKEY( "setup" ),  LFUNCVAL( lcan_setup ) },
-  { LSTRKEY( "pins" ),  LFUNCVAL(  lcan_pins ) },
-  { LSTRKEY( "send" ),  LFUNCVAL( lcan_send ) },  
-  { LSTRKEY( "recv" ),  LFUNCVAL( lcan_recv ) },
-  { LSTRKEY( "stats" ),  LFUNCVAL( lcan_stats ) },
-  { LNILKEY, LNILVAL }
+  { "setup", lcan_setup },
+  { "pins",  lcan_pins },
+  { "send",  lcan_send },  
+  { "recv",  lcan_recv },
+  { "stats", lcan_stats },
+  { NULL, NULL }
 };
 
 LUALIB_API int luaopen_can( lua_State *L )
@@ -160,3 +162,5 @@ LUALIB_API int luaopen_can( lua_State *L )
   return 1;
 #endif // #if LUA_OPTIMIZE_MEMORY > 0  
 }
+
+#endif

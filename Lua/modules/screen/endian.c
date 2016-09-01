@@ -7,6 +7,10 @@
  * long.  This should be a safe assumption.
  */
 
+#include "whitecat.h"
+
+#if LUA_USE_SCREEN
+
 #include <stdio.h>
 #include "bitmaptypes.h"
 #include "endian.h"
@@ -218,3 +222,5 @@ int writeUINT32little(FILE *f, UINT32 i)
  * c-label-offset:-4
  * End:
  */
+
+#endif

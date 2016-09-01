@@ -1,3 +1,7 @@
+#include "whitecat.h"
+
+#if LUA_USE_SHELL
+
 /* original parser id follows */
 /* yysccsid[] = "@(#)yaccpar	1.9 (Berkeley) 02/21/93" */
 /* (use YYMAJOR/YYMINOR for ifdefs dependent on parser version) */
@@ -721,3 +725,5 @@ yyaccept:
     yyfreestack(&yystack);
     return (0);
 }
+
+#endif

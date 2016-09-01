@@ -27,6 +27,10 @@
  * this software.
  */
 
+#include "whitecat.h"
+
+#if LUA_USE_GPS
+
 #include "lua.h"
 #include "lauxlib.h"
 
@@ -95,5 +99,7 @@ int luaopen_gps(lua_State* L) {
     
     return 1;
 }
+
+#endif
 
 #endif

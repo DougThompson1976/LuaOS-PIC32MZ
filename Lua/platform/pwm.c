@@ -26,6 +26,11 @@
  * arising out of or in connection with the use or performance of
  * this software.
  */
+
+#include "whitecat.h"
+
+#if LUA_USE_PWM
+
 #include <drivers/pwm/pwm.h>
 
 #include "lua.h"
@@ -101,3 +106,5 @@ void platform_pwm_write(lua_State* L, int id, int res, int value) {
 void platform_pwm_end(lua_State* L, int id) {
     pwm_end(id);
 }
+
+#endif

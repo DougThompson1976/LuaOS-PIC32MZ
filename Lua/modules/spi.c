@@ -1,12 +1,14 @@
 // Module for interfacing with Lua SPI code
+#include "whitecat.h"
+
+#if LUA_USE_SPI
 
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
-#include "elua_platform.h"
 #include "auxmods.h"
-#include "lrodefs.h"
 
+#include "Lua/modules/spi.h"
 #include "drivers/spi/spi.h"
 #include "drivers/cpu/cpu.h"
 
@@ -18,7 +20,7 @@ static int lspi_select( lua_State* L ) {
     luaL_argcheck(L, spi, 1, "spi expected");
 
     MOD_CHECK_ID( spi, spi->spi );
-    platform_spi_select( spi, PLATFORM_SPI_SELECT_ON );
+    platform_spi_select( spi, 1 );
     return 0;
 }
 
@@ -30,7 +32,7 @@ static int lspi_deselect( lua_State* L ) {
     luaL_argcheck(L, spi, 1, "spi expected");
 
     MOD_CHECK_ID( spi, spi->spi );
-    platform_spi_select( spi, PLATFORM_SPI_SELECT_OFF );
+    platform_spi_select( spi, 0 );
     return 0;
 }
 
@@ -42,7 +44,7 @@ static int lspi_setup( lua_State* L )
   
   id = luaL_checkinteger( L, 1 );
   MOD_CHECK_ID( spi, id );
-  is_master = luaL_checkinteger( L, 2 ) == PLATFORM_SPI_MASTER;
+  is_master = luaL_checkinteger( L, 2 ) == 1;
   if( !is_master )
     return luaL_error( L, "invalid type (only spi.MASTER is supported)" );
   cs = luaL_checkinteger( L, 3 );
@@ -128,25 +130,19 @@ static int lspi_readwrite( lua_State* L ) {
 }
 
 // Module function map
-#define MIN_OPT_LEVEL 2
-#include "lrodefs.h"
 const luaL_Reg spi_method_map[] = 
 {
-  { LSTRKEY( "setup" ),  LFUNCVAL( lspi_setup ) },
-  { LSTRKEY( "pins" ),  LFUNCVAL( lspi_pins ) },
-  { LSTRKEY( "select" ),  LFUNCVAL( lspi_select ) },
-  { LSTRKEY( "deselect" ),  LFUNCVAL( lspi_deselect ) },
-  { LSTRKEY( "write" ),  LFUNCVAL( lspi_write ) },  
-  { LSTRKEY( "readwrite" ),  LFUNCVAL( lspi_readwrite ) },    
-#if LUA_OPTIMIZE_MEMORY > 0
-  { LSTRKEY( "MASTER" ), LNUMVAL( PLATFORM_SPI_MASTER ) } ,
-  { LSTRKEY( "SLAVE" ), LNUMVAL( PLATFORM_SPI_SLAVE ) },
-#endif
-  { LNILKEY, LNILVAL }
+  { "setup",  lspi_setup },
+  { "pins",  lspi_pins },
+  { "select",  lspi_select },
+  { "deselect",  lspi_deselect },
+  { "write",  lspi_write },  
+  { "readwrite",  lspi_readwrite },    
+  { NULL, NULL }
 };
 
 const luaL_Reg spi_map[] = {
-  { LNILKEY, LNILVAL }
+  { NULL, NULL }
 };
 
     
@@ -184,3 +180,5 @@ LUALIB_API int luaopen_spi( lua_State *L ) {
 
     return 1;      
 }
+
+#endif

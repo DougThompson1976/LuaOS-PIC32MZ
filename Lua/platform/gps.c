@@ -28,7 +28,7 @@
  */
 #include "whitecat.h"
 
-#if USE_GPS
+#if LUA_USE_GPS
 
 #include <drivers/gps/gps.h>
 

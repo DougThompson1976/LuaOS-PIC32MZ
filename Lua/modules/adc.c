@@ -27,16 +27,18 @@
  * this software.
  */
 
+#include "whitecat.h"
+
+#if LUA_USE_ADC
+
 #include "lualib.h"
 #include "lauxlib.h"
-#include "elua_platform.h"
 #include "auxmods.h"
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include "lrodefs.h"
 
-#include "drivers/adc/adc.h"
+#include <Lua/modules/adc.h>
 
 static int ladc_setup( lua_State* L ) {
     int id, ref_type, ref_voltage;
@@ -134,17 +136,15 @@ static int ladc_read( lua_State* L ) {
     return 0;
 }
 
-#include "lrodefs.h"
-
 const luaL_Reg adc_method_map[] = {
-  { LSTRKEY( "read" ), LFUNCVAL( ladc_read ) },
-  { LSTRKEY( "setup" ), LFUNCVAL( ladc_setup ) },
-  { LSTRKEY( "setupchan" ), LFUNCVAL( ladc_setup_channel ) },
-  { LNILKEY, LNILVAL }
+  { "read", ladc_read },
+  { "setup", ladc_setup },
+  { "setupchan", ladc_setup_channel },
+  { NULL, NULL }
 };
 
 const luaL_Reg adc_map[] = {
-  { LNILKEY, LNILVAL }
+  { NULL, NULL }
 };
 
 
@@ -179,3 +179,5 @@ LUALIB_API int luaopen_adc( lua_State *L ) {
     
     return 1;
 }
+
+#endif
