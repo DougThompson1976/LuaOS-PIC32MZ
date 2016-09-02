@@ -88,7 +88,7 @@
 
 #define configUSE_PREEMPTION					1
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION                 1
-#define configUSE_QUEUE_SETS					1
+#define configUSE_QUEUE_SETS					0
 #define configUSE_IDLE_HOOK					0
 #define configUSE_TICK_HOOK					1
 #define configTICK_RATE_HZ					( ( TickType_t ) 1000 )
@@ -103,12 +103,12 @@
 #define configUSE_16_BIT_TICKS					0
 #define configIDLE_SHOULD_YIELD					0
 #define configUSE_MUTEXES					1
-#define configCHECK_FOR_STACK_OVERFLOW                          3 
+#define configCHECK_FOR_STACK_OVERFLOW                          0 
 #define configQUEUE_REGISTRY_SIZE				0
 #define configUSE_RECURSIVE_MUTEXES				1
 #define configUSE_MALLOC_FAILED_HOOK                            0
 #define configUSE_APPLICATION_TASK_TAG                          0
-#define configUSE_COUNTING_SEMAPHORES                           1
+#define configUSE_COUNTING_SEMAPHORES                           0
 #define configGENERATE_RUN_TIME_STATS                           0
 #define configUSE_TASK_FPU_SUPPORT				1
 

@@ -69,7 +69,7 @@ static struct mountd mountds[] = {
 
 const char *mount_default_device() {
     struct mountd *cmountd = &mountds[0];
-    
+
     while (cmountd->device) {
         if (cmountd->mounted) {
             return cmountd->device;
@@ -78,7 +78,7 @@ const char *mount_default_device() {
         cmountd++;
     }    
     
-    return NULL;
+    return "";
 }
 
 // Set the mounted state of a device

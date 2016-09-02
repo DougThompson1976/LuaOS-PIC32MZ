@@ -207,7 +207,9 @@ static int luaos_pmain (lua_State *L) {
   lua_running = 1;
   
   print_version();
+  
   luaos_boot_scripts(L);
+
   for(;;)
       doREPL(L);  /* do read-eval-print loop */
 

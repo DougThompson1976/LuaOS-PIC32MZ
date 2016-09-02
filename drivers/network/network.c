@@ -28,12 +28,13 @@
  */
 
 #include "whitecat.h"
+
+#if USE_ETHERNET || USE_GPRS || USE_WIFI
+
 #include "FreeRTOS.h"
 #include "task.h"
 #include "timers.h"
 #include "event_groups.h"
-
-#if USE_ETHERNET || USE_GPRS || USE_WIFI
 
 #include "drivers/sim908/sim908.h"
 #include "drivers/network/network.h"

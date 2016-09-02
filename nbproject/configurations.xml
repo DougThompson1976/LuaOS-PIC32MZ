@@ -1545,8 +1545,6 @@
       </item>
       <item path="Lua/modules/pio.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="Lua/modules/pio.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="Lua/modules/pwm.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/screen/bitmap.c" ex="false" tool="0" flavor2="0">
@@ -3608,8 +3606,6 @@
       <item path="Lua/modules/net.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Lua/modules/pio.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Lua/modules/pio.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Lua/modules/pwm.c" ex="false" tool="0" flavor2="0">
       </item>

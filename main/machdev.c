@@ -105,43 +105,50 @@ void mach_dev() {
         }
     #endif
 
-    // Create mandatory folders on primary device
-    if (primary_is_mounted()) {
-        create_folder("/sys");
-        create_folder("/sys/conf");
-        create_folder("/sys/font");
-        create_folder("/sys/zoneinfo");
-        create_folder("/lib");
-        create_folder("/lib/share");
-        create_folder("/lib/share/lua");
-        create_folder("/lib/lua");
-        create_folder("/tmp");
-        
-        spiffs_copy_image("/sd/cfi-image");
-    }
-        
-    if (mount_is_mounted("sd")) {
-        create_folder("/sd/log");
-        create_folder("/sd/lib");
-        create_folder("/sd/lib/share");
-        create_folder("/sd/lib/share/lua");
-        create_folder("/sd/lib/lua");
-        create_folder("/sd/tmp");
-    }
+    #if (USE_CFI || USE_SD)
+        // Create mandatory folders on primary device
+        if (primary_is_mounted()) {
+            create_folder("/sys");
+            create_folder("/sys/conf");
+            create_folder("/sys/font");
+            create_folder("/sys/zoneinfo");
+            create_folder("/lib");
+            create_folder("/lib/share");
+            create_folder("/lib/share/lua");
+            create_folder("/lib/lua");
+            create_folder("/tmp");
 
-    tzset();
-    rtc_init(time(NULL));
-    
-    if (mount_is_mounted("sd")) {
-        // Redirect console messages to /log/messages.log ...
-        closelog();            
-        syslog(LOG_INFO, "redirecting console messages to /sd/log/messages.log ...");
-        openlog(__progname, LOG_NDELAY , LOG_LOCAL1);
-    } else {
-        syslog(LOG_INFO, "WARNING!! can't redirect console messages to /sd/log/messages.log, insert an SDCARD");
-        syslog(LOG_INFO, "WARNING!! insert an SDCARD if you need intensive RW filesystem access");
-    }
-    
+            spiffs_copy_image("/sd/cfi-image");
+        }
+
+        if (mount_is_mounted("sd")) {
+            create_folder("/sd/log");
+            create_folder("/sd/lib");
+            create_folder("/sd/lib/share");
+            create_folder("/sd/lib/share/lua");
+            create_folder("/sd/lib/lua");
+            create_folder("/sd/tmp");
+        }
+
+        tzset();
+    #endif
+
+    #if USE_RTC
+        rtc_init(time(NULL));
+    #endif
+        
+    #if (USE_CFI || USE_SD)
+        if (mount_is_mounted("sd")) {
+            // Redirect console messages to /log/messages.log ...
+            closelog();            
+            syslog(LOG_INFO, "redirecting console messages to /sd/log/messages.log ...");
+            openlog(__progname, LOG_NDELAY , LOG_LOCAL1);
+        } else {
+            syslog(LOG_INFO, "WARNING!! can't redirect console messages to /sd/log/messages.log, insert an SDCARD");
+            syslog(LOG_INFO, "WARNING!! insert an SDCARD if you need intensive RW filesystem access");
+        }   
+    #endif
+        
     // Log only errors
     setlogmask(LOG_ERR);
         

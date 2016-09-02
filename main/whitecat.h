@@ -323,5 +323,6 @@
 #define LUA_USE_LORA        (1 && USE_LORA)
 #define LUA_USE_PACK        1
 #define LUA_USE_SHELL       1
+#define LUA_USE_EDITOR      1
 
 #endif	/* CONFIG_H */

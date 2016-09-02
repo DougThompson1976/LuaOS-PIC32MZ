@@ -31,6 +31,10 @@
 // SUCH DAMAGE.
 // 
 
+#include "whitecat.h"
+
+#if LUA_USE_EDITOR
+
 #include <signal.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -2134,3 +2138,4 @@ setvbuf(stdout, NULL, 0, 8192);
   return 0;
 }
 
+#endif

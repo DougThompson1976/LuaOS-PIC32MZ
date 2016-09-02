@@ -208,15 +208,27 @@ extern inline void LuaUnlock(lua_State *L);
 #define LIOLIB_REG_ADDS {"receive", f_receive}, {"send", f_send},
 #define LIOLIB_OPEN_ADDS
 
+#if LUA_USE_SHELL
+    #define LOSLIB_REG_SHELL {"shell",     os_shell},
+#else
+    #define LOSLIB_REG_SHELL
+#endif
+
+#if LUA_USE_EDITOR
+    #define LOSLIB_REG_EDITOR {"edit",      os_edit},
+#else
+    #define LOSLIB_REG_EDITOR
+#endif
+
 #define LOSLIB_REG_ADDS \
-  {"shell",     os_shell}, \
+  LOSLIB_REG_SHELL \
   {"history",   os_history}, \
   {"cp",        os_cp}, \
   {"ls",        os_ls}, \
   {"cd",        os_cd}, \
   {"pwd",       os_pwd}, \
   {"mkdir",     os_mkdir}, \
-  {"edit",      os_edit}, \
+  LOSLIB_REG_EDITOR \
   {"clear",     os_clear}, \
   {"cat",       os_cat}, \
   {"more",      os_more}, \
@@ -227,8 +239,8 @@ extern inline void LuaUnlock(lua_State *L);
   {"logcons",   os_logcons}, \
   {"stats",     os_stats}, \
   {"version",   os_version}, \
-  {"cpu",   os_cpu}, \
-  {"run", os_run}, 
+  {"cpu",       os_cpu}, \
+  {"run",       os_run}, 
 
 #define LOSLIB_OPEN_ADDS \
   os_constants(L);
