@@ -1,6 +1,8 @@
 #include "FreeRTOS.h"
 #include "pthread.h"
 
+#include <stdlib.h>
+
 #if 0
 
 static pthread_key_t key;

@@ -63,7 +63,6 @@ int is_dir(const char *path) {
     int res = 0;
     
     struct spiffs_dirent e;
-    struct spiffs_dirent *pe = &e;
     
     // Add /. to path
     strcpy(npath, path);
@@ -72,14 +71,15 @@ int is_dir(const char *path) {
     }
     
     SPIFFS_opendir(&fs, "/", &d);   
-    while ((pe = SPIFFS_readdir(&d, pe))) {
-        if (strncmp(npath, pe->name, strlen(npath)) == 0) {
+    while (SPIFFS_readdir(&d, &e)) {
+        if (strncmp(npath, e.name, strlen(npath)) == 0) {
             res = 1;
             break;
         }
-    }
+    }	
+
     SPIFFS_closedir(&d);
-    
+
     return res;
 }
 

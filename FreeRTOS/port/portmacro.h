@@ -249,6 +249,10 @@ extern volatile UBaseType_t uxInterruptNesting;
 														portYIELD();		\
 													}
 
+// WHITECAT BEGIN
+#define portIN_ISR() (uxInterruptNesting > 0)
+// WHITECAT END
+
 /* Required by the kernel aware debugger. */
 #ifdef __DEBUG
 	#define portREMOVE_STATIC_QUALIFIER

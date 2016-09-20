@@ -30,6 +30,7 @@
 #include "pthread.h"
 
 #include <errno.h>
+#include <stdlib.h>
 
 extern struct list key_list;
 
@@ -66,7 +67,7 @@ int pthread_setspecific(pthread_key_t k, const void *value) {
     int res;
     
     // Get key
-    res = list_get(&key_list, k, &key);
+    res = list_get(&key_list, k, (void **)&key);
     if (res) {
         return res;
     }

@@ -30,6 +30,8 @@
 #include "pthread.h"
 
 #include <errno.h>
+#include <stdlib.h>
+
 #include <lib/list/list.h>
 
 extern struct list mutex_list;

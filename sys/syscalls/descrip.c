@@ -59,12 +59,12 @@ struct ucred *p_cred;
  */
 struct  filedesc *p_fd; 
 
-static int nfiles = 0;    // Actual number of open files
-static int maxfiles = 20; // Max number of open files
+static int nfiles = 0;        // Actual number of open files
+static int maxfiles = NDFILE; // Max number of open files
 
 struct filelist filehead;   /* head of list of open files */
 
-struct device devs[] = {
+const struct device devs[] = {
     {
         "tty",
         {tty_open, tty_read, tty_write, NULL, NULL, tty_stat, tty_close, NULL, 

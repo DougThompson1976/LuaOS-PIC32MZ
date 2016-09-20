@@ -33,7 +33,7 @@
 #include <sys/syscalls/mount.h>
 
 extern struct filedesc *p_fd;
-extern struct device devs[];
+extern const struct device devs[];
 extern int ndevs;
 
 char *normalize_path(const char *path) {

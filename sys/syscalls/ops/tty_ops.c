@@ -148,18 +148,3 @@ void tty_unlock() {
 
     pthread_mutex_unlock(&tty_mutex);
 }
-
-/*
-int tty_seek(struct open_file *f, off_t offset, int where) {
-    return 0;
-}
-
-int tty_stat(struct open_file *f, struct stat *sb) {
-    return 0;
-}
-
-int tty_eof(struct open_file *f, int *eof) {
-    *eof = 0;
-    return 0;
-}
-*/

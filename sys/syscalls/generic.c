@@ -1,6 +1,6 @@
 #include "syscalls.h"
 
-extern struct filedesc *p_fd;
+extern const struct filedesc *p_fd;
 
 read(int fd, char *buf, u_int nbyte) {
     register struct file *fp;

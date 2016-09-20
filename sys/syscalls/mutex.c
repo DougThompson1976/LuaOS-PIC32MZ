@@ -28,10 +28,9 @@
  */
 
 #include "FreeRTOS.h"
-
 #include "semphr.h"
+
 #include <sys/mutex.h>
-#include <stdlib.h>
 
 #define MTX_DEBUG 0
 
@@ -46,7 +45,7 @@
 void mtx_init(struct mtx *mutex, const char *name, const char *type, int opts) {    
     mutex->sem = xSemaphoreCreateBinary();
     if (mutex->sem) {
-        if (uxInterruptNesting > 0) {
+        if (portIN_ISR()) {
             BaseType_t xHigherPriorityTaskWoken = pdFALSE;
             xSemaphoreGiveFromISR( mutex->sem, &xHigherPriorityTaskWoken); 
             portEND_SWITCHING_ISR( xHigherPriorityTaskWoken );
@@ -57,7 +56,7 @@ void mtx_init(struct mtx *mutex, const char *name, const char *type, int opts) {
 }
 
 void mtx_lock(struct mtx *mutex) {
-    if (uxInterruptNesting > 0) {
+    if (portIN_ISR()) {
         BaseType_t xHigherPriorityTaskWoken = pdFALSE;        
         xSemaphoreTakeFromISR( mutex->sem, &xHigherPriorityTaskWoken );
         portEND_SWITCHING_ISR( xHigherPriorityTaskWoken );
@@ -77,7 +76,7 @@ int mtx_trylock(struct	mtx *mutex) {
 }
 
 void mtx_unlock(struct mtx *mutex) {
-    if (uxInterruptNesting > 0) {
+    if (portIN_ISR()) {
         BaseType_t xHigherPriorityTaskWoken = pdFALSE;  
         xSemaphoreGiveFromISR( mutex->sem, &xHigherPriorityTaskWoken );  
         portEND_SWITCHING_ISR( xHigherPriorityTaskWoken );
@@ -87,7 +86,7 @@ void mtx_unlock(struct mtx *mutex) {
 }
 
 void mtx_destroy(struct	mtx *mutex) {
-    if (uxInterruptNesting > 0) {
+    if (portIN_ISR()) {
         BaseType_t xHigherPriorityTaskWoken = pdFALSE;  
         xSemaphoreGiveFromISR( mutex->sem, &xHigherPriorityTaskWoken );  
         portEND_SWITCHING_ISR( xHigherPriorityTaskWoken );

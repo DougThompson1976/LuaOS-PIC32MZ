@@ -101,7 +101,7 @@ lua_State*  pvGetLuaState() {
     return L;
 }
 
-void uxIncSignaled(xTaskHandle h, int s) {
+void uxIncSignaled(TaskHandle_t h, int s) {
     enter_critical_section();
     ((TCB_t *)h)->signaled++;
     exit_critical_section();

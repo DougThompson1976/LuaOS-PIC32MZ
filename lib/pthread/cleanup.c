@@ -30,6 +30,7 @@
 #include "pthread.h"
 
 #include <errno.h>
+#include <stdlib.h>
 
 extern struct list thread_list;
 
@@ -39,7 +40,7 @@ void pthread_cleanup_push(void (*routine)(void *), void *arg) {
     int res, idx;
     
     // Get current thread
-    res = list_get(&thread_list, pthread_self(), &thread);
+    res = list_get(&thread_list, pthread_self(), (void **)&thread);
     if (res == 0){
         clean =(struct pthread_clean *) malloc(sizeof(struct pthread_clean));
         if (!clean) {

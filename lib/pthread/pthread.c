@@ -32,6 +32,7 @@
 
 #include <sys/mutex.h>
 #include <errno.h>
+#include <stdlib.h>
 
 #include <sys/queue.h>
 #include <Lua/modules/thread.h>
@@ -104,7 +105,7 @@ int _pthread_create(pthread_t *id, int stacksize, int initial_state,
     current_thread = pthread_self();
     if (current_thread > 0) {
         // Get parent thread
-        res = list_get(&thread_list, current_thread, &parent_thread);
+        res = list_get(&thread_list, current_thread, (void **)&parent_thread);
         if (res) {
             free(taskArgs);
             errno = EAGAIN;
@@ -173,7 +174,7 @@ int _pthread_join(pthread_t id) {
     char c;
 
     // Get thread
-    res = list_get(&thread_list, id, &thread);
+    res = list_get(&thread_list, id, (void **)&thread);
     if (res) {
         errno = res;
         return res;
@@ -217,7 +218,7 @@ int _pthread_free(pthread_t id) {
     _pthread_mutex_free();
     
     // Get thread
-    res = list_get(&thread_list, id, &thread);
+    res = list_get(&thread_list, id, (void **)&thread);
     if (res) {
         errno = res;
         return res;
@@ -249,7 +250,7 @@ sig_t _pthread_signal(int s, sig_t h) {
     }
     
     // Get thread
-    list_get(&thread_list, pthread_self(), &thread);
+    list_get(&thread_list, pthread_self(), (void **)&thread);
     
     // Add handler
     prev_h = thread->signals[s];
@@ -264,7 +265,7 @@ void _pthread_queue_signal(int s) {
     
     index = list_first(&thread_list);
     while (index >= 0) {
-        list_get(&thread_list, index, &thread);
+        list_get(&thread_list, index, (void **)&thread);
         
         if (thread->thread == 1) {
             if ((thread->signals[s] != SIG_DFL) && (thread->signals[s] != SIG_IGN)) {
@@ -281,7 +282,7 @@ void _pthread_process_signal() {
     struct pthread *thread; // Current thread
     int s;
     
-    list_get(&thread_list, pthread_self(), &thread);
+    list_get(&thread_list, pthread_self(), (void **)&thread);
     
     if (xQueueReceive(thread->signal_q, &s, 0) == pdTRUE) {
         if ((thread->signals[s] != SIG_DFL) && (thread->signals[s] != SIG_IGN)) {
@@ -296,7 +297,7 @@ int _pthread_has_signal(int s) {
     
     index = list_first(&thread_list);
     while (index >= 0) {
-        list_get(&thread_list, index, &thread);
+        list_get(&thread_list, index, (void **)&thread);
         
         if (thread->thread == 1) {
             if ((thread->signals[s] != SIG_DFL) && (thread->signals[s] != SIG_IGN)) {
@@ -315,7 +316,7 @@ int _pthread_stop(pthread_t id) {
     int res;
 
     // Get thread
-    res = list_get(&thread_list, id, &thread);
+    res = list_get(&thread_list, id, (void **)&thread);
     if (res) {
         errno = res;
         return res;
@@ -332,7 +333,7 @@ int _pthread_suspend(pthread_t id) {
     int res;
 
     // Get thread
-    res = list_get(&thread_list, id, &thread);
+    res = list_get(&thread_list, id, (void **)&thread);
     if (res) {
         errno = res;
         return res;
@@ -349,7 +350,7 @@ int _pthread_resume(pthread_t id) {
     int res;
 
     // Get thread
-    res = list_get(&thread_list, id, &thread);
+    res = list_get(&thread_list, id, (void **)&thread);
     if (res) {
         errno = res;
         return res;
@@ -372,7 +373,7 @@ void pthreadTask(void *taskArgs) {
     args = (struct pthreadTaskArg *)taskArgs;
 
     // Get thread
-    list_get(&thread_list, args->id, &thread);
+    list_get(&thread_list, args->id, (void **)&thread);
 
     // Set thread id
     uxSetThreadId(args->id);
@@ -401,7 +402,7 @@ void pthreadTask(void *taskArgs) {
     // Inform from thread end to joined threads
     index = list_first(&thread->join_list);
     while (index >= 0) {
-        list_get(&thread->join_list, index, &join);
+        list_get(&thread->join_list, index, (void **)&join);
                 
         xQueueSend(join->queue,&c, portMAX_DELAY);
         
@@ -411,7 +412,7 @@ void pthreadTask(void *taskArgs) {
     // Execute clean list
     index = list_first(&thread->clean_list);
     while (index >= 0) {
-        list_get(&thread->clean_list, index, &clean);
+        list_get(&thread->clean_list, index, (void **)&clean);
          
         if (clean->clean) {
             (*clean->clean)(clean->args);

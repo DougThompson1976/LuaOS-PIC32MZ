@@ -220,6 +220,7 @@ static int lora_hw_reset() {
 // Do a reset on Lora module
 tdriver_error *lora_reset() {
     char *resp;
+    char buff[15];
     
     // Reset module by hardware
     if (lora_hw_reset() == LORA_TIMEOUT) {
@@ -246,7 +247,10 @@ tdriver_error *lora_reset() {
 
     syslog(LOG_INFO, "RN2483 is on %s", uart_name(LORA_UART));
         
-    // Reset the stack, and set default parameters for the selected band
+    sprintf(buff, "%d", current_band);
+    lora_mac("reset", buff);
+
+        // Reset the stack, and set default parameters for the selected band
     if (current_band == 868) {
         // Default channel configuration
         // This channels must be implemented in every EU868MHz end-device

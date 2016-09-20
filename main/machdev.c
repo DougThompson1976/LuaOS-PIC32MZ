@@ -137,15 +137,14 @@ void mach_dev() {
         rtc_init(time(NULL));
     #endif
         
-    #if (USE_CFI || USE_SD)
+    #if (USE_SD)
         if (mount_is_mounted("sd")) {
             // Redirect console messages to /log/messages.log ...
             closelog();            
             syslog(LOG_INFO, "redirecting console messages to /sd/log/messages.log ...");
             openlog(__progname, LOG_NDELAY , LOG_LOCAL1);
         } else {
-            syslog(LOG_INFO, "WARNING!! can't redirect console messages to /sd/log/messages.log, insert an SDCARD");
-            syslog(LOG_INFO, "WARNING!! insert an SDCARD if you need intensive RW filesystem access");
+            syslog(LOG_ERR, "can't redirect console messages to /sd/log/messages.log, insert an SDCARD");
         }   
     #endif
         

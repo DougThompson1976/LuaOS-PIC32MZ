@@ -29,7 +29,7 @@ end)
 
 lora.setup(lora.BAND868, false)
 lora.setAppEui("70B3D57ED0000740")
-lora.setAppKey("FB5E2EB1FDE0DCCB7B905685FD6B60A5")
+lora.setAppKey("F374B0900282ED4FB829393A461DFD6D")
 lora.setAdr(false)
 lora.setAr(true)
 lora.setDr(0)
@@ -67,3 +67,15 @@ uart.read(4,"*l",true,1000*10)
 mosquitto_sub -h staging.thethingsnetwork.org -u 70B3D57ED0000740 -P 9K+rP/5NY8cynVm2qdttGvjP+1M90wvIE4Vk+H31q0c= -t 70B3D57ED0000740/devices/*/up
 
 
+
+
+
+lora.setup(lora.BAND868, false)
+lora.setAppEui("70B3D57ED0000740")
+lora.setAppKey("FB5E2EB1FDE0DCCB7B905685FD6B60A5")
+lora.setDr(0)
+lora.setAdr(false)
+lora.setAr(false)
+lora.setRetX(2)
+lora.join(lora.OTAA)
+lora.tx(false,1,pack.pack(25.3))

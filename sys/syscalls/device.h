@@ -76,8 +76,8 @@ struct  devops {
 };
     
 struct device {
-    const char *d_name;
-    struct  devops d_ops;  
+    const char   *d_name;
+    const struct  devops d_ops;  
 };
 
 struct devops *getdevops(const char *devname);
