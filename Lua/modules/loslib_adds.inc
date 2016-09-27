@@ -484,7 +484,7 @@ static int os_run (lua_State *L) {
  skip:
     // Call load
     lua_getglobal(L, "load"); 
-    lua_pushstring(L, code);
+    lua_pushstring(L, (const char*)code);
     lua_pcall(L, 1, 2, 0);
 
     if (!lua_isnil(L, -1)) {

@@ -7,24 +7,23 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/tmr.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/platform/pio.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/src/lvm.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/main/main.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/lib/libc/stdio/printf.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/syscalls/descrip.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/lib/libc/gen/usleep.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/cfi-image/system.lua</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/loslib_adds.inc</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/lib/libc/stdio/fgetc.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Samples/lora/lora.lua</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/lib/libc/gen/sleep.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/include/stdio.h</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/lora/lora.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/lib/libc/stdio/wbuf.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/pio.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/src/linit.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Samples/gpio/blink.lua</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/include/unistd.h</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/FreeRTOS/common/include/FreeRTOS.h</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Samples/lora/lora.lua</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/modules/uart.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/main/main.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/sys/syscalls/open.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/sys/syscalls/descrip.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/main/whitecat.h</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/modules/screen/screen.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/include/stdio.h</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/lauxlib.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/drivers/uart/uart.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Samples/uart/terminal.lua</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/main/machdev.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/lauxlib.h</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/lbaselib.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/FreeRTOS/common/include/portable.h</file>
         </group>
     </open-files>
 </project-private>
