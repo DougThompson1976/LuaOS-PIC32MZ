@@ -214,7 +214,7 @@ static int more(const char *path, int stop) {
     FILE *fp;
     int rows = 0;
     int cols = 0;
-    char c;
+    int c;
     char ch;
     int lines;
 

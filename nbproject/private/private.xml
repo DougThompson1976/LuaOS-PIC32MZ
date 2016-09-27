@@ -7,10 +7,24 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Samples/lora/lora.lua</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/tmr.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/platform/pio.c</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/src/lvm.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/main/main.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/lib/libc/stdio/printf.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/syscalls/descrip.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/lib/libc/gen/usleep.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/cfi-image/system.lua</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/loslib_adds.inc</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/lib/libc/stdio/fgetc.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Samples/lora/lora.lua</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/lib/libc/gen/sleep.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/include/stdio.h</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/drivers/lora/lora.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/lib/libc/stdio/wbuf.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/pio.c</file>
             <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/src/linit.c</file>
+            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Samples/gpio/blink.lua</file>
         </group>
     </open-files>
 </project-private>
