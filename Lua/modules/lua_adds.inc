@@ -120,6 +120,13 @@ static void luaos_boot_scripts(lua_State *L) {
     const char *system_order[2];
     const char *autorun_order[2];
 
+    system_order[0] = "/system.lua";
+    system_order[1] = NULL;
+
+    autorun_order[0] = "/autorun.lua";
+    autorun_order[1] = NULL;
+
+/*
     if (!mount_is_mounted("sd") && !mount_is_mounted("cfi")) {
         // No filesystem is mounted, exit
         return;
@@ -142,7 +149,8 @@ static void luaos_boot_scripts(lua_State *L) {
         autorun_order[0] = "/sd/autorun.lua";
         autorun_order[1] = NULL;
     }
-
+*/
+    
     printf("\n");
 
     // Ecexute system script
