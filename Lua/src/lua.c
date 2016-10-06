@@ -292,7 +292,7 @@ static int incomplete (lua_State *L, int status) {
   return 0;  /* else... */
 }
 
-
+#if 0
 /*
 ** Prompt the user, read a line, and push it into the Lua stack.
 */
@@ -315,7 +315,7 @@ static int pushline (lua_State *L, int firstline) {
   lua_freeline(L, b);
   return 1;
 }
-
+#endif
 
 /*
 ** Try to compile line on the stack as 'return <line>;'; on return, stack

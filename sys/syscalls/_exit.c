@@ -29,8 +29,14 @@
 
 #include <drivers/cpu/cpu.h>
 
+extern int lua_running;
+extern int lua_interpreter;
+
 // In white cat there is only a main process. Calling to exit systemcall
 // performs a board reset
 void _exit(int status) {    
+    lua_running = 0;
+    lua_interpreter = 0;
+
     cpu_reset();
 }

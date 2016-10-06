@@ -29,6 +29,8 @@
 
 #include "pthread.h"
 
+#include <param.h>
+
 lua_State *gLuaState;
 
 pthread_mutex_t lua_mutex;
@@ -38,6 +40,7 @@ static int dofile (lua_State *L, const char *name);
 extern int threadInited;
 extern int lua_shell_on;
 extern int lua_running;
+extern int lua_interpreter;
 
 
 inline void LuaLockInit(lua_State *L) {
@@ -194,12 +197,11 @@ static int luaos_pmain (lua_State *L) {
 
   luaL_openlibs(L);  /* open standard libraries */
   createargtable(L, argv, argc, script);  /* create table 'arg' */
-    
-  print_version();
   
+  lua_running = 1;  
+  print_version();
   luaos_boot_scripts(L);
-
-  lua_running = 1;
+  lua_interpreter = 1;
 
   for(;;)
       doREPL(L);  /* do read-eval-print loop */

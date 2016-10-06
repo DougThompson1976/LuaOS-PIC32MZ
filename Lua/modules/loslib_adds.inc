@@ -17,6 +17,7 @@
 
 extern const char *__progname;
 extern int lua_running;
+extern int lua_interpreter;
 
 int lua_shell_on = SHELL_DEFAULT_STATE;
 int lua_history_on = HISTORY_DEFAULT_STATE;
@@ -31,6 +32,12 @@ static int os_shell(lua_State *L) {
 
 static int os_lua_running(lua_State *L) { 
     lua_pushboolean(L, lua_running);
+
+    return 1;
+}
+
+static int os_lua_interpreter(lua_State *L) { 
+    lua_pushboolean(L, lua_interpreter);
 
     return 1;
 }

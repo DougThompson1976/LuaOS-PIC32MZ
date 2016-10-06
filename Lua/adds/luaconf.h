@@ -229,6 +229,7 @@ extern inline void LuaUnlock(lua_State *L);
   {"pwd",       os_pwd}, \
   {"mkdir",     os_mkdir}, \
   {"luarunning", os_lua_running}, \
+  {"luainterpreter", os_lua_interpreter}, \
   LOSLIB_REG_EDITOR \
   {"clear",     os_clear}, \
   {"cat",       os_cat}, \
