@@ -11,6 +11,8 @@
             <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/lauxlib.c</file>
             <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/lzio.c</file>
             <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/ldo.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/luac.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/modules/lbaselib_adds.inc</file>
             <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/lbaselib.c</file>
             <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/lapi.c</file>
             <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/lparser.h</file>

@@ -16,6 +16,7 @@
 #include <main/build.h>
 
 extern const char *__progname;
+extern int lua_running;
 
 int lua_shell_on = SHELL_DEFAULT_STATE;
 int lua_history_on = HISTORY_DEFAULT_STATE;
@@ -26,6 +27,12 @@ static int os_shell(lua_State *L) {
     lua_shell_on = lua_toboolean( L, 1 );
     
     return 0;
+}
+
+static int os_lua_running(lua_State *L) { 
+    lua_pushboolean(L, lua_running);
+
+    return 1;
 }
 
 static int os_history(lua_State *L) { 
