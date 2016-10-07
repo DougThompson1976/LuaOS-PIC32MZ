@@ -7,13 +7,18 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/adds/luaconf.h</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/lbaselib_adds.inc</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/main/main.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/sys/syscalls/_exit.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/src/lua.c</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/lua_adds.inc</file>
-            <file>file:/Users/jaumeolivepetrus/NetBeansProjects/LuaOS/Lua/modules/loslib_adds.inc</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/lua.h</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/lauxlib.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/lzio.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/ldo.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/luac.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/modules/loslib_adds.inc</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/modules/lbaselib_adds.inc</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/lbaselib.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/lapi.c</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/lparser.h</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/src/lzio.h</file>
+            <file>file:/Users/jolive/NetBeansProjects/LuaOS_V1/Lua/adds/luaconf.h</file>
         </group>
     </open-files>
 </project-private>

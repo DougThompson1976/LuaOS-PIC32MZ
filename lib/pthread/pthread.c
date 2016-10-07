@@ -378,6 +378,11 @@ void pthreadTask(void *taskArgs) {
     // Set thread id
     uxSetThreadId(args->id);
 
+    if (args->args) {
+            // Set Lua context into TCB
+            uxSetLuaState(((struct lthread *)args->args)->L);
+    }
+
     mtx_unlock(&thread->init_mtx);
     
     if (args->initial_state == PTHREAD_INITIAL_STATE_SUSPEND) {
