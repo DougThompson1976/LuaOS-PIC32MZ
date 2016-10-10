@@ -12,12 +12,11 @@
 #include <drivers/console/console.h>
 #include <sys/syscalls/mount.h>
 #include <sys/syscalls/device.h>
+#include <sys/status.h>
 
 #include <main/build.h>
-
+ 
 extern const char *__progname;
-extern int lua_running;
-extern int lua_interpreter;
 
 int lua_shell_on = SHELL_DEFAULT_STATE;
 int lua_history_on = HISTORY_DEFAULT_STATE;
@@ -31,16 +30,17 @@ static int os_shell(lua_State *L) {
 }
 
 static int os_lua_running(lua_State *L) { 
-    lua_pushboolean(L, lua_running);
+    lua_pushboolean(L, status_get(STATUS_LUA_RUNNING));
 
     return 1;
 }
 
 static int os_lua_interpreter(lua_State *L) { 
-    lua_pushboolean(L, lua_interpreter);
+    lua_pushboolean(L, status_get(STATUS_LUA_INTERPRETER));
 
     return 1;
 }
+
 
 static int os_history(lua_State *L) { 
     luaL_checktype(L, 1, LUA_TBOOLEAN);

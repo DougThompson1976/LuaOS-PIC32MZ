@@ -112,9 +112,6 @@ asm ("          .text");
 
 extern const char *__progname;
 
-int lua_running = 0;
-int lua_interpreter = 0;
-
 void led_inv() {
     TRISBCLR = 0xffffff;
     LATBINV = 0xffffff;

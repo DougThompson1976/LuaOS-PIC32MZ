@@ -30,18 +30,16 @@
 #include "pthread.h"
 
 #include <param.h>
+#include <sys/status.h>
 
 lua_State *gLuaState;
-
+ 
 pthread_mutex_t lua_mutex;
 
 static int dofile (lua_State *L, const char *name);
 
 extern int threadInited;
 extern int lua_shell_on;
-extern int lua_running;
-extern int lua_interpreter;
-
 
 inline void LuaLockInit(lua_State *L) {
     pthread_mutexattr_t attr;
@@ -206,11 +204,16 @@ static int luaos_pmain (lua_State *L) {
   luaL_openlibs(L);  /* open standard libraries */
   createargtable(L, argv, argc, script);  /* create table 'arg' */
   
-  lua_running = 1;  
   print_version();
-  luaos_boot_scripts(L);
-  lua_interpreter = 1;
+  
+  status_set(STATUS_LUA_RUNNING);
 
+  if (!status_get(STATUS_LUA_ABORT_BOOT_SCRIPTS)) {
+	  luaos_boot_scripts(L);
+  } else {
+	  printf("LuaOS-boot-scripts-aborted\r\n");
+  }
+  
   for(;;)
       doREPL(L);  /* do read-eval-print loop */
 

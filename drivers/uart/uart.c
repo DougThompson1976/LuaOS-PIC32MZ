@@ -46,9 +46,9 @@
 #include <stdarg.h>
 #include <string.h>
 #include <syslog.h>
+#include <sys/status.h>
 
 extern QueueHandle_t signal_q;
-extern int lua_running;
 
 #define DEBUG 0
 
@@ -640,11 +640,13 @@ void uart_intr_rx(u8_t unit) {
         // Signal handling
         if (unit == CONSOLE_UART - 1) {
             if (byte == 0x04) {
-                if (!lua_running) {
+                if (!status_get(STATUS_LUA_RUNNING)) {
                     uart_writes(CONSOLE_UART, "LuaOS-booting\r\n");                   
                 } else {
                     uart_writes(CONSOLE_UART, "LuaOS-running\r\n");
                 }
+
+                status_set(STATUS_LUA_ABORT_BOOT_SCRIPTS);
                 
                 queue = 0;
             } else if (byte == 0x03) {

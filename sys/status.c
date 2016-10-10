@@ -1,5 +1,5 @@
 /*
- * Whitecat, exit syscall
+ * Whitecat, LuaOS status management
  *
  * Copyright (C) 2015 - 2016
  * IBEROXARXA SERVICIOS INTEGRALES, S.L. & CSS IBÉRICA, S.L.
@@ -27,14 +27,28 @@
  * this software.
  */
 
-#include <drivers/cpu/cpu.h>
 #include <sys/status.h>
 
-// In white cat there is only a main process. Calling to exit systemcall
-// performs a board reset
-void _exit(int status) {    
-    status_clear(STATUS_LUA_RUNNING);  
-    status_clear(STATUS_LUA_INTERPRETER);  
+uint32_t LuaOS_status[] = {0};
 
-    cpu_reset();
+inline void status_set(u16_t flag) {
+	enter_critical_section();
+	LuaOS_status[(flag >> 8)] |= (1 << (flag & 0x00ff));
+	exit_critical_section();
+}
+
+inline void status_clear(u16_t flag) {
+	enter_critical_section();
+	LuaOS_status[(flag >> 8)] &= ~(1 << (flag & 0x00ff));
+	exit_critical_section();
+}
+
+inline int status_get(u16_t flag) {
+	int value;
+	
+	enter_critical_section();
+	value = (LuaOS_status[(flag >> 8)] & (1 << (flag & 0x00ff)));
+	exit_critical_section();
+	
+	return value;
 }
